@@ -61,8 +61,8 @@ declare module 'vue' {
     ATextarea: typeof import('@arco-design/web-vue')['Textarea'];
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip'];
     ATypographyParagraph: typeof import('@arco-design/web-vue')['TypographyParagraph'];
-    ATypographyTitle: typeof import('@arco-design/web-vue')['TypographyTitle'];
     ATypographyText: typeof import('@arco-design/web-vue')['TypographyText'];
+    ATypographyTitle: typeof import('@arco-design/web-vue')['TypographyTitle'];
     AUpload: typeof import('@arco-design/web-vue')['Upload'];
   }
 }

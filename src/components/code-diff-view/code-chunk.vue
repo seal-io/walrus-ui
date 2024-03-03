@@ -104,13 +104,14 @@
 
     .chunk {
       display: flex;
+      background-color: var(--color-white-3);
 
       &.remove {
         background-color: var(--code-remove-text-line);
       }
 
       &.remove .line-num {
-        color: var(--color-text-2);
+        color: var(--color-text-light);
         background-color: var(--code-remove-number-line);
       }
 
@@ -119,7 +120,7 @@
       }
 
       &.add .line-num {
-        color: var(--color-text-2);
+        color: var(--color-text-light);
         background-color: var(--code-add-number-line);
       }
 

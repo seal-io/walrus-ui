@@ -183,6 +183,7 @@
 
       .text {
         margin-bottom: 10px;
+        color: var(--color-text-2);
       }
 
       .arco-icon {
