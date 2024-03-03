@@ -1,38 +1,31 @@
 <template>
-  <div class="high-light-wrapper">
-    <highlightjs :language="langType" :code="code" />
+  <div class="high-light-wrapper" :class="{ dark: appStore.isDark }">
+    <hljsVuePlugin.component :language="langType" :code="code" />
     <slot></slot>
-    <!-- <div v-html="highlightedCode"></div> -->
   </div>
 </template>
 
-<script>
-  import 'highlight.js/styles/stackoverflow-light.css';
+<script lang="ts" setup>
+  import { useAppStore } from '@/store';
   import 'highlight.js/lib/common';
   import hljsVuePlugin from '@highlightjs/vue-plugin';
-  // import xml from 'highlight.js/lib/languages/xml';
-  // import json from 'highlight.js/lib/languages/json';
-  // import { onMounted, ref } from 'vue';
-  // import 'highlight.js/styles/github.css';
-  export default {
-    components: {
-      highlightjs: hljsVuePlugin.component
+  import 'highlight.js/styles/atom-one-light.css';
+
+  defineProps({
+    code: {
+      type: String,
+      default() {
+        return '';
+      }
     },
-    props: {
-      code: {
-        type: String,
-        default() {
-          return '';
-        }
-      },
-      langType: {
-        type: String,
-        default() {
-          return 'xml';
-        }
+    langType: {
+      type: String,
+      default() {
+        return 'json';
       }
     }
-  };
+  });
+  const appStore = useAppStore();
 </script>
 
 <style lang="less" scoped>
@@ -43,6 +36,16 @@
     // border: 1px solid var(--seal-border-gray-2);
     :deep(.hljs) {
       background-color: var(--color-white);
+    }
+
+    &.dark {
+      :deep(.hljs) {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      :deep(.hljs-punctuation) {
+        color: rgba(255, 255, 255, 0.5);
+      }
     }
   }
 </style>

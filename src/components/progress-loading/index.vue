@@ -4,7 +4,7 @@
   export default defineComponent({
     props: {
       type: {
-        type: String as PropType<'success' | 'error' | 'warning'>,
+        type: String as PropType<'success' | 'error' | 'warning' | 'inactive'>,
         default() {
           return '';
         }
@@ -75,11 +75,27 @@
         }
         return null;
       };
+
+      const renderInactive = () => {
+        if (props.type === 'inactive') {
+          return (
+            <icon-stop
+              style={{
+                color: 'rgb(var(--gray-5))',
+                fontSize: `${props.size}px`,
+                strokeWidth: props.strokeWidth
+              }}
+            />
+          );
+        }
+        return null;
+      };
       return () => (
         <span>
           {renderProgress()}
           {renderError()}
           {renderSuccess()}
+          {renderInactive()}
         </span>
       );
     }

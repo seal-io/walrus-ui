@@ -46,6 +46,8 @@
           type = 'warning';
         } else if (_.get(props.runData, 'status.error')) {
           type = 'error';
+        } else if (_.get(props.runData, 'status.inactive')) {
+          type = 'inactive';
         } else if (_.get(props.runData, 'status.summaryStatus')) {
           type = 'success';
         }
