@@ -343,7 +343,7 @@ export const rollbackService = (data: {
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${
       data.serviceID
     }/rollback?${qs.stringify({
-      revisionID: data.revisionID
+      runID: data.revisionID
     })}`,
     {
       changeComment: data.changeComment,

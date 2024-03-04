@@ -131,8 +131,8 @@ export const setPipelineNodeStyle = (size) => {
           }
           .iconfont.approval{
             position: absolute;
-            bottom: -12px;
-            right: -4px;
+            bottom: -8px;
+            right: -2px;
             background-color: var(--color-white);
             border-radius: 50%;
             font-size: 12px;

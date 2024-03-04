@@ -62,7 +62,7 @@
                   >
                     <span
                       v-if="item.level === pageLevelMap.Environment"
-                      class="m-r-4"
+                      class="m-r-4 star-btn"
                       @click.stop="handleSetDefault(data)"
                     >
                       <icon-star
@@ -332,6 +332,11 @@
         bottom: 0;
         left: 0;
         content: '';
+      }
+
+      .star-btn {
+        position: relative;
+        z-index: 100;
       }
     }
 

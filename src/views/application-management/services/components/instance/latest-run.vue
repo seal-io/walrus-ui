@@ -90,6 +90,7 @@
       const renderNoRunData = () => {
         return (
           <result-view
+            style={{ paddingTop: '48px' }}
             title={i18n.global.t('resource.runs.result.title')}
             subtitle={i18n.global.t('resource.runs.result.subTitle')}
             v-slots={{
@@ -146,7 +147,7 @@
       };
       return () => (
         <a-spin style={{ width: '100%' }}>
-          {props.serviceInfo?.status?.summaryStatus === ServiceStatus.Undeployed
+          {!_.keys(revisionData.value).length && !loading.value
             ? renderNoRunData()
             : renderLatestRun()}
         </a-spin>

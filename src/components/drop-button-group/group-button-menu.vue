@@ -5,6 +5,8 @@
   import i18n from '@/locale';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
 
+  type DropdownPosition = 'top' | 'tl' | 'tr' | 'bottom' | 'bl' | 'br';
+
   export default defineComponent({
     emits: ['select', 'click'],
     props: {
@@ -21,6 +23,12 @@
       trigger: {
         type: String as PropType<'click' | 'hover'>,
         default: 'click'
+      },
+      position: {
+        type: String as PropType<DropdownPosition>,
+        default() {
+          return 'bottom';
+        }
       }
     },
     setup(props, { emit, slots }) {
@@ -39,6 +47,7 @@
             style="border-radius: var(--border-radius-small); overflow: hidden"
             onSelect={(val) => handleSelect(val)}
             trigger={props.trigger}
+            position={props.position}
             v-slots={{
               default: () => {
                 if (slots.default) {
