@@ -165,8 +165,10 @@
           const value = defaultValue || itemDefaultValue;
           if (schema.isRequired || !isEmptyValueField(schema, value)) {
             _.set(props.uiFormData, fieldPath, _.cloneDeep(value));
+            _.set(props.formData, fieldPath, _.cloneDeep(value));
           }
         });
+        handleChange(props.formData);
       };
       const handleAddClick = () => {
         setPropertiesList();
