@@ -22,7 +22,8 @@ export default function useStatusConfig() {
       auditing: 'rgba(135, 145, 247, .5)',
       failed: 'rgba(245, 63, 63,.7)',
       succeed: 'rgba(128, 212, 197, 1)',
-      succeeded: 'rgba(128, 212, 197, 1)'
+      succeeded: 'rgba(128, 212, 197, 1)',
+      canceled: 'rgba(201,205,212,1)'
     };
   });
 
@@ -46,7 +47,8 @@ export default function useStatusConfig() {
       auditing: 'rgba(135, 145, 247, .5)',
       failed: 'rgba(245, 63, 63,.5)',
       succeed: 'rgba(128, 212, 197, .8)',
-      succeeded: 'rgba(128, 212, 197, .8)'
+      succeeded: 'rgba(128, 212, 197, .8)',
+      canceled: 'rgba(201,205,212,1)'
     };
   });
 

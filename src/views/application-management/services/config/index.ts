@@ -115,6 +115,12 @@ export const latestRunConfig = [
     span: 1
   },
   {
+    label: 'common.table.type',
+    key: 'type',
+    value: '',
+    span: 1
+  },
+  {
     label: 'common.table.createdBy',
     key: 'createdBy',
     value: '',
@@ -253,7 +259,7 @@ export const RevisionWatchStatus = [
 
 export const RevisionTypes = {
   create: 'create',
-  upgrade: 'upgrade',
+  update: 'update',
   delete: 'delete',
   start: 'start',
   stop: 'stop',

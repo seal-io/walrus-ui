@@ -267,77 +267,74 @@
 
       <EditPageFooter>
         <template #save>
-          <div>
-            <a-popconfirm
-              position="left"
-              trigger="hover"
-              content-class="deploy-comment-popup"
-            >
-              <template #icon>
-                <span></span>
-              </template>
-              <template #content>
-                <seal-textarea
-                  v-model="formData.changeComment"
-                  :label="$t('common.table.mark')"
-                  allow-clear
-                  style="width: 300px"
-                  :auto-size="{ minRows: 2, maxRows: 4 }"
-                ></seal-textarea>
-              </template>
-              <GroupButtonMenu
-                trigger="hover"
-                :loading="submitLoading"
-                :actions="actionList"
-                @select="handleActionSelect"
-              >
-                <template #default>
-                  <a-button
-                    :loading="submitLoading"
-                    type="primary"
-                    @click="() => handleActionSelect(ResourceSaveAction.Deploy)"
-                  >
-                    {{ $t(_.get(_.head(SaveActions), 'label') || '') }}
-                  </a-button>
-                </template>
-              </GroupButtonMenu>
-            </a-popconfirm>
-            <!-- <a-popconfirm
-              v-else
-              position="tr"
-              trigger="hover"
-              content-class="deploy-comment-popup"
-            >
-              <template #icon>
-                <span></span>
-              </template>
-              <template #content>
-                <seal-textarea
-                  v-model="formData.changeComment"
-                  :label="$t('common.table.mark')"
-                  allow-clear
-                  style="width: 300px"
-                  :auto-size="{ minRows: 2, maxRows: 4 }"
-                ></seal-textarea>
-              </template>
-              <a-button
-                :type="'primary'"
-                class="cap-title"
-                :loading="submitLoading"
-                @click="handleOkCallback"
-                >{{ $t('common.button.saveDeploy') }}</a-button
-              >
-            </a-popconfirm> -->
-          </div>
-        </template>
-        <template #cancel>
-          <a-button
-            :type="'outline'"
-            :disabled="!isFormChange && pgType === 'com'"
-            class="cap-title cancel-btn"
-            @click="handleCancel"
-            >{{ $t('common.button.cancel') }}</a-button
+          <div
+            :style="{
+              'display': 'flex',
+              'position': 'relative',
+              'flex-direction': 'column'
+            }"
           >
+            <div style="position: relative">
+              <a-textarea
+                v-model="formData.changeComment"
+                :placeholder="$t('common.table.mark')"
+                allow-clear
+                :bordered="false"
+                :style="{
+                  'width': `${InputWidth.LARGE}px`,
+                  'background': 'var(--color-white-1)',
+                  'padding-bottom': '40px'
+                }"
+                :auto-size="{ minRows: 5, maxRows: 5 }"
+              >
+              </a-textarea>
+              <a-space
+                :size="40"
+                fill
+                :style="{
+                  'position': 'absolute',
+                  'bottom': '4px',
+                  'right': '1px',
+                  'left': '1px',
+                  'justify-content': 'space-between',
+                  'border-top': '1px solid var(--color-border-2)',
+                  'background-color': appStore.isDark
+                    ? 'var(--color-white-1)'
+                    : 'var(--color-fill-1)',
+                  'border-radius': '0 0 8px 8px',
+                  'padding': '6px 8px'
+                }"
+              >
+                <GroupButtonMenu
+                  trigger="hover"
+                  position="tr"
+                  :loading="submitLoading"
+                  :actions="actionList"
+                  @select="handleActionSelect"
+                >
+                  <template #default>
+                    <a-button
+                      :bordered="false"
+                      :loading="submitLoading"
+                      type="primary"
+                      @click="
+                        () => handleActionSelect(ResourceSaveAction.Deploy)
+                      "
+                    >
+                      {{ $t(_.get(_.head(SaveActions), 'label') || '') }}
+                    </a-button>
+                  </template>
+                </GroupButtonMenu>
+                <a-button
+                  style="color: rgba(var(--arcoblue-5))"
+                  :disabled="!isFormChange && pgType === 'com'"
+                  class="cap-title cancel-btn"
+                  @click="handleCancel"
+                  >{{ $t('common.button.cancel') }}</a-button
+                >
+              </a-space>
+            </div>
+          </div>
         </template>
       </EditPageFooter>
     </ComCard>
@@ -358,6 +355,7 @@
 
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
+  import { useAppStore } from '@/store';
   import _, { get, find, cloneDeep, toString } from 'lodash';
   import { ref, computed, provide, PropType, nextTick, onMounted } from 'vue';
   import i18n from '@/locale';
@@ -448,6 +446,7 @@
     title,
     asyncLoading
   } = useServiceData();
+  const appStore = useAppStore();
   const { setChunkRequest } = useSetChunkRequest();
   let copyFormData: any = null;
   const showPreviewModal = ref(false);

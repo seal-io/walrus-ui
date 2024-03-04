@@ -13,7 +13,7 @@
           <a-list-item-meta>
             <template #title>
               <a-space fill>
-                <div>
+                <div class="flex flex-align-center" style="line-height: 24px">
                   <span v-if="!item.accessToken">{{ item.name }}</span>
                   <span v-if="item.accessToken" class="token">{{
                     item.accessToken
@@ -43,9 +43,9 @@
                     size="small"
                     class="tag"
                     :style="{
-                      color: StatusColor.warning.color5,
-                      backgroundColor: StatusColor.warning.color1,
-                      border: `1px solid ${StatusColor.warning.color1}`
+                      color: StatusColor.warning.text,
+                      backgroundColor: StatusColor.warning.bg,
+                      border: `1px solid ${StatusColor.warning.bg}`
                     }"
                     >{{ $t('account.settings.expireSoon') }}</a-tag
                   >
@@ -54,9 +54,9 @@
                     size="small"
                     class="expired-soon tag"
                     :style="{
-                      color: StatusColor.error.color5,
-                      backgroundColor: StatusColor.error.color1,
-                      border: `1px solid ${StatusColor.error.color1}`
+                      color: StatusColor.error.text,
+                      backgroundColor: StatusColor.error.bg,
+                      border: `1px solid ${StatusColor.error.bg}`
                     }"
                     >{{ $t('account.settings.expired') }}</a-tag
                   >
@@ -65,9 +65,9 @@
                   v-if="item.accessToken"
                   class="copy-warn"
                   :style="{
-                    color: StatusColor.error.color5,
-                    backgroundColor: StatusColor.error.color1,
-                    border: `1px solid ${StatusColor.error.color1}`
+                    color: StatusColor.error.text,
+                    backgroundColor: StatusColor.error.bg,
+                    border: `1px solid ${StatusColor.error.bg}`
                   }"
                   >{{ $t('account.settings.token.tips') }}</span
                 >

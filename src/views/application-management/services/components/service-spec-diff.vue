@@ -53,7 +53,7 @@
               actions: ['PUT']
             }) &&
             _.includes(
-              [RevisionTypes.create, RevisionTypes.upgrade],
+              [RevisionTypes.create, RevisionTypes.update],
               serviceInfo.type
             )
           "
@@ -87,7 +87,7 @@
                 actions: ['PUT']
               }) &&
               _.includes(
-                [RevisionTypes.create, RevisionTypes.upgrade],
+                [RevisionTypes.create, RevisionTypes.update],
                 serviceInfo.type
               )
             "
