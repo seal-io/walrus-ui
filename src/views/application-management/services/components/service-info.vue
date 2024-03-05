@@ -51,7 +51,6 @@
   });
 
   const { route } = useCallCommon();
-  const serviceInfo = ref(props.detailInfo);
   const schema = ref<any>({});
   const loaded = ref(false);
   const templateList = ref<any[]>([]);
@@ -61,6 +60,10 @@
   let schemaToken = createAxiosToken();
 
   provide(InjectSchemaFormStatusKey, ref(PageAction.VIEW));
+
+  const serviceInfo = computed(() => {
+    return props.detailInfo;
+  });
 
   // template options
   const getTemplates = async () => {
@@ -184,8 +187,7 @@
   watch(
     () => serviceInfo.value.id,
     () => {
-      if (serviceInfo.value.id && requestFlag.value) {
-        requestFlag.value = false;
+      if (serviceInfo.value.id) {
         init();
       }
     },

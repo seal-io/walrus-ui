@@ -49,6 +49,7 @@
                 >
                   <LatestRun
                     ref="latestRunRef"
+                    :key="latestKey"
                     :service-info="currentInfo"
                   ></LatestRun>
                 </a-grid-item>
@@ -98,7 +99,9 @@
               :key="ResourceDetailTabs.REVISIONS"
               :title="$t('applications.applications.instance.history')"
             >
-              <serviceRevisions></serviceRevisions>
+              <serviceRevisions
+                @rollback="handleRollbackSuccess"
+              ></serviceRevisions>
             </a-tab-pane>
             <a-tab-pane
               :key="ResourceDetailTabs.SETTINGS"
@@ -211,6 +214,7 @@
   });
   // 1: create 2: update 3: delete
   const settingKey = ref(Date.now());
+  const latestKey = ref(Date.now());
   const actionMap = new Map();
   const latestRunRef = ref();
   const showCommentModal = ref(false);
@@ -294,8 +298,9 @@
     }
   };
 
-  const handleBasicCollapse = async (val) => {
-    isCollapsed.value = val;
+  const handleRollbackSuccess = () => {
+    latestKey.value = Date.now();
+    settingKey.value = Date.now();
   };
 
   const handleExportYaml = () => {
@@ -407,6 +412,7 @@
 
     await getServiceItemInfo();
     settingKey.value = Date.now();
+    latestKey.value = Date.now();
     setPageTabActive(ResourceDetailTabs.OVERVIEW);
   };
 

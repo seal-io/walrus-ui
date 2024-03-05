@@ -304,6 +304,7 @@
     SERVICE_RESOURCE_API_PREFIX
   } from '../../api';
 
+  const emit = defineEmits(['rollback']);
   let timer: any = null;
   let axiosListInstance = createAxiosToken();
   const userStore = useUserStore();
@@ -363,6 +364,7 @@
         preview: data.preview
       });
       execSucceed();
+      emit('rollback');
     } catch (error) {
       //
     }

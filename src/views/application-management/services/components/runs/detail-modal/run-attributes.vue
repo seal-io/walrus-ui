@@ -41,7 +41,9 @@
       const serviceDetail = computed(() => {
         return {
           ...serviceInfo.value,
-          attributes: props.runData.attributes
+          attributes: {
+            ...props.runData.attributes
+          }
         };
       });
 

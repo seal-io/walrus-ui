@@ -202,6 +202,7 @@
             >
               <SealViewItemWrap label={props.schema.title} style="width: 100%">
                 <a-checkbox
+                  disabled={true}
                   modelValue={_.get(props.uiFormData, props.fieldPath)}
                   size="small"
                 ></a-checkbox>

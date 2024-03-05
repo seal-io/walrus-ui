@@ -1,47 +1,75 @@
-<template>
-  <div>
-    <div class="header-info" :class="{ 'top-gap': topGap }">
-      <div class="left">
-        <div class="img">
-          <slot name="icon"></slot>
-          <span v-if="showImgIcon" class="custom-icon">
-            <slot name="img"></slot>
-          </span>
-        </div>
-      </div>
-      <div class="right">
-        <slot name="title" class="title">
-          <div class="title">{{ info?.name }}</div>
-        </slot>
-        <slot name="status"></slot>
-        <slot name="description" class="desc"></slot>
-      </div>
-      <div class="extra">
-        <slot name="extra"></slot>
-      </div>
-    </div>
-  </div>
-</template>
+<script lang="tsx">
+  import { defineComponent } from 'vue';
 
-<script lang="ts" setup>
-  defineProps({
-    topGap: {
-      type: Boolean,
-      default() {
-        return false;
+  export default defineComponent({
+    props: {
+      topGap: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      info: {
+        type: Object,
+        default() {
+          return {};
+        }
+      },
+      iconType: {
+        type: String,
+        default() {
+          return '';
+        }
+      },
+      showImgIcon: {
+        type: Boolean,
+        default() {
+          return false;
+        }
       }
     },
-    info: {
-      type: Object,
-      default() {
-        return {};
-      }
-    },
-    showImgIcon: {
-      type: Boolean,
-      default() {
-        return false;
-      }
+    setup(props, { slots }) {
+      const renderIcon = () => {
+        if (props.iconType === 'line') {
+          return <span class="line-icon">{slots.icon?.()}</span>;
+        }
+        if (slots.icon) {
+          return slots.icon();
+        }
+        return null;
+      };
+
+      const renderImgIcon = () => {
+        if (props.showImgIcon) {
+          return <span class="custom-icon">{slots.img?.()}</span>;
+        }
+        return null;
+      };
+
+      const renderTitle = () => {
+        if (slots.title) {
+          return <div class="title">{slots.title()}</div>;
+        }
+        return <div class="title">{props.info?.name}</div>;
+      };
+      return () => (
+        <div>
+          <div class={['header-info', { 'top-gap': props.topGap }]}>
+            <div class="left">
+              <div class="img">
+                {renderIcon()}
+                {renderImgIcon()}
+              </div>
+            </div>
+            <div class="right">
+              {renderTitle()}
+              {slots.status?.()}
+              {slots.description?.()}
+            </div>
+            <div class="extra">{slots.extra?.()}</div>
+          </div>
+        </div>
+      );
     }
   });
 </script>
@@ -77,6 +105,21 @@
           background-color: transparent;
           // box-shadow: 0 0 16px 2px rgb(var(--arcoblue-4));
           border-radius: 50%;
+        }
+
+        .line-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 42px;
+          height: 42px;
+          background-color: rgb(var(--arcoblue-5));
+          border-radius: 50%;
+
+          :deep(.iconfont) {
+            color: var(--color-white-2);
+            font-size: 22px;
+          }
         }
 
         .custom-icon {
