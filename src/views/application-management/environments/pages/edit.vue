@@ -256,6 +256,8 @@
             v-else
             :loading="submitLoading"
             :actions="SaveActions"
+            position="br"
+            trigger="hover"
             @select="handleSelect"
           >
           </GroupButtonMenu>
@@ -562,16 +564,14 @@
     return data;
   };
 
-  const handleSubmit = async (draft?: boolean) => {
+  const handleSubmit = async () => {
     const res = await formref.value?.validate();
     validateTrigger.value = true;
     scrollToView();
     if (!res) {
       try {
         submitLoading.value = true;
-        if (draft) {
-          formData.value.draft = true;
-        }
+
         const data = _.omit(formData.value, ['edges']);
         if (isCloneAction) {
           handleCloneEnvironment(data);
@@ -607,12 +607,15 @@
     return false;
   };
   const handleSelect = (value) => {
-    if (value === 'deploy') {
-      handleSubmit();
+    _.omit(formData.value, ['preview', 'draft']);
+
+    if (value === 'preview') {
+      formData.value.preview = true;
     }
     if (value === 'draft') {
-      handleSubmit(true);
+      formData.value.draft = true;
     }
+    handleSubmit();
   };
   const cancelCallback = () => {
     if (route.name === PROJECT.EnvDetail) {

@@ -373,7 +373,7 @@ export const StatusColor = {
     icon: 'icon-close-circle-fill'
   },
   warning: {
-    text: `rgba(var(${StatusColorValueMap.warningColor}))`, // color
+    text: `rgba(var(${StatusColorValueMap.warningColor}),1)`, // color
     bg: `rgba(var(${StatusColorValueMap.warningBg}),0.3)`, // backgroundColor #f9cc45
     icon: ''
   },

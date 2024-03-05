@@ -240,14 +240,9 @@ export const RevisionStatus = {
   Succeeded: 'Succeeded',
   Running: 'Running',
   Failed: 'Failed',
-  Pending: 'Pending',
-  Plan: 'Plan',
   Planned: 'Planned',
   Planning: 'Planning',
-  Apply: 'Apply',
-  Applying: 'Applying',
-  Canceled: 'Canceled',
-  Canceling: 'Canceling'
+  Canceled: 'Canceled'
 };
 
 export const ApplicableStatus = [RevisionStatus.Planned];

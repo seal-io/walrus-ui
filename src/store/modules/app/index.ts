@@ -3,7 +3,9 @@ import defaultSettings from '@/config/settings.json';
 import { AppState } from './types';
 
 const useAppStore = defineStore('app', {
-  persist: true,
+  persist: {
+    key: 'app'
+  },
   state: (): AppState => ({ ...defaultSettings }),
 
   getters: {
