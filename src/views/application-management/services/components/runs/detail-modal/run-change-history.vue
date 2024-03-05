@@ -23,6 +23,9 @@
       const loading = ref(false);
 
       const getRevisionChange = async () => {
+        if (!props.runData.id || !props.runData.resource?.id) {
+          return;
+        }
         try {
           loading.value = true;
           const { data } = await queryRevisionChange({

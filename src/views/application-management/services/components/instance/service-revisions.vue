@@ -233,15 +233,9 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
-    <!-- <revisionDetail
-      v-model:show="showDetailModal"
-      :data-info="revisionData"
-      :revision-id="revisionDetailId"
-      :initial-status="initialStatus"
-    ></revisionDetail> -->
     <RunDetailModal
       v-model:show="showDetailModal"
-      title="Run Details"
+      :title="$t('applications.applications.history.detail')"
       :data="runData"
     ></RunDetailModal>
     <serviceSpecDiff
@@ -329,7 +323,7 @@
   const projectID = route.params.projectId || '';
   const environmentID = route.params.environmentId as string;
   const title = ref('');
-  const serviceId = inject(ProvideServiceIDKey, ref(''));
+  const serviceId = ref(route.query.id as string);
   const revisionDetailId = ref('');
   const revisionData = ref({});
   const total = ref(0);

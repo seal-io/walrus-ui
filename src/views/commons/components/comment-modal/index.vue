@@ -31,7 +31,7 @@
         emit('confirm', formData.value.comment);
         setTimeout(() => {
           emit('update:show', false);
-        }, 0);
+        }, 100);
       };
 
       const handleBeforeOpen = () => {
@@ -52,14 +52,14 @@
           cancel-button-props={{ type: 'outline' }}
           visible={props.show}
           mask-closable={false}
-          unmount-on-close
+          unmount-on-close={true}
           body-style={{ 'max-height': '400px', 'overflow': 'auto' }}
           modal-class="project-modal"
           title={props.title}
           onCancel={() => handleCancel()}
           onOk={() => handleOk()}
-          on-before-open={() => handleBeforeOpen()}
-          on-before-close={() => handleBeforeClose()}
+          onBeforeOpen={() => handleBeforeOpen()}
+          onBeforeClose={() => handleBeforeClose()}
           v-slots={{
             footer: () => (
               <a-space

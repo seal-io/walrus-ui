@@ -63,7 +63,7 @@
             _.startsWith(item.value, 'http') ||
             _.startsWith(item.value, 'https')
         );
-        return [{ label: 1, value: 2 }];
+        return list;
       });
 
       const handleCheckboxChange = (checked, id) => {

@@ -46,6 +46,7 @@ axios.interceptors.request.use(
     if (some(NoBaseURLApiList, (api) => url.startsWith(api))) {
       config.baseURL = '';
     }
+
     return config;
   },
   (error) => {

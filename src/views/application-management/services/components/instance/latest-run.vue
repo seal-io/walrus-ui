@@ -7,9 +7,11 @@
     PropType,
     watch,
     defineComponent,
-    computed
+    computed,
+    onBeforeUnmount
   } from 'vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
+  import ComCard from '@/components/page-wrap/com-card.vue';
   import { StatusColor } from '@/views/config';
   import {
     latestRunConfig,
@@ -32,6 +34,7 @@
         revisionDetailId,
         revisionData,
         showDetailModal,
+        axiosToken,
         initialStatus,
         currentServiceInfo,
         loading,
@@ -39,7 +42,6 @@
       } = useViewLatestLogs(false);
 
       const basicDataList = useBasicInfoData(latestRunConfig, revisionData);
-      const runFlag = ref(true);
 
       // logs
       provide(ProvideServiceInfoKey, currentServiceInfo);
@@ -62,10 +64,10 @@
       });
 
       watch(
-        () => props.serviceInfo,
+        () => props.serviceInfo.id,
         (data) => {
-          if (data.id) {
-            debounceViewLatestLogs(props.serviceInfo);
+          if (data) {
+            handleViewServiceLatestLogs(props.serviceInfo);
           }
         },
         {
@@ -77,15 +79,15 @@
         () => showDetailModal.value,
         () => {
           if (props.serviceInfo.id && showDetailModal.value) {
-            handleViewServiceLatestLogs(props.serviceInfo);
+            // handleViewServiceLatestLogs(props.serviceInfo);
           }
         },
         {
           immediate: true
         }
       );
-      expose({
-        viewLogs
+      onBeforeUnmount(() => {
+        axiosToken?.cancel?.();
       });
       const renderNoRunData = () => {
         return (
@@ -146,11 +148,42 @@
         );
       };
       return () => (
-        <a-spin style={{ width: '100%' }}>
-          {!_.keys(revisionData.value).length && !loading.value
-            ? renderNoRunData()
-            : renderLatestRun()}
-        </a-spin>
+        <ComCard
+          title={i18n.global.t('applications.applications.table.latestRun')}
+          header-style={{ padding: '20px', height: 'auto' }}
+          style={{ 'height': '100%', 'border-radius': '16px' }}
+          padding="0 20px 20px"
+          bordered={true}
+          v-slots={{
+            title: () => {
+              return (
+                <div class="flex flex-justify-between flex-align-center">
+                  <span>
+                    {i18n.global.t('applications.applications.table.latestRun')}
+                  </span>
+                  {_.keys(revisionData.value).length && !loading.value ? (
+                    <a-link
+                      size="small"
+                      class="font-13"
+                      onClick={() => {
+                        viewLogs();
+                      }}
+                    >
+                      <i class="size-16 m-r-5 iconfont icon-xiangqing"></i>
+                      {i18n.global.t('common.button.detail')}
+                    </a-link>
+                  ) : null}
+                </div>
+              );
+            }
+          }}
+        >
+          <a-spin style={{ width: '100%' }}>
+            {!_.keys(revisionData.value).length && !loading.value
+              ? renderNoRunData()
+              : renderLatestRun()}
+          </a-spin>
+        </ComCard>
       );
     }
   });

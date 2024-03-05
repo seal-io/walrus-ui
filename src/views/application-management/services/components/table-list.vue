@@ -213,6 +213,11 @@
       :data-info="revisionData"
       :revision-id="revisionDetailId"
       :initial-status="initialStatus"
+      @close="
+        () => {
+          axiosToken?.cancel?.();
+        }
+      "
     ></revisionDetail>
     <driftResource
       v-model:show="showDriftModal"
@@ -349,6 +354,7 @@
     revisionDetailId,
     revisionData,
     showDetailModal,
+    axiosToken,
     initialStatus,
     currentServiceInfo,
     handleViewServiceLatestLogs

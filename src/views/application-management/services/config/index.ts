@@ -121,14 +121,14 @@ export const latestRunConfig = [
     span: 1
   },
   {
-    label: 'common.table.createdBy',
-    key: 'createdBy',
+    label: 'applications.applications.history.changes',
+    key: 'componentChangeSummary',
     value: '',
     span: 1
   },
   {
-    label: 'applications.applications.history.changes',
-    key: 'componentChangeSummary',
+    label: 'common.table.createdBy',
+    key: 'createdBy',
     value: '',
     span: 1
   },

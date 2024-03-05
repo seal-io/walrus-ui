@@ -31,7 +31,7 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
       (item) => item.id === _.get(revisionData.value, 'id')
     );
     if (openRevisionData) {
-      revisionData.value = openRevisionData;
+      revisionData.value = _.cloneDeep(openRevisionData);
       initialStatus.value = _.get(revisionData.value, 'status') || {};
     }
   };
@@ -79,9 +79,6 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
       nextTick(() => {
         createServiceRevisionChunkRequest();
       });
-    } catch (error) {
-      // ignore
-      // revisionData.value = {};
     } finally {
       loading.value = false;
     }
@@ -90,7 +87,7 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
     () => showDetailModal.value,
     (val) => {
       if (!val) {
-        axiosToken?.cancel?.();
+        // axiosToken?.cancel?.();
       }
     },
     {
@@ -104,6 +101,7 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
     initialStatus,
     currentServiceInfo,
     loading,
+    axiosToken,
     handleViewServiceLatestLogs
   };
 }

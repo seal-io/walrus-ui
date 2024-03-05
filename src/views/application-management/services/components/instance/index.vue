@@ -47,41 +47,10 @@
                 <a-grid-item
                   :span="{ xxl: 16, xl: 16, lg: 24, md: 24, sm: 24, xs: 24 }"
                 >
-                  <ComCard
-                    :title="$t('applications.applications.table.latestRun')"
-                    padding="0 20px 20px"
-                    :header-style="{ padding: '20px', height: 'auto' }"
-                    bordered
-                    style="height: 100%; border-radius: 16px"
-                  >
-                    <template #title>
-                      <div class="flex flex-justify-between flex-align-center">
-                        <span>{{
-                          $t('applications.applications.table.latestRun')
-                        }}</span>
-                        <a-link
-                          v-if="
-                            currentInfo?.status?.summaryStatus !==
-                            ServiceStatus.Undeployed
-                          "
-                          size="small"
-                          class="font-13"
-                          @click="
-                            () => {
-                              latestRunRef?.viewLogs?.();
-                            }
-                          "
-                        >
-                          <i class="size-16 m-r-5 iconfont icon-xiangqing"></i>
-                          {{ $t('common.button.detail') }}</a-link
-                        >
-                      </div>
-                    </template>
-                    <LatestRun
-                      ref="latestRunRef"
-                      :service-info="currentInfo"
-                    ></LatestRun>
-                  </ComCard>
+                  <LatestRun
+                    ref="latestRunRef"
+                    :service-info="currentInfo"
+                  ></LatestRun>
                 </a-grid-item>
 
                 <a-grid-item
@@ -149,12 +118,7 @@
                 @save="handleEditSucceed"
                 @cancel="handleEditCancel"
               ></serviceEdit>
-              <serviceInfo
-                v-else
-                ref="serviceInfoRef"
-                :is-collapsed="isCollapsed"
-              >
-              </serviceInfo>
+              <serviceInfo v-else :detail-info="currentInfo"> </serviceInfo>
             </a-tab-pane>
           </a-tabs>
         </ComCard>
@@ -263,7 +227,6 @@
   const serviceID = route.query.id || '';
   const isCollapsed = ref(false);
   const currentInfo = ref<ServiceRowData>({} as ServiceRowData);
-  const serviceInfoRef = ref();
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
     tabOutput: markRaw(tabOutput)

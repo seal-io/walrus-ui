@@ -95,10 +95,14 @@
         >
           <template #cell="{ record }">
             <StatusLabel
-              :color="
-                get(statusColorMap, toLower(record.status?.summaryStatus))
-              "
-              :status="record.status?.summaryStatus"
+              :status="{
+                status: get(record, 'status.summaryStatus'),
+                inactive: get(record, 'status.inactive'),
+                text: get(record, 'status.summaryStatus'),
+                message: get(record, 'status.summaryStatusMessage'),
+                transitioning: get(record, 'status.transitioning'),
+                error: get(record, 'status.error')
+              }"
             ></StatusLabel>
           </template>
         </a-table-column>
@@ -117,7 +121,7 @@
   import { useUserStore, useProjectStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import { ServiceDataType } from '@/views/application-management/services/config';
-  import StatusLabel from './status-label.vue';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import useStatusConfig from '../hooks/use-status-config';
 
   const props = defineProps({
