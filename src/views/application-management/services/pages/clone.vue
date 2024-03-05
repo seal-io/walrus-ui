@@ -92,8 +92,10 @@
       <EditPageFooter>
         <template #save>
           <GroupButtonMenu
+            trigger="hover"
+            position="br"
             :loading="submitLoading"
-            :actions="SaveActions"
+            :actions="actionList"
             @select="handleSelect"
           >
           </GroupButtonMenu>
@@ -117,7 +119,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { PROJECT } from '@/router/config';
-  import { InputWidth, SaveActions } from '@/views/config';
+  import { InputWidth, SaveActions, ResourceSaveAction } from '@/views/config';
   import { ref, computed, reactive } from 'vue';
   import { useUserStore } from '@/store';
   import { onBeforeRouteLeave } from 'vue-router';
@@ -177,9 +179,12 @@
     environmentIDs: [],
     items: []
   });
-  const { labelList, handleAddLabel, handleDeleteLabel } =
-    useLabelsActions(formData);
 
+  const actionList = computed(() => {
+    return _.filter(SaveActions, (item) => {
+      return item.value !== ResourceSaveAction.Preview;
+    });
+  });
   const selectedEnvList = computed(() => {
     return _.filter(environments.value, (item) =>
       _.includes(formData.environmentIDs, item.id)

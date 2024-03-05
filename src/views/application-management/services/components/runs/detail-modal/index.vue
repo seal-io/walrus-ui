@@ -55,6 +55,7 @@
             <a-spin
               v-if="basicData.status?.summaryStatus === RevisionStatus.Planning"
               dot
+              style="padding-top: 20px"
               :tip="$t('resource.revisons.components.planning')"
             />
             <runComponents

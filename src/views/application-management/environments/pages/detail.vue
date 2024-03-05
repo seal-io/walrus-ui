@@ -10,9 +10,9 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="0">
-      <HeaderInfo :info="currentInfo">
+      <HeaderInfo :info="currentInfo" icon-type="line">
         <template #icon>
-          <i class="iconfont icon-rongqiyunfuwu"></i>
+          <i class="iconfont icon-server"></i>
         </template>
         <template #title>
           <div class="title">
