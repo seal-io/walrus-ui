@@ -239,6 +239,7 @@ export const CreatActions = [
 export const RevisionStatus = {
   Succeeded: 'Succeeded',
   Running: 'Running',
+  Pending: 'Pending',
   Failed: 'Failed',
   Planned: 'Planned',
   Planning: 'Planning',

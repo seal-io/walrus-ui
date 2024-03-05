@@ -1,15 +1,13 @@
 <template>
   <div class="high-light-wrapper" :class="{ dark: appStore.isDark }">
-    <hljsVuePlugin.component :language="lang" :code="code" />
+    <CodeViewer :lang="lang" :code="code" />
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts" setup>
   import { useAppStore } from '@/store';
-  import 'highlight.js/lib/common';
-  import hljsVuePlugin from '@highlightjs/vue-plugin';
-  import 'highlight.js/styles/atom-one-light.css';
+  import CodeViewer from './code-viewer.vue';
 
   defineProps({
     code: {
