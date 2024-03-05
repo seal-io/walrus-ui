@@ -13,7 +13,7 @@
       },
       lang: {
         type: String,
-        default: ''
+        default: 'json'
       },
       autodetect: {
         type: Boolean,
@@ -31,6 +31,9 @@
         () => props.lang,
         (nv) => {
           language.value = nv;
+        },
+        {
+          immediate: true
         }
       );
 

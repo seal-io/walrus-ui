@@ -1,6 +1,6 @@
 <template>
   <div class="high-light-wrapper" :class="{ dark: appStore.isDark }">
-    <CodeViewer :lang="lang" :code="code" />
+    <CodeViewer :lang="lang" :code="code" :autodetect="false" />
     <slot></slot>
   </div>
 </template>
