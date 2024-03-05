@@ -1,6 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import { defineComponent, ref, PropType, computed, watch } from 'vue';
+  import { defineComponent, ref, PropType, computed, watch, inject } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import IconBtnGroup from '@/components/icon-btn-group/index.vue';
   import {
@@ -8,6 +8,7 @@
     json2Yaml
   } from '@/components/form-create/config/yaml-parse';
   import ServiceInfo from '@/views/application-management/services/components/service-info.vue';
+  import { ProvideServiceInfoKey } from '@/views/application-management/services/config';
 
   export default defineComponent({
     name: 'AttributesContent',
@@ -35,6 +36,14 @@
 
       const activeKey = ref('form');
       const yamlAttributes = ref('');
+      const serviceInfo = inject(ProvideServiceInfoKey, ref<any>({}));
+
+      const serviceDetail = computed(() => {
+        return {
+          ...serviceInfo.value,
+          attributes: props.runData.attributes
+        };
+      });
 
       watch(
         () => props.runData?.computedAttributes,
@@ -55,7 +64,7 @@
           ></IconBtnGroup>
           <div>
             {activeKey.value === 'form' ? (
-              <ServiceInfo></ServiceInfo>
+              <ServiceInfo detail-info={serviceDetail.value}></ServiceInfo>
             ) : (
               <AceEditor
                 ref="yaml_editor"

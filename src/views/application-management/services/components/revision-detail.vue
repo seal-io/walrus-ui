@@ -145,7 +145,7 @@
       }
     }
   });
-  const emit = defineEmits(['update:show']);
+  const emit = defineEmits(['update:show', 'close']);
   const { t } = useCallCommon();
   const loading = ref(false);
   const showTimer = ref(true);
@@ -224,6 +224,7 @@
     showTimer.value = false;
     fullscreen.value = false;
     emit('update:show', false);
+    emit('close');
   };
 </script>
 

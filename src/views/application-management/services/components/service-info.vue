@@ -21,6 +21,7 @@
   import {
     onMounted,
     nextTick,
+    toRef,
     provide,
     ref,
     watch,
@@ -41,14 +42,16 @@
   import { ServiceDataType, ProvideServiceInfoKey } from '../config';
 
   const props = defineProps({
-    isCollapsed: {
-      type: Boolean,
-      default: false
+    detailInfo: {
+      type: Object,
+      default() {
+        return {};
+      }
     }
   });
 
   const { route } = useCallCommon();
-  const serviceInfo = inject(ProvideServiceInfoKey, ref<any>({}));
+  const serviceInfo = ref(props.detailInfo);
   const schema = ref<any>({});
   const loaded = ref(false);
   const templateList = ref<any[]>([]);
@@ -177,21 +180,10 @@
     await getSchema();
     loading.value = false;
   };
+
   watch(
-    () => props.isCollapsed,
-    (val) => {
-      if (val) {
-        getSchema();
-      }
-    },
-    {
-      immediate: true
-    }
-  );
-  watch(
-    () => serviceInfo.value,
+    () => serviceInfo.value.id,
     () => {
-      console.log('serviceInfo.value.id', serviceInfo.value);
       if (serviceInfo.value.id && requestFlag.value) {
         requestFlag.value = false;
         init();

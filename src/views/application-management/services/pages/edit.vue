@@ -265,78 +265,58 @@
         ></GroupForm>
       </a-spin>
 
-      <EditPageFooter>
-        <template #save>
-          <div
-            :style="{
-              'display': 'flex',
-              'position': 'relative',
-              'flex-direction': 'column'
-            }"
+      <div
+        :style="{
+          'display': 'flex',
+          'width': '100%',
+          'margin-top': '40px',
+          'padding': '20px 0',
+          'align-items': 'flex-end',
+          'border-top': '1px solid var(--color-border-2)'
+        }"
+      >
+        <a-textarea
+          v-model="formData.changeComment"
+          :placeholder="$t('common.table.mark')"
+          allow-clear
+          :bordered="false"
+          :style="{
+            'width': `${InputWidth.LARGE}px`,
+            'background': 'var(--color-white-1)',
+            'margin-right': '40px'
+          }"
+          :auto-size="{ minRows: 5, maxRows: 5 }"
+        >
+        </a-textarea>
+        <a-space :size="40">
+          <GroupButtonMenu
+            trigger="hover"
+            position="tr"
+            :loading="submitLoading"
+            :actions="actionList"
+            @select="handleActionSelect"
           >
-            <div style="position: relative">
-              <a-textarea
-                v-model="formData.changeComment"
-                :placeholder="$t('common.table.mark')"
-                allow-clear
+            <template #default>
+              <a-button
                 :bordered="false"
-                :style="{
-                  'width': `${InputWidth.LARGE}px`,
-                  'background': 'var(--color-white-1)',
-                  'padding-bottom': '40px'
-                }"
-                :auto-size="{ minRows: 5, maxRows: 5 }"
+                :loading="submitLoading"
+                type="primary"
+                @click="() => handleActionSelect(ResourceSaveAction.Deploy)"
               >
-              </a-textarea>
-              <a-space
-                :size="40"
-                fill
-                :style="{
-                  'position': 'absolute',
-                  'bottom': '4px',
-                  'right': '1px',
-                  'left': '1px',
-                  'justify-content': 'space-between',
-                  'border-top': '1px solid var(--color-border-2)',
-                  'background-color': appStore.isDark
-                    ? 'var(--color-white-1)'
-                    : 'var(--color-fill-1)',
-                  'border-radius': '0 0 8px 8px',
-                  'padding': '6px 8px'
-                }"
-              >
-                <GroupButtonMenu
-                  trigger="hover"
-                  position="tr"
-                  :loading="submitLoading"
-                  :actions="actionList"
-                  @select="handleActionSelect"
-                >
-                  <template #default>
-                    <a-button
-                      :bordered="false"
-                      :loading="submitLoading"
-                      type="primary"
-                      @click="
-                        () => handleActionSelect(ResourceSaveAction.Deploy)
-                      "
-                    >
-                      {{ $t(_.get(_.head(SaveActions), 'label') || '') }}
-                    </a-button>
-                  </template>
-                </GroupButtonMenu>
-                <a-button
-                  style="color: rgba(var(--arcoblue-5))"
-                  :disabled="!isFormChange && pgType === 'com'"
-                  class="cap-title cancel-btn"
-                  @click="handleCancel"
-                  >{{ $t('common.button.cancel') }}</a-button
-                >
-              </a-space>
-            </div>
-          </div>
-        </template>
-      </EditPageFooter>
+                {{ $t(_.get(_.head(SaveActions), 'label') || '') }}
+              </a-button>
+            </template>
+          </GroupButtonMenu>
+          <a-button
+            type="outline"
+            style="color: rgba(var(--arcoblue-5))"
+            :disabled="!isFormChange && pgType === 'com'"
+            class="cap-title cancel-btn"
+            @click="handleCancel"
+            >{{ $t('common.button.cancel') }}</a-button
+          >
+        </a-space>
+      </div>
     </ComCard>
     <CommentModal
       v-model:show="showCommentModal"
@@ -344,12 +324,6 @@
       @confirm="handleComfirmComment"
       @cancel="() => (submitLoading = false)"
     ></CommentModal>
-    <RunDetailModal
-      v-model:show="showPreviewModal"
-      v-model:data="deployData"
-      :title="$t('common.button.deployPreview')"
-      @save="doneCallback"
-    ></RunDetailModal>
   </div>
 </template>
 
@@ -471,7 +445,6 @@
     environmentID: route.params.environmentId as string,
     connectors: []
   });
-  const deployData = ref<any>({});
   const serviceRes = ref<any>({});
   provide(InjectCompleteDataKey, completeData);
   provide(ProvideServiceInfoKey, serviceRes);
@@ -756,14 +729,7 @@
       res = data;
     }
     serviceRes.value = res;
-    if (formData.value.preview) {
-      deployData.value = {
-        runId: res.run?.id,
-        serviceId: res.id,
-        environmentId: route.params.environmentId,
-        projectId: route.params.projectId
-      };
-    }
+
     doneCallback();
   };
   const handleOk = async (draft?: boolean) => {
