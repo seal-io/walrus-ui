@@ -81,11 +81,12 @@ export const cloneServices = (data: {
   projectID: string;
   environmentID: string;
   draft: boolean;
+  preview: boolean;
   items: Record<string, any>[];
 }) => {
   return axios.post(
     `/projects/${data.projectID}/environments/${data.environmentID}${SERVICE_API}/_/batch`,
-    { items: data.items, draft: data.draft }
+    { items: data.items, draft: data.draft, preview: data.preview }
   );
 };
 

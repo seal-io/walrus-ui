@@ -95,7 +95,7 @@
             trigger="hover"
             position="br"
             :loading="submitLoading"
-            :actions="actionList"
+            :actions="SaveActions"
             @select="handleSelect"
           >
           </GroupButtonMenu>
@@ -175,6 +175,7 @@
   let copyFormData: any = {};
   const formData = reactive({
     draft: false,
+    preview: false,
     environmentID: '',
     environmentIDs: [],
     items: []
@@ -254,6 +255,7 @@
           projectID: route.params.projectId as string,
           ...formData
         });
+        console.log('formData====', formData);
         succeedList.value.add(environmentID);
         failedList.value.delete(environmentID);
         errorMap.value.delete(environmentID);
@@ -284,13 +286,12 @@
       console.log(error);
     }
   };
-  const handleOk = async (draft: boolean) => {
+  const handleOk = async () => {
     const res = await formref.value?.validate();
     if (!res) {
       trigger.value = true;
       try {
         submitLoading.value = true;
-        formData.draft = draft;
         await handleCloneServices();
         await batchCloneQueue();
         copyFormData = _.cloneDeep(formData);
@@ -309,11 +310,14 @@
   };
 
   const handleSelect = (value) => {
-    if (value === 'deploy') {
-      handleOk(false);
-    } else if (value === 'draft') {
-      handleOk(true);
+    formData.preview = false;
+    formData.draft = false;
+    if (value === 'draft') {
+      formData.draft = true;
+    } else if (value === 'preview') {
+      formData.preview = true;
     }
+    handleOk();
   };
 
   const handleCancel = () => {

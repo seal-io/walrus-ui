@@ -56,8 +56,13 @@
               v-if="basicData.status?.summaryStatus === RevisionStatus.Planning"
               dot
               style="padding-top: 20px"
-              :tip="$t('resource.revisons.components.planning')"
-            />
+            >
+              <template #tip>
+                <span style="padding-left: 15px">{{
+                  $t('resource.revisons.components.planning')
+                }}</span>
+              </template>
+            </a-spin>
             <runComponents
               v-else
               :run-data="basicData"
