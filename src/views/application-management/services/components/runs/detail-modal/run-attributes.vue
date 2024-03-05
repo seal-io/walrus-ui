@@ -42,7 +42,7 @@
         return {
           ...serviceInfo.value,
           attributes: {
-            ...props.runData.attributes
+            ..._.cloneDeep(props.runData.computedAttributes)
           }
         };
       });

@@ -30,16 +30,6 @@
         return props.fullscreen ? 'calc(100vh - 310px)' : '310px';
       });
 
-      // watch(
-      //   () => props.runData,
-      //   () => {
-      //     console.log('props.runData=============', props.runData);
-      //   },
-      //   {
-      //     immediate: true,
-      //     deep: true
-      //   }
-      // );
       const renderStaticLogs = () => {
         if (props.runData?.status?.summaryStatus === RevisionStatus.Running) {
           return null;
