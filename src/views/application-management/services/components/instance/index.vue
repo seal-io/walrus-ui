@@ -268,6 +268,10 @@
     return res;
   });
 
+  const updateLatestRun = () => {
+    latestKey.value = Date.now();
+  };
+
   const handleComfirmComment = async (comment: string) => {
     try {
       const params = {
@@ -280,12 +284,12 @@
       };
       await deployItemService(params);
       execSucceed();
+      updateLatestRun();
     } catch (error) {
       // ignore
     }
   };
   const handleUpgrade = () => {
-    // pageAction.value = PageAction.EDIT;
     showCommentModal.value = true;
   };
 
@@ -323,6 +327,7 @@
     try {
       await stopApplicationInstance({ id: route.query.id });
       execSucceed();
+      updateLatestRun();
     } catch (error) {
       // ignore
     }
@@ -331,6 +336,7 @@
     try {
       await startApplicationInstance({ id: route.query.id });
       execSucceed();
+      updateLatestRun();
     } catch (error) {
       // ignore
     }
@@ -357,7 +363,7 @@
   const handleDelete = () => {
     showDeleteModal.value = true;
   };
-  const handleSelect = (value) => {
+  const handleSelect = async (value) => {
     actionMap.get(value)?.();
   };
 
