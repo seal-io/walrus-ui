@@ -6,22 +6,6 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard>
-      <!-- <div class="wrap">
-        <div class="item" v-for="item in downloadConfig" :key="item.label">
-          <div class="img">
-            <img :src="item.img" alt="" />
-          </div>
-          <span class="type">
-            <span v-for="(val, index) in item.value" :key="val">
-              <a-link>{{ val }}</a-link>
-              <a-divider
-                direction="vertical"
-                v-if="index !== item.value.length - 1"
-              ></a-divider>
-            </span>
-          </span>
-        </div>
-      </div> -->
       <a-descriptions :data="downloadConfig" title="" bordered :column="1">
         <template #value="{ data, value }">
           <a-space :size="12">
@@ -38,7 +22,7 @@
             <span v-if="data.os === 'darwin'">
               <i
                 class="iconfont icon-macos mright-5 size-16"
-                style="color: #000"
+                style="color: var(--color-seal-black-1)"
               ></i>
             </span>
             <span v-if="data.os === 'windows'">
