@@ -37,6 +37,7 @@ export default {
   'navbar.operatorhub': 'Operation Hub',
   'navbar.action.locale': 'Switch to English',
   'navbar.totalView': 'Dashboard',
+  'navbar.appearance': 'Appearance',
   ...localeCommon,
   ...localeSettings,
   ...localeLogin,

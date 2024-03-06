@@ -1,8 +1,7 @@
 <script lang="tsx">
+  import hljs from 'highlight.js';
   import 'highlight.js/styles/atom-one-light.css';
   import { ref, computed, defineComponent, watch } from 'vue';
-  import 'highlight.js/lib/common';
-  import hljs from 'highlight.js/lib/core';
   import { escapeHtml } from './utils';
 
   export default defineComponent({
@@ -13,7 +12,7 @@
       },
       lang: {
         type: String,
-        default: 'json'
+        default: ''
       },
       autodetect: {
         type: Boolean,

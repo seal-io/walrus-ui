@@ -1,4 +1,5 @@
 <script lang="tsx">
+  import _ from 'lodash';
   import { defineComponent, ref, watch, computed, PropType } from 'vue';
   import useCodeView from '@/hooks/use-code-view';
   import CodeChunk from './code-chunk.vue';
@@ -15,6 +16,12 @@
         type: Boolean,
         default() {
           return true;
+        }
+      },
+      maxHeight: {
+        type: [Number, String],
+        default() {
+          return '300px';
         }
       },
       leftTitle: {
@@ -52,6 +59,11 @@
         <>
           {rightChunks.value.length || leftChunks.value.length ? (
             <div
+              style={{
+                maxHeight: _.isString(props.maxHeight)
+                  ? props.maxHeight
+                  : `${props.maxHeight}px`
+              }}
               class={[
                 'chunk-box',
                 {
@@ -123,7 +135,6 @@
     position: relative;
     display: flex;
     justify-content: space-between;
-    max-height: 300px;
     overflow: hidden;
     overflow-y: auto;
     font-size: var(--font-size-small);

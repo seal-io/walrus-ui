@@ -264,6 +264,10 @@
         return travel(menuTree.value);
       };
       const handleClickUserMenu = (item) => {
+        if (item.key === 'darkMode') {
+          isDark.value = !isDark.value;
+          toggleTheme(isDark.value);
+        }
         if (item.key === 'UserCenter') {
           router.push({
             name: item.route
@@ -295,6 +299,50 @@
         if (item.key === 'chinese' || item.key === 'english') {
           changeLocale(item.value);
         }
+      };
+
+      const renderModeButton = () => {
+        return (
+          <div
+            class="flex flex-align-center"
+            style={{ height: '36px', lineHeight: '36px' }}
+            onMouseover={() => {
+              checkedColor.value = isDark.value
+                ? 'var(--black-2)'
+                : 'var(--black-1)';
+            }}
+            onMouseout={() => {
+              if (isDark.value) {
+                checkedColor.value = 'var(--black-1)';
+              }
+            }}
+          >
+            <a-switch
+              size="small"
+              onChange={toggleTheme}
+              v-model={isDark.value}
+              checked-color={checkedColor.value}
+              v-slots={{
+                'checked-icon': () => (
+                  <icon-moon
+                    style={{
+                      fontSize: '16px',
+                      color: 'var(--color-text-2)'
+                    }}
+                  />
+                ),
+                'unchecked-icon': () => (
+                  <icon-sun
+                    style={{
+                      fontSize: '16px',
+                      color: 'var(--color-text-2)'
+                    }}
+                  />
+                )
+              }}
+            ></a-switch>
+          </div>
+        );
       };
       const renderUserMenu = (menuConfig) => {
         function travel() {
@@ -343,45 +391,31 @@
                         }}
                       >
                         {cItem.key === 'darkMode' ? (
-                          <div
-                            class="flex flex-align-center"
-                            style={{ height: '36px', lineHeight: '36px' }}
-                            onMouseover={() => {
-                              checkedColor.value = isDark.value
-                                ? 'var(--black-2)'
-                                : 'var(--black-1)';
-                            }}
-                            onMouseout={() => {
-                              if (isDark.value) {
-                                checkedColor.value = 'var(--black-1)';
-                              }
-                            }}
-                          >
-                            <a-switch
-                              size="small"
-                              onChange={toggleTheme}
-                              v-model={isDark.value}
-                              checked-color={checkedColor.value}
-                              v-slots={{
-                                'checked-icon': () => (
-                                  <icon-moon
-                                    style={{
-                                      fontSize: '16px',
-                                      color: 'var(--color-text-2)'
-                                    }}
-                                  />
-                                ),
-                                'unchecked-icon': () => (
-                                  <icon-sun
-                                    style={{
-                                      fontSize: '16px',
-                                      color: 'var(--color-text-2)'
-                                    }}
-                                  />
-                                )
-                              }}
-                            ></a-switch>
-                          </div>
+                          <span class="flex flex-align-center">
+                            {isDark.value ? (
+                              <icon-moon
+                                style={{
+                                  fontSize: '14px',
+                                  color: 'var(--color-text-2)',
+                                  marginLeft: '1px'
+                                }}
+                              />
+                            ) : (
+                              <icon-sun
+                                style={{
+                                  fontSize: '14px',
+                                  color: 'var(--color-text-2)',
+                                  marginLeft: '1px'
+                                }}
+                              />
+                            )}
+                            <span
+                              class="title"
+                              style={{ fontSize: '12px', marginLeft: '7px' }}
+                            >
+                              {t(cItem.name)}
+                            </span>
+                          </span>
                         ) : (
                           <span class="title" style={{ fontSize: '12px' }}>
                             {t(cItem.name)}

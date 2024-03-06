@@ -17,6 +17,7 @@ declare module 'vue' {
     ADescriptions: typeof import('@arco-design/web-vue')['Descriptions'];
     ADivider: typeof import('@arco-design/web-vue')['Divider'];
     ADoption: typeof import('@arco-design/web-vue')['Doption'];
+    ADropdown: typeof import('@arco-design/web-vue')['Dropdown'];
     AEmpty: typeof import('@arco-design/web-vue')['Empty'];
     AForm: typeof import('@arco-design/web-vue')['Form'];
     AFormItem: typeof import('@arco-design/web-vue')['FormItem'];
@@ -25,8 +26,10 @@ declare module 'vue' {
     AInput: typeof import('@arco-design/web-vue')['Input'];
     AInputNumber: typeof import('@arco-design/web-vue')['InputNumber'];
     AInputPassword: typeof import('@arco-design/web-vue')['InputPassword'];
+    AInputSearch: typeof import('@arco-design/web-vue')['InputSearch'];
     ALayout: typeof import('@arco-design/web-vue')['Layout'];
     ALayoutContent: typeof import('@arco-design/web-vue')['LayoutContent'];
+    ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter'];
     ALayoutSider: typeof import('@arco-design/web-vue')['LayoutSider'];
     ALink: typeof import('@arco-design/web-vue')['Link'];
     AMenu: typeof import('@arco-design/web-vue')['Menu'];
@@ -48,6 +51,7 @@ declare module 'vue' {
     ATag: typeof import('@arco-design/web-vue')['Tag'];
     ATextarea: typeof import('@arco-design/web-vue')['Textarea'];
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip'];
+    AUpload: typeof import('@arco-design/web-vue')['Upload'];
   }
 }
 

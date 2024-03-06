@@ -13,6 +13,12 @@
         default() {
           return {};
         }
+      },
+      fullscreen: {
+        type: Boolean,
+        default() {
+          return false;
+        }
       }
     },
     setup(props, ctx) {
@@ -21,6 +27,10 @@
         new: ''
       });
       const loading = ref(false);
+
+      const maxHeight = computed(() => {
+        return props.fullscreen ? 'calc(100vh - 360px)' : '300px';
+      });
 
       const getRevisionChange = async () => {
         if (!props.runData.id || !props.runData.resource?.id) {
@@ -77,6 +87,7 @@
           ) : null}
           <a-spin loading={loading.value} style={{ width: '100%' }}>
             <CodeDiffView
+              maxHeight={maxHeight.value}
               content={diffContent.value}
               class="m-t-10 m-b-10"
               v-slots={{

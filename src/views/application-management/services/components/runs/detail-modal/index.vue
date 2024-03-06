@@ -73,7 +73,10 @@
             key="attributes"
             :title="$t('resource.revisons.detail.attributes')"
           >
-            <runAttributes :run-data="basicData"></runAttributes>
+            <runAttributes
+              :run-data="basicData"
+              :fullscreen="fullscreen"
+            ></runAttributes>
           </a-tab-pane>
           <a-tab-pane key="logs" :title="$t('applications.instance.tab.log')">
             <runLogs
@@ -86,7 +89,10 @@
             key="history"
             :title="$t('applications.applications.history.changeList')"
           >
-            <runChangeHistory :run-data="basicData"></runChangeHistory>
+            <runChangeHistory
+              :run-data="basicData"
+              :fullscreen="fullscreen"
+            ></runChangeHistory>
           </a-tab-pane>
         </a-tabs>
       </div>

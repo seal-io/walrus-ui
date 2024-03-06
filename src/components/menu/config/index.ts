@@ -72,7 +72,7 @@ export const avatarMenu = [
     itemStyle: {},
     children: [
       {
-        name: 'darkMode',
+        name: 'navbar.appearance',
         key: 'darkMode'
       },
       {
