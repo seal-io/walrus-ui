@@ -169,7 +169,7 @@
                         viewLogs();
                       }}
                     >
-                      <i class="size-16 m-r-5 iconfont icon-xiangqing"></i>
+                      <i class="size-14 m-r-5 iconfont icon-details bold-400"></i>
                       {i18n.global.t('common.button.detail')}
                     </a-link>
                   ) : null}

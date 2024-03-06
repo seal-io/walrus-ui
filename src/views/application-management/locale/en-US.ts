@@ -21,6 +21,7 @@ export default {
   'applications.applications.table.service': 'Service',
   'applications.applications.table.resource': 'Resource',
   'applications.applications.table.latestRun': 'Latest Run',
+  'applications.applications.table.latestStatus': 'Latest Run Status',
   'applications.applications.table.overview': 'Overview',
   'applications.applications.table.resourceType': 'Resource Type',
   'applications.applications.table.status': 'Status',

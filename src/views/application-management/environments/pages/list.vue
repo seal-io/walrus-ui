@@ -197,7 +197,7 @@
           >
             <template #icon>
               <icon-find-replace v-if="queryParams.query" />
-              <i v-else class="iconfont icon-rongqiyunfuwu"></i>
+              <i v-else class="iconfont icon-server"></i>
             </template>
             <template #extra>
               <a-button

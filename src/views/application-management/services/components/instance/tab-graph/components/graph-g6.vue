@@ -135,7 +135,7 @@
 
           const renderLogHtml = () => {
             if (!logabble) return '';
-            return ` <li code="log" class="iconfont icon-rizhi">
+            return ` <li code="log" class="iconfont icon-log">
                 ${i18n.global.t('applications.instance.tab.log')}
               </li>`;
           };

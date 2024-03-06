@@ -6,7 +6,7 @@
           <a-input
             v-model.trim="queryParams.query"
             allow-clear
-            style="width: 200px"
+            style="width: 220px"
             :placeholder="$t('common.search.name.placeholder')"
             @clear="handleSearch"
             @press-enter="handleSearch"

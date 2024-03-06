@@ -9,7 +9,7 @@
     :visible="show"
     :mask-closable="false"
     :body-style="{
-      maxHeight: fullscreen ? 'auto' : '500px',
+      maxHeight: fullscreen ? '100vh' : '500px',
       overflow: 'auto',
       paddingBottom: 0
     }"

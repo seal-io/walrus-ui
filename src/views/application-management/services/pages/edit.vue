@@ -265,7 +265,7 @@
         ></GroupForm>
       </a-spin>
 
-      <div class="comment-wrap">
+      <div class="comment-wrap" :style="{ width: `${InputWidth.LARGE}px` }">
         <a-textarea
           v-model="formData.changeComment"
           class="textarea"
@@ -273,12 +273,12 @@
           allow-clear
           :bordered="false"
           :style="{
-            width: `${InputWidth.LARGE}px`
+            width: `100%`
           }"
           :auto-size="{ minRows: 5, maxRows: 5 }"
         >
         </a-textarea>
-        <a-space :size="40">
+        <a-space :size="40" class="button-group">
           <GroupButtonMenu
             trigger="hover"
             position="tr"
@@ -904,15 +904,19 @@
 <style lang="less" scoped>
   .comment-wrap {
     display: flex;
-    align-items: flex-end;
-    width: 100%;
-    margin-top: 40px;
+    flex-direction: column;
+    align-items: center;
+    margin: 50px auto 0;
     padding: 20px 0;
-    border-top: 1px solid var(--color-border-2);
 
     .textarea {
-      margin-right: 40px;
       background: var(--color-white-1);
+    }
+
+    .button-group {
+      justify-content: center;
+      width: 100%;
+      margin-top: 10px;
     }
   }
 </style>

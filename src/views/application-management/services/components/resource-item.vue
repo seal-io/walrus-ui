@@ -156,6 +156,30 @@
           </>
         );
       };
+
+      const renderEdit = () => {
+        return (
+          <>
+            {props.rowData.isModified ? (
+              <StatusLabel
+                style={{
+                  transform: 'scale(0.8)',
+                  marginRight: '-6px'
+                }}
+                bordered={true}
+                status={{
+                  status: i18n.global.t('common.status.edited'),
+                  inactive: false,
+                  text: i18n.global.t('common.status.edited'),
+                  message: '',
+                  transitioning: true,
+                  error: false
+                }}
+              ></StatusLabel>
+            ) : null}
+          </>
+        );
+      };
       const renderComponents = () => {
         if (!collapse.value) return null;
         return (
@@ -221,7 +245,7 @@
               {renderCollapseButton()}
             </span>
             <a-grid cols={24} style={{ width: '100%' }}>
-              <a-grid-item span={5}>
+              <a-grid-item span={4}>
                 <span class="name-wrap">
                   <span class="name-box">
                     <Autotip>
@@ -233,26 +257,7 @@
                         </span>
                       </span>
                     </Autotip>
-                    <span class="edited">
-                      {props.rowData.isModified ? (
-                        <StatusLabel
-                          style={{
-                            transform: 'scale(0.8)',
-                            marginRight: '-6px'
-                          }}
-                          bordered={true}
-                          status={{
-                            status: i18n.global.t('common.status.edited'),
-                            inactive: false,
-                            text: i18n.global.t('common.status.edited'),
-                            message: '',
-                            transitioning: true,
-                            error: false
-                          }}
-                        ></StatusLabel>
-                      ) : null}
-                      {renderLinkButton()}
-                    </span>
+                    <span class="edited">{renderLinkButton()}</span>
                   </span>
                 </span>
               </a-grid-item>
@@ -279,12 +284,17 @@
                   </>
                 </Autotip>
               </a-grid-item>
-              <a-grid-item span={5}>
+              <a-grid-item span={4}>
                 <Autotip>
                   <span>{slots?.status?.({ record: props.rowData })}</span>
                 </Autotip>
               </a-grid-item>
               <a-grid-item span={4}>
+                <Autotip>
+                  <span>{slots?.latest?.({ record: props.rowData })}</span>
+                </Autotip>
+              </a-grid-item>
+              <a-grid-item span={3}>
                 <Autotip>
                   <span>
                     {dayjs(_.get(props.rowData, 'createTime')).format(
@@ -293,7 +303,7 @@
                   </span>
                 </Autotip>
               </a-grid-item>
-              <a-grid-item span={4} class="actions">
+              <a-grid-item span={3} class="actions">
                 <span
                   class="actions"
                   onClick={withModifiers(() => {}, ['stop'])}
@@ -404,7 +414,7 @@
 
     .actions {
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
     }
 
     :deep(.arco-link) {

@@ -48,7 +48,7 @@
           return (
             <>
               <div class="title">
-                <i class="iconfont icon-rizhi"></i> <span>Planned Logs</span>
+                <i class="iconfont icon-log"></i> <span>Planned Logs</span>
               </div>
               <StaticLogs
                 maxHeight={maxHeight.value}
@@ -68,15 +68,6 @@
               props.runData?.status?.summaryStatus
             ) ? (
               <>
-                <div class="title">
-                  <i class="iconfont icon-rizhi m-r-5"></i>
-                  <span>
-                    {props.runData?.status?.summaryStatus ===
-                    RevisionStatus.Running
-                      ? 'Running Logs'
-                      : 'Planning Logs'}
-                  </span>
-                </div>
                 <WatchLogs
                   maxHeight={maxHeight.value}
                   show={props.show}

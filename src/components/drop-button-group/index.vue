@@ -106,21 +106,24 @@
                               <span>
                                 {item.iconfont ? (
                                   <i
-                                    class={[item.icon, 'iconfont size-14']}
-                                    style={{ ...item.style }}
+                                    class={[item.icon, 'iconfont size-12']}
+                                    style={{
+                                      marginRight: '8px',
+                                      ...item.style
+                                    }}
                                   ></i>
                                 ) : (
                                   h(compile(`<${item.icon}/>`), {
                                     ...item.props,
                                     style: {
+                                      marginRight: '8px',
                                       ...item.style
                                     },
-                                    class: ['size-14']
+                                    class: ['size-12']
                                   })
                                 )}
                               </span>
                               <span
-                                class="mleft-5"
                                 style={{ fontSize: 'var(--font-size-small)' }}
                               >
                                 {t(item.label)}

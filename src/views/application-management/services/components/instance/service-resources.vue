@@ -119,7 +119,7 @@
                     })
                   "
                 >
-                  <icon-font type="icon-rizhi" style="font-size: 16px" />
+                  <i class="iconfont icon-log" style="font-size: 16px"></i>
                 </a-link>
               </a-tooltip>
               <a-tooltip

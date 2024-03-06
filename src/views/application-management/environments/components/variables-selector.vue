@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="display: flex; margin-bottom: 10px">
+    <div style="display: flex; width: 360px; margin-bottom: 10px">
       <a-input-search v-model.trim="query" allow-clear></a-input-search>
     </div>
     <div class="connectors-list">
@@ -302,9 +302,19 @@
 
 <style lang="less" scoped>
   .connectors-list {
+    :deep(.arco-table-container) {
+      overflow: hidden;
+      border: 1px solid var(--color-neutral-3);
+      border-radius: var(--border-radius-small);
+
+      .arco-table-tr:last-child .arco-table-td {
+        border-bottom: none;
+      }
+    }
+
     :deep(.arco-table) {
       .arco-table-tr.arco-table-tr-empty .arco-table-td {
-        border-bottom: 1px solid var(--seal-color-table-border);
+        border-bottom: none;
       }
     }
   }
