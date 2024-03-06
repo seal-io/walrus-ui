@@ -4,7 +4,7 @@ export const profileMenu = [
   {
     name: 'settings.help',
     key: 'help',
-    icon: '<i class="iconfont icon-bangzhuyushuoming" />',
+    icon: '<i class="iconfont icon-bangzhuyushuoming" style="font-size: 28px;"/>',
     children: [
       {
         name: 'common.issue.report',
@@ -58,7 +58,7 @@ export const profileMenu = [
     name: 'common.button.download',
     key: 'CliDownload',
     route: 'CliDownload',
-    icon: '<icon-download/>',
+    icon: '<i class="iconfont icon-download" style="font-size: 22px;padding-right: 2px;"/>',
     children: []
   }
 ];
@@ -69,7 +69,7 @@ export const avatarMenu = [
     key: 'Profile',
     icon: '<i class="iconfont icon-user-circle" />',
     iconStyle: { color: 'var(--color-avatar-icon)', opacity: 1 },
-    itemStyle: {},
+    itemStyle: { paddingRight: '4px' },
     children: [
       {
         name: 'navbar.appearance',

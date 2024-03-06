@@ -86,7 +86,7 @@ export const EnvironmentActions: MoreAction[] = [
   {
     label: 'common.button.detail',
     value: CommonButtonValue.View,
-    icon: 'icon-xiangqing',
+    icon: 'icon-details',
     iconfont: true,
     handler: '',
     status: 'normal',

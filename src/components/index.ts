@@ -24,7 +24,7 @@ import ResultView from './result-view/index.vue';
 import SealSpin from './seal-spin/index.vue';
 
 const IconFont = Icon.addFromIconFontCn({
-  src: '//at.alicdn.com/t/c/font_3892962_vbgcoshnb3s.js'
+  src: '//at.alicdn.com/t/c/font_3892962_ao87kzcas6m.js'
 });
 // Manually introduce ECharts modules to reduce packing size
 

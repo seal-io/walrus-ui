@@ -20,7 +20,7 @@
               ><AutoTip :tooltip-props="{ content: item.name }">
                 <i
                   v-if="item.tabType === drawerType.LOGS"
-                  class="iconfont icon-rizhi font-16 m-r-4"
+                  class="iconfont icon-log font-16 m-r-4"
                 ></i>
 
                 <i

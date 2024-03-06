@@ -21,6 +21,7 @@ export default {
   'applications.applications.table.service': '服务',
   'applications.applications.table.resource': '资源',
   'applications.applications.table.latestRun': '最新执行',
+  'applications.applications.table.latestStatus': '最新执行状态',
   'applications.applications.table.overview': '概览',
   'applications.applications.table.resourceType': '资源类型',
   'applications.applications.table.status': '状态',

@@ -10,7 +10,7 @@
         ></span>
       </span>
       <span v-else class="icon-wrap">
-        <IconFont type="icon-template-1"></IconFont>
+        <i class="iconfont icon-template-1"></i>
       </span>
     </div>
     <div class="content">

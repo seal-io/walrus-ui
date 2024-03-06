@@ -170,7 +170,7 @@
                   size="small"
                   @click="handleViewDetail(record)"
                 >
-                  <i class="iconfont icon-xiangqing"></i>
+                  <i class="iconfont icon-details"></i>
                 </a-link>
               </a-tooltip>
               <a-tooltip
@@ -181,7 +181,8 @@
                   size="small"
                   @click="handleViewHistoryChange(record)"
                 >
-                  <icon-history class="size-16" />
+                  <!-- <icon-history class="size-16" /> -->
+                  <i class="iconfont icon-history size-14"></i>
                 </a-link>
               </a-tooltip>
               <a-tooltip
@@ -217,7 +218,7 @@
           :subtitle="$t('resource.revisions.result.subTitle')"
         >
           <template #icon>
-            <i class="iconfont icon-rizhi"></i>
+            <i class="iconfont icon-log"></i>
           </template>
         </result-view>
       </template>

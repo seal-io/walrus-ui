@@ -37,7 +37,6 @@
 
     .content-wrap {
       min-height: 200px;
-      max-height: 360px;
       padding: 0 10px;
       overflow-y: auto;
       color: #ddd;

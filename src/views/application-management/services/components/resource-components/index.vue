@@ -39,7 +39,7 @@
                       })
                     "
                   >
-                    <icon-font type="icon-rizhi" style="font-size: 16px" />
+                    <i class="iconfont icon-log size-16"></i>
                   </a-link>
                 </a-tooltip>
                 <a-tooltip

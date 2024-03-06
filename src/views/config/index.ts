@@ -306,7 +306,7 @@ export const SaveActions: MoreAction[] = [
   {
     label: 'common.button.draft',
     value: ResourceSaveAction.Draft,
-    icon: 'icon-xiangqing',
+    icon: 'icon-details',
     iconfont: true
   }
 ];

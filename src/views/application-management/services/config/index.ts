@@ -552,15 +552,18 @@ export const serviceActions: MoreAction[] = [
   {
     label: 'applications.applications.history.running',
     value: serviceActionMap.logs,
-    icon: 'icon-rizhi',
+    icon: 'icon-log',
     iconfont: true,
+    style: {
+      marginRight: '7px'
+    },
     handler: '',
     status: 'normal'
   },
   {
     label: 'common.button.rollback',
     value: serviceActionMap.rollback,
-    icon: 'icon-rollback-copy',
+    icon: 'icon-rollback-2',
     iconfont: true,
     handler: '',
     status: 'normal',

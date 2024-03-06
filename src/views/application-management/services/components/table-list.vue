@@ -19,7 +19,7 @@
           <span class="empty-holder" style="width: 14px; height: 14px"></span>
           <a-grid :cols="24" :style="{ width: '100%' }">
             <a-grid-item
-              :span="5"
+              :span="4"
               class="sort-item"
               @click="() => handleSort('name')"
             >
@@ -68,13 +68,20 @@
                 </span>
               </Autotip>
             </a-grid-item>
-            <a-grid-item :span="5">
+            <a-grid-item :span="4">
               <Autotip>
                 <span>{{ $t('common.table.status') }}</span>
               </Autotip>
             </a-grid-item>
+            <a-grid-item :span="4">
+              <Autotip>
+                <span>{{
+                  $t('applications.applications.table.latestStatus')
+                }}</span>
+              </Autotip>
+            </a-grid-item>
             <a-grid-item
-              :span="4"
+              :span="3"
               class="sort-item"
               @click="() => handleSort('createTime')"
             >
@@ -100,7 +107,7 @@
                 </span>
               </Autotip>
             </a-grid-item>
-            <a-grid-item :span="4" class="actions">
+            <a-grid-item :span="3" class="actions">
               <Autotip>
                 <span class="actions">
                   {{ $t('common.table.operation') }}
@@ -139,6 +146,19 @@
               </span>
               <span v-else>{{ record.name }}</span>
             </template>
+            <template #latest="{ record }">
+              <StatusLabel
+                :zoom="0.9"
+                :status="{
+                  status: get(record, 'runs.0.status.summaryStatus'),
+                  inactive: get(record, 'runs.0.status.inactive'),
+                  text: get(record, 'runs.0.status.summaryStatus'),
+                  message: get(record, 'runs.0.status.summaryStatusMessage'),
+                  transitioning: get(record, 'runs.0.status.transitioning'),
+                  error: get(record, 'runs.0.status.error')
+                }"
+              ></StatusLabel>
+            </template>
             <template #status="{ record }">
               <StatusLabel
                 :zoom="0.9"
@@ -156,6 +176,7 @@
               <a-space :size="10">
                 <DropButtonGroup
                   v-if="setActionList(record).length"
+                  trigger="hover"
                   :layout="
                     setActionList(record).length === 1
                       ? 'horizontal'
@@ -884,7 +905,7 @@
 
     .actions {
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
     }
 
     .pagination {
