@@ -90,7 +90,6 @@
     command.value = '';
   };
   const closeRealTerminal = (data) => {
-    statusCode.value = get(data, 'code');
     conReadyState.value = terminalSocket.value.readyState;
     clearCommand();
     if ([1011, 1006, 1000].includes(statusCode.value)) {
@@ -103,6 +102,8 @@
         term.value.write(setErrorData(`\r${RECONNECT_MSG}`));
       }
       first.value = true;
+    } else if (data.reason) {
+      term.value.write(setData(`${data.reason}\r\n`));
     }
     loading.value = false;
   };
@@ -317,7 +318,7 @@
         clearTimeout(timer);
         timer = setTimeout(() => {
           retryWs();
-        }, 2 ** (totalRetry - retryCount.value) * 1000);
+        }, 2000);
       }
     },
     {
