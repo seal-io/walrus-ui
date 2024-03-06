@@ -111,16 +111,7 @@
               allow-clear={false}
               class="v-sel"
               v-slots={{
-                ..._.reduce(
-                  _.keys(slots),
-                  (result, key) => {
-                    if (slots[key]) {
-                      result[key] = () => slots[key]?.();
-                    }
-                    return result;
-                  },
-                  {}
-                ),
+                ...slots,
                 empty: () => (
                   <a-empty
                     description={
@@ -148,16 +139,7 @@
             onFocus={(e) => handleFocus(e)}
             onInputValueChange={(value) => handleInputValueChange(value)}
             v-slots={{
-              ..._.reduce(
-                _.keys(slots),
-                (result, key) => {
-                  if (slots[key]) {
-                    result[key] = (data) => slots[key]?.(data);
-                  }
-                  return result;
-                },
-                {}
-              ),
+              ...slots,
               empty: () => (
                 <a-empty
                   description={

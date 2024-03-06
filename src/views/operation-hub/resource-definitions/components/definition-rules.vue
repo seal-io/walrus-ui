@@ -80,10 +80,11 @@
               <seal-select
                 v-model="formData.selector.projectNames"
                 :view-status="pageAction === PageAction.VIEW"
-                :options="projectList"
+                :options="setProjectList(formData.selector.projectNames)"
                 :required="true"
                 :multiple="true"
                 :max-tag-count="2"
+                allow-create
                 :label="$t('resource.definition.detail.projectName')"
                 :style="{ width: `${InputWidth.LARGE}px` }"
                 @change="handleProjectChange"
@@ -638,6 +639,21 @@
   provide(InjectSchemaFormStatusKey, ref(formAction));
   provide(InjectTraceKey, traceKey);
 
+  const setProjectList = (names: string[]) => {
+    const list = _.map(names, (name) => {
+      return {
+        label: name,
+        value: name
+      };
+    });
+
+    // concat with projectList and remove duplicate
+    const result = _.uniqBy(
+      _.concat(list, props.projectList),
+      (item) => item.value
+    );
+    return result;
+  };
   const handleRenderEnd = () => {
     setTimeout(() => {
       asyncLoading.value = false;

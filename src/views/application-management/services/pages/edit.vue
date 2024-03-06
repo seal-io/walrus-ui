@@ -265,25 +265,15 @@
         ></GroupForm>
       </a-spin>
 
-      <div
-        :style="{
-          'display': 'flex',
-          'width': '100%',
-          'margin-top': '40px',
-          'padding': '20px 0',
-          'align-items': 'flex-end',
-          'border-top': '1px solid var(--color-border-2)'
-        }"
-      >
+      <div class="comment-wrap">
         <a-textarea
           v-model="formData.changeComment"
+          class="textarea"
           :placeholder="$t('common.table.mark')"
           allow-clear
           :bordered="false"
           :style="{
-            'width': `${InputWidth.LARGE}px`,
-            'background': 'var(--color-white-1)',
-            'margin-right': '40px'
+            width: `${InputWidth.LARGE}px`
           }"
           :auto-size="{ minRows: 5, maxRows: 5 }"
         >
@@ -907,6 +897,22 @@
 
     .arco-popconfirm-icon {
       display: none;
+    }
+  }
+</style>
+
+<style lang="less" scoped>
+  .comment-wrap {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    margin-top: 40px;
+    padding: 20px 0;
+    border-top: 1px solid var(--color-border-2);
+
+    .textarea {
+      margin-right: 40px;
+      background: var(--color-white-1);
     }
   }
 </style>

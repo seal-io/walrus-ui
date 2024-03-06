@@ -38,6 +38,7 @@ export default {
   'navbar.operatorhub': '运维中心',
   'navbar.action.locale': '切换为中文',
   'navbar.totalView': '概览',
+  'navbar.appearance': '外观',
   ...localeCommon,
   ...localeSettings,
   ...localeLogin,

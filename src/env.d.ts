@@ -16,6 +16,11 @@ declare module 'tippy.js' {
   export default tippy;
 }
 
+declare module 'highlight.js' {
+  import hljs from 'highlight.js';
+
+  export default hljs;
+}
 declare module '@vueuse/core' {
   export {
     createReusableTemplate,

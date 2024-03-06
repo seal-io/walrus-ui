@@ -18,6 +18,10 @@
         default() {
           return {};
         }
+      },
+      fullscreen: {
+        type: Boolean,
+        default: false
       }
     },
     setup(props, ctx) {
@@ -37,6 +41,10 @@
       const activeKey = ref('form');
       const yamlAttributes = ref('');
       const serviceInfo = inject(ProvideServiceInfoKey, ref<any>({}));
+
+      const maxHeight = computed(() => {
+        return props.fullscreen ? 'calc(100vh - 360px)' : '380px';
+      });
 
       const serviceDetail = computed(() => {
         return {
@@ -75,7 +83,7 @@
                 editorId="yaml_editor"
                 editor-default-value={yamlAttributes.value}
                 lang="yaml"
-                height={380}
+                height={maxHeight.value}
               ></AceEditor>
             )}
           </div>
