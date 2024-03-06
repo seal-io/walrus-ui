@@ -71,39 +71,41 @@
                 }
               ]}
             >
-              <CodeChunk
-                class="left chunks"
-                chunks={leftChunks.value}
-                title={props.leftTitle}
-                onCollapse={(item) => {
-                  leftChunks.value[item.leftIndex].collapsed = false;
-                  rightChunks.value[item.rightIndex].collapsed = false;
-                }}
-                v-slots={{
-                  title: ctx.slots.leftTitle
-                    ? () => ctx.slots.leftTitle?.()
-                    : null
-                }}
-              ></CodeChunk>
-              {ctx.slots.sperator ? (
-                () => ctx.slots.sperator?.()
-              ) : (
-                <div class="line"></div>
-              )}
-              <CodeChunk
-                class="right chunks"
-                chunks={rightChunks.value}
-                title={props.leftTitle}
-                onCollapse={(item) => {
-                  leftChunks.value[item.leftIndex].collapsed = false;
-                  rightChunks.value[item.rightIndex].collapsed = false;
-                }}
-                v-slots={{
-                  title: ctx.slots.rightTitle
-                    ? () => ctx.slots.rightTitle?.()
-                    : null
-                }}
-              ></CodeChunk>
+              <div class="main">
+                <CodeChunk
+                  class="left chunks"
+                  chunks={leftChunks.value}
+                  title={props.leftTitle}
+                  onCollapse={(item) => {
+                    leftChunks.value[item.leftIndex].collapsed = false;
+                    rightChunks.value[item.rightIndex].collapsed = false;
+                  }}
+                  v-slots={{
+                    title: ctx.slots.leftTitle
+                      ? () => ctx.slots.leftTitle?.()
+                      : null
+                  }}
+                ></CodeChunk>
+                {ctx.slots.sperator ? (
+                  () => ctx.slots.sperator?.()
+                ) : (
+                  <div class="line"></div>
+                )}
+                <CodeChunk
+                  class="right chunks"
+                  chunks={rightChunks.value}
+                  title={props.leftTitle}
+                  onCollapse={(item) => {
+                    leftChunks.value[item.leftIndex].collapsed = false;
+                    rightChunks.value[item.rightIndex].collapsed = false;
+                  }}
+                  v-slots={{
+                    title: ctx.slots.rightTitle
+                      ? () => ctx.slots.rightTitle?.()
+                      : null
+                  }}
+                ></CodeChunk>
+              </div>
             </div>
           ) : null}
         </>
@@ -133,8 +135,6 @@
 
   .chunk-box {
     position: relative;
-    display: flex;
-    justify-content: space-between;
     overflow: hidden;
     overflow-y: auto;
     font-size: var(--font-size-small);
@@ -142,6 +142,12 @@
 
     &.bordered {
       border: 1px solid var(--color-border-2);
+    }
+
+    .main {
+      display: flex;
+      justify-content: space-between;
+      height: max-content;
     }
 
     .line {
