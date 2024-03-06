@@ -110,30 +110,32 @@
                 }}
               </div>
             </template>
-            <a-button
-              ref="correctionButton"
-              :disabled="loading"
-              type="outline"
-              shape="circle"
-              class="correction-btn"
-              @click="handleViewCorrection"
+            <a-tooltip
+              :content="$t('operation.templates.detail.correctionview')"
+              position="tr"
+              :arrow-style="{
+                left: '95px'
+              }"
             >
-              <a-tooltip
-                :content="$t('operation.templates.detail.correctionview')"
+              <a-button
+                ref="correctionButton"
+                :disabled="loading"
+                type="outline"
+                shape="circle"
+                class="correction-btn"
+                @click="handleViewCorrection"
               >
                 <template #content>
                   <div style="width: max-content">{{
                     $t('operation.templates.detail.correctionview')
                   }}</div>
                 </template>
-                <span>
-                  <icon-font
-                    type="icon-shoudongxiaoyan"
-                    class="size-16"
-                  ></icon-font>
-                </span>
-              </a-tooltip>
-            </a-button>
+                <icon-font
+                  type="icon-shoudongxiaoyan"
+                  class="size-16"
+                ></icon-font>
+              </a-button>
+            </a-tooltip>
           </a-tooltip>
         </a-space>
       </div>

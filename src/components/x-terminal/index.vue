@@ -50,6 +50,9 @@
   const toRetry = ref(false);
   const RECONNECT_MSG = '--- press Y to reconnect! ---';
   const appStore = useAppStore();
+  const totalRetry = 5;
+  const retryCount = ref(5);
+  let timer: any = null;
 
   const conReadyState = ref(0);
 
@@ -278,6 +281,15 @@
     actived.value = false;
     if (terminalSocket.value) terminalSocket.value?.close?.();
   };
+  const retryWs = () => {
+    if (retryCount.value > 0) {
+      retryCount.value -= 1;
+      term.value?.write?.('');
+      setWssUrl();
+      initWS();
+      term.value.reset();
+    }
+  };
   watch(
     () => props.url,
     () => {
@@ -286,6 +298,10 @@
         terminalSocket.value?.close?.();
         terminalSocket.value = {};
       } else {
+        // reset retry count
+        retryCount.value = totalRetry;
+        clearTimeout(timer);
+
         term.value?.reset?.();
         debounceCall();
       }
@@ -297,11 +313,11 @@
   watch(
     () => statusCode.value,
     (ov) => {
-      if (statusCode.value === 1003) {
-        term.value?.write?.('');
-        setWssUrl();
-        initWS();
-        term.value.reset();
+      if (statusCode.value === 1003 && retryCount.value > 0) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          retryWs();
+        }, 2 ** (totalRetry - retryCount.value) * 1000);
       }
     },
     {
