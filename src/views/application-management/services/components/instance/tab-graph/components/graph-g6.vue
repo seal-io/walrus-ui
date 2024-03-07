@@ -14,6 +14,7 @@
   import resourceImages from '@/views/application-management/resource-images';
   import serviceImg from '@/assets/images/service.png';
   import resourceImg from '@/assets/images/resource.png';
+  import resourceImgDark from '@/assets/images/resource-dark.png';
   import dependencyIcon from '@/assets/images/dependency-03.png';
   import compositionIcon from '@/assets/images/composition-03.png';
   import realizationIcon from '@/assets/images/realization-03.png';
@@ -148,7 +149,9 @@
             const renderExecHtml = () => {
               if (!executable) return '';
               return `<li code="exec" class="iconfont icon-terminal">
-                ${i18n.global.t('applications.instance.tab.term')}
+                <span class="m-l-3">${i18n.global.t(
+                  'applications.instance.tab.term'
+                )}</span>
               </li>`;
             };
 
@@ -262,6 +265,7 @@
       const setNodeList = async () => {
         const { sourceData: data } = props;
         const darkMode = appStore.theme;
+        const { isDark } = appStore;
         const style = {
           lineWidth: 1,
           stroke: 'transparent',
@@ -269,7 +273,7 @@
         };
         nodeList.value = _.map(data.nodes || [], (o) => {
           const node = _.cloneDeep(o);
-          node.isDark = darkMode === 'dark';
+          node.isDark = isDark;
           const loggableList = getResourceKeyList(
             { ...node.extensions, id: node.nodeId },
             'loggable'
@@ -323,9 +327,10 @@
           };
 
           // ========== logo icon ==========
+          const resImg = isDark ? resourceImgDark : resourceImg;
           const defaultImg =
             resourceImages.get(node.providerType)?.get(node.resourceType) ||
-            (_.get(node, 'extensions.isService') ? serviceImg : resourceImg);
+            (_.get(node, 'extensions.isService') ? serviceImg : resImg);
 
           node.logoIcon = {
             width: 32,
@@ -333,8 +338,6 @@
             offset: -25,
             img: node.icon || defaultImg
           };
-
-          // updateNodeImage(node, defaultImg);
 
           // ========== node state style ==========
           if (_.get(node, 'kind') === nodeKindType.ServiceResourceGroup) {
@@ -458,7 +461,6 @@
               },
               isCollapsed: show
             });
-            // graph.refreshItem(node);
           }
         });
         animateFlag.value = true;
@@ -957,8 +959,9 @@
   .graph-mount {
     .g6-component-contextmenu {
       padding: 6px 8px;
+      background-color: var(--color-white-1);
       border: none;
-      box-shadow: rgba(174, 174, 174, 0.5) 0 0 10px !important;
+      box-shadow: rgba(174, 174, 174, 0.5) 0 0 5px !important;
     }
   }
 
@@ -978,11 +981,11 @@
 
       .iconfont {
         margin-right: 4px;
-        color: var(--sealblue-6);
+        color: rgb(var(--link-6));
       }
 
       a {
-        color: var(--sealblue-6);
+        color: rgb(var(--link-6));
         cursor: pointer;
       }
     }

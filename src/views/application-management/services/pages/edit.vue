@@ -903,25 +903,20 @@
 
 <style lang="less" scoped>
   .comment-wrap {
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 50px auto 20px;
+    margin: 50px auto 0;
     padding: 20px 0;
 
     .textarea {
-      padding-bottom: 40px;
       background: var(--color-white-1);
     }
 
     .button-group {
-      position: absolute;
-      bottom: 0;
       justify-content: center;
-      padding: 10px;
-      background-color: var(--color-white-1);
-      border-radius: var(--border-radius-small);
+      width: 100%;
+      margin-top: 10px;
     }
   }
 </style>

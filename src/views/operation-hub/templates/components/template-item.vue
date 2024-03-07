@@ -51,28 +51,6 @@
           {{ dataInfo.description }}
         </div>
       </div>
-      <!-- <div
-        style="text-align: left"
-        class="m-t-10"
-        v-if="dataInfo.catalog?.name"
-      >
-        <a-tag
-          style="
-            background-color: var(--color-fill-1);
-            color: var(--color-text-3);
-          "
-        >
-          <i
-            class="iconfont icon-laiyuan1 m-r-5 size-12"
-            style="
-              color: rgba(var(--gray-6), 0.8);
-              position: relative;
-              top: 1px;
-            "
-          ></i>
-          <span> {{ dataInfo.catalog?.name }}</span>
-        </a-tag>
-      </div> -->
     </div>
 
     <a-checkbox
@@ -234,12 +212,11 @@
       margin-left: 10px;
     }
 
-    &.dark {
-      .img {
-        filter: invert(1) hue-rotate(180deg);
-      }
-    }
-
+    // &.dark {
+    //   .img {
+    //     filter: invert(1) hue-rotate(180deg);
+    //   }
+    // }
     .img-box {
       flex-basis: 50px;
       padding: 16px;
@@ -262,6 +239,11 @@
         display: flex;
         padding: 0;
         background-color: var(--color-white-1);
+
+        .iconfont {
+          color: rgb(var(--primary-5));
+          font-size: 50px;
+        }
       }
 
       :deep(.arco-icon) {
