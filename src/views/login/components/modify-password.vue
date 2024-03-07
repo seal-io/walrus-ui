@@ -101,7 +101,7 @@
             </a-form-item>
           </div>
         </div>
-        <div style="margin-top: 50px">
+        <div style="margin-top: 30px">
           <a-button type="primary" html-type="submit" long size="large">{{
             $t('common.button.submit')
           }}</a-button>
