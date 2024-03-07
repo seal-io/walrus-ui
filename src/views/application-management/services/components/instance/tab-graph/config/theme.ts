@@ -27,11 +27,11 @@ export const lightStateStyles = {
         fill: 'rgba(247, 186, 30,.7)'
       },
       selected: {
-        storke: 'rgba(247, 186, 30,.8)',
+        stroke: 'rgba(247, 186, 30,.8)',
         lineWidth: 1
       },
       hover: {
-        storke: 'rgba(247, 186, 30,.8)',
+        stroke: 'rgba(247, 186, 30,.8)',
         lineWidth: 1
       }
     },
@@ -43,11 +43,11 @@ export const lightStateStyles = {
         fill: 'rgba(142, 173, 231,.7)'
       },
       selected: {
-        storke: 'rgb(33, 74, 196)',
+        stroke: 'rgb(33, 74, 196)',
         lineWidth: 1
       },
       hover: {
-        storke: 'rgb(33, 74, 196)',
+        stroke: 'rgb(33, 74, 196)',
         lineWidth: 1
       }
     }
@@ -86,11 +86,11 @@ export const darkStateStyles = {
         fill: 'rgba(142, 173, 231,.7)'
       },
       selected: {
-        storke: 'rgba(247, 186, 30,.8)',
+        stroke: 'rgba(247, 186, 30,.8)',
         lineWidth: 1
       },
       hover: {
-        storke: 'rgba(247, 186, 30,.8)',
+        stroke: 'rgba(247, 186, 30,.8)',
         lineWidth: 1
       }
     },
@@ -104,12 +104,13 @@ export const darkStateStyles = {
         fill: 'rgba(81,115,153,1)'
       },
       selected: {
-        storke: 'rgb(33, 74, 196)',
+        stroke: 'rgba(255,255,255, .7)',
+        fill: `rgba(${black2}, 1)`,
         lineWidth: 1
       },
       hover: {
-        storke: 'rgba(33,74,196,1)',
-        fill: 'rgba(81,115,153,1)',
+        stroke: 'rgba(186,186,186, 0.7)',
+        fill: `rgba(${black2}, 1)`,
         lineWidth: 1
       }
     }

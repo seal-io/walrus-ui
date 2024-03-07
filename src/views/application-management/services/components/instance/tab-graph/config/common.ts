@@ -4,6 +4,7 @@ import { IGroup, IShape, GroupCfg } from '@antv/g-base';
 import insertCss from 'insert-css';
 import serviceImg from '@/assets/images/service.png';
 import compositionImg from '@/assets/images/graph_nodes.png';
+import compositionImgDark from '@/assets/images/graph_nodes_dark.png';
 import moreButtonIcon from '@/assets/images/more.png';
 import moreButtonIconDark from '@/assets/images/more-dark.png';
 import umlcompositionIcon from '@/assets/images/composition-03.png';
@@ -75,13 +76,13 @@ export const defineCustomNode = () => {
       },
       drawCompositionIcon(cfg: Node & NodeConfig, group: IGroup) {
         if (!cfg.hasComposition) return;
-        const { compositionIcon, size } = cfg;
+        const { compositionIcon, size, isDark } = cfg;
         const w: number = _.get(size, '0') || DefaultNodeSize[0];
         const h: number = _.get(size, '1') || DefaultNodeSize[1];
         const { width, height, img } = compositionIcon as any;
         group['shapeMap']['composition-icon'] = group.addShape('image', {
           attrs: {
-            img,
+            img: isDark ? compositionImgDark : img,
             x: -w / 2 + 18,
             y: h / 2 - 12,
             width,
@@ -100,6 +101,7 @@ export const defineCustomNode = () => {
           UMLRealizationIcon,
           hasComposition,
           isCollapsed,
+          isDark,
           size
         } = cfg;
         if (!UMLCompositionIcon && !UMLDependencyIcon && !UMLRealizationIcon)
