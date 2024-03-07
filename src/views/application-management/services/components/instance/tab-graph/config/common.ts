@@ -5,6 +5,7 @@ import insertCss from 'insert-css';
 import serviceImg from '@/assets/images/service.png';
 import compositionImg from '@/assets/images/graph_nodes.png';
 import moreButtonIcon from '@/assets/images/more.png';
+import moreButtonIconDark from '@/assets/images/more-dark.png';
 import umlcompositionIcon from '@/assets/images/composition-03.png';
 
 insertCss(`
@@ -159,13 +160,13 @@ export const defineCustomNode = () => {
           _.get(cfg, 'executableInfo?.executable') ||
           _.get(cfg, 'drifted')
         ) {
-          const { size, moreButtonIcon } = cfg;
+          const { size, moreButtonIcon, isDark } = cfg;
           const w: number = _.get(size, '0') || 16;
           const h: number = _.get(size, '1') || 16;
           const { width, height, img } = moreButtonIcon as any;
           group['shapeMap']['more-button-icon'] = group.addShape('image', {
             attrs: {
-              img,
+              img: isDark ? moreButtonIconDark : img,
               x: _.get(cfg, 'drifted') ? w / 2 - 30 : w / 2 - 20,
               y: -h / 2,
               width,
@@ -199,7 +200,7 @@ export const defaultNode = {
     style: {
       fill: '#1d2129',
       fontSize: 12,
-      fontWeight: 500,
+      fontWeight: 700,
       width: 110
     },
     offset: 15

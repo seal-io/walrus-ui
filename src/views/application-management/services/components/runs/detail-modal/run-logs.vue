@@ -47,9 +47,6 @@
         if (props.runData?.planRecord) {
           return (
             <>
-              <div class="title">
-                <i class="iconfont icon-log"></i> <span>Planned Logs</span>
-              </div>
               <StaticLogs
                 maxHeight={maxHeight.value}
                 record={props.runData?.planRecord}

@@ -37,12 +37,4 @@ export const nodeKindType = {
   ServiceResourceGroup: 'ResourceComponentGroup'
 };
 
-export const strokeStyle = {};
-
-export const darkNodeStyle = {
-  style: {
-    fill: 'rgba(52,62,76, 1)',
-    color: 'rgba(255,255,255,.7)'
-  }
-};
 export default {};

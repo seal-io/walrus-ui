@@ -71,6 +71,7 @@
                 }
               ]}
             >
+              {ctx.slots.title?.()}
               <div class="main">
                 <CodeChunk
                   class="left chunks"
@@ -86,8 +87,8 @@
                       : null
                   }}
                 ></CodeChunk>
-                {ctx.slots.sperator ? (
-                  () => ctx.slots.sperator?.()
+                {ctx.slots.separator ? (
+                  () => ctx.slots.separator?.()
                 ) : (
                   <div class="line"></div>
                 )}
