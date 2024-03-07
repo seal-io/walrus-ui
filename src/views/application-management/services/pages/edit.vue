@@ -275,7 +275,7 @@
           :style="{
             width: `100%`
           }"
-          :auto-size="{ minRows: 5, maxRows: 5 }"
+          :auto-size="{ minRows: 4, maxRows: 4 }"
         >
         </a-textarea>
         <a-space :size="40" class="button-group">
@@ -903,20 +903,25 @@
 
 <style lang="less" scoped>
   .comment-wrap {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 50px auto 0;
+    margin: 50px auto 20px;
     padding: 20px 0;
 
     .textarea {
+      padding-bottom: 40px;
       background: var(--color-white-1);
     }
 
     .button-group {
+      position: absolute;
+      bottom: 0;
       justify-content: center;
-      width: 100%;
-      margin-top: 10px;
+      padding: 10px;
+      background-color: var(--color-white-1);
+      border-radius: var(--border-radius-small);
     }
   }
 </style>
