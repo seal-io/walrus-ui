@@ -32,6 +32,10 @@
         return props.fullscreen ? 'calc(100vh - 360px)' : '300px';
       });
 
+      const isNoChange = computed(() => {
+        return _.isEqual(1, 2);
+      });
+
       const getRevisionChange = async () => {
         if (!props.runData.id || !props.runData.resource?.id) {
           return;
@@ -48,6 +52,11 @@
               : '',
             new: JSON.stringify(data?.new?.computedAttributes, null, 2)
           };
+
+          console.log(
+            'diffContent=============',
+            _.isEqual(diffContent.value.old, diffContent.value.new)
+          );
         } catch (error) {
           diffContent.value = {
             old: '',
@@ -59,11 +68,29 @@
       };
       const renderCopyButton = (title, data) => {
         return (
-          <div class="title flex flex-justify-between">
+          <div class="title flex flex-justify-between flex-align-center">
             <span>{title}</span>
             <Copy content={data}></Copy>
           </div>
         );
+      };
+
+      const renderTitle = () => {
+        if (_.isEqual(diffContent.value.old, diffContent.value.new)) {
+          return (
+            <a-alert
+              style={{
+                'color': 'var(--color-text-3)',
+                'textAlign': 'left',
+                'border-radius': 0
+              }}
+            >
+              {i18n.global.t('applications.applications.history.diff.same')}
+              {_.isEqual(diffContent.value.old, diffContent.value.new)}
+            </a-alert>
+          );
+        }
+        return null;
       };
       watch(
         () => props.runData,
@@ -77,20 +104,15 @@
 
       return () => (
         <div>
-          {_.isEqual(diffContent.value.old, diffContent.value.new) ? (
-            <a-alert
-              class="m-t-10"
-              style={{ color: 'var(--color-text-3)', textAlign: 'left' }}
-            >
-              {i18n.global.t('applications.applications.history.diff.same')}
-            </a-alert>
-          ) : null}
           <a-spin loading={loading.value} style={{ width: '100%' }}>
             <CodeDiffView
               maxHeight={maxHeight.value}
               content={diffContent.value}
               class="m-t-10 m-b-10"
               v-slots={{
+                title: () => {
+                  return renderTitle();
+                },
                 leftTitle: diffContent.value.old
                   ? () => {
                       return renderCopyButton(

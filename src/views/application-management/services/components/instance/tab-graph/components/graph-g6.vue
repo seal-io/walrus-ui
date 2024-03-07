@@ -23,14 +23,15 @@
   import { defineCustomNode, defaultNode } from '../config/common';
   import { createToolTip } from '../config/plugins';
   import { fittingString } from '../config/utils';
+  import { statusMap, edgeType, nodeKindType, customeLegend } from '../config';
   import {
-    statusMap,
-    edgeType,
-    nodeKindType,
-    customeLegend,
-    darkNodeStyle
-  } from '../config';
-  import { ICombo, IEdge, INode } from '../config/interface';
+    defaultNodeStyle,
+    nodeStateStyles,
+    lightStateStyles,
+    darkStatesStyles,
+    driftedNodeStyle
+  } from '../config/theme';
+  import { IEdge, INode } from '../config/interface';
   import { setServiceStatus, Status } from '../../../../config';
   import { getResourceKeyList } from '../../../../config/utils';
   import ResourceControl from '../../resource-control.vue';
@@ -106,88 +107,90 @@
       const contextMenuNode: any = { value: null };
       const appStore = useAppStore();
 
-      contextMenu.value = new G6.Menu({
-        trigger: 'click',
-        shouldBegin(e) {
-          // click more button
-          if (_.get(e?.target, 'cfg.name') === 'more-button-icon') {
-            contextMenuNode.value = e?.item;
-            return true;
-          }
-          return false;
-        },
-        getContent(evt) {
-          const node = evt?.item;
-          const model: INode = node?.getModel();
-          const logabble = model?.loggableInfo?.loggable;
-          const executable = model?.executableInfo?.executable;
-          const drifted = model?.drifted;
-          if (!logabble && !executable && !drifted) {
-            return '';
-          }
+      const wrapHeight = computed(() => {
+        return props.isFullscreen ? '100vh' : props.containerHeight;
+      });
 
-          const renderDriftHtml = () => {
-            if (!drifted) return '';
-            return `<li code="drift" class="iconfont icon-xiangqing-">
+      const initContextMenu = () => {
+        contextMenu.value = new G6.Menu({
+          trigger: 'click',
+          shouldBegin(e) {
+            // click more button
+            if (_.get(e?.target, 'cfg.name') === 'more-button-icon') {
+              contextMenuNode.value = e?.item;
+              return true;
+            }
+            return false;
+          },
+          getContent(evt) {
+            const node = evt?.item;
+            const model: INode = node?.getModel();
+            const logabble = model?.loggableInfo?.loggable;
+            const executable = model?.executableInfo?.executable;
+            const drifted = model?.drifted;
+            if (!logabble && !executable && !drifted) {
+              return '';
+            }
+
+            const renderDriftHtml = () => {
+              if (!drifted) return '';
+              return `<li code="drift" class="iconfont icon-xiangqing-">
                 ${i18n.global.t('applications.service.resource.driftInfo')}
               </li>`;
-          };
+            };
 
-          const renderLogHtml = () => {
-            if (!logabble) return '';
-            return ` <li code="log" class="iconfont icon-log">
+            const renderLogHtml = () => {
+              if (!logabble) return '';
+              return ` <li code="log" class="iconfont icon-log">
                 ${i18n.global.t('applications.instance.tab.log')}
               </li>`;
-          };
-          const renderExecHtml = () => {
-            if (!executable) return '';
-            return `<li code="exec" class="iconfont icon-terminal">
+            };
+            const renderExecHtml = () => {
+              if (!executable) return '';
+              return `<li code="exec" class="iconfont icon-terminal">
                 ${i18n.global.t('applications.instance.tab.term')}
               </li>`;
-          };
+            };
 
-          return `<div id="contextMenu-wrapper">
+            return `<div id="contextMenu-wrapper">
                 <ul>
                   ${renderDriftHtml()}
                   ${renderLogHtml()}
                   ${renderExecHtml()}
                 </ul>
               </div>`;
-        },
-        handleMenuClick: (target, item) => {
-          const code = target.getAttribute('code');
-          const model = item.getModel();
-          resourceNodeInfo.value = model;
+          },
+          handleMenuClick: (target, item) => {
+            const code = target.getAttribute('code');
+            const model = item.getModel();
+            resourceNodeInfo.value = model;
 
-          if (code === 'log') {
-            handleViewLogs({
-              ...(_.get(model, 'extensions') || {}),
-              id: model.nodeId,
-              name: model.name
-            });
-            return;
-          }
-          if (code === 'exec') {
-            handleConnectTerminal({
-              ...(_.get(model, 'extensions') || {}),
-              id: model.nodeId,
-              name: model.name
-            });
-          }
-          if (code === 'drift') {
-            driftChangeData.value =
-              _.get(model, 'extensions.drift.drift.change') || {};
-            showDriftModal.value = true;
-          }
-        },
-        offsetX: 16 + 10,
-        offsetY: 0,
-        itemTypes: ['node']
-      });
-
-      const wrapHeight = computed(() => {
-        return props.isFullscreen ? '100vh' : props.containerHeight;
-      });
+            if (code === 'log') {
+              handleViewLogs({
+                ...(_.get(model, 'extensions') || {}),
+                id: model.nodeId,
+                name: model.name
+              });
+              return;
+            }
+            if (code === 'exec') {
+              handleConnectTerminal({
+                ...(_.get(model, 'extensions') || {}),
+                id: model.nodeId,
+                name: model.name
+              });
+            }
+            if (code === 'drift') {
+              driftChangeData.value =
+                _.get(model, 'extensions.drift.drift.change') || {};
+              showDriftModal.value = true;
+            }
+          },
+          offsetX: 16 + 10,
+          offsetY: 0,
+          itemTypes: ['node']
+        });
+      };
       const setGraphToCenter = () => {
         // get the center of the canvas
         const width = graph?.getWidth?.();
@@ -258,6 +261,7 @@
 
       const setNodeList = async () => {
         const { sourceData: data } = props;
+        const darkMode = appStore.theme;
         const style = {
           lineWidth: 1,
           stroke: 'transparent',
@@ -265,6 +269,7 @@
         };
         nodeList.value = _.map(data.nodes || [], (o) => {
           const node = _.cloneDeep(o);
+          node.isDark = darkMode === 'dark';
           const loggableList = getResourceKeyList(
             { ...node.extensions, id: node.nodeId },
             'loggable'
@@ -335,51 +340,31 @@
           if (_.get(node, 'kind') === nodeKindType.ServiceResourceGroup) {
             node.style = {
               ...style,
-              fill: node.drifted ? 'rgba(247, 186, 30,.5)' : '#e8f2ff',
+              fill: node.drifted
+                ? _.get(driftedNodeStyle, [darkMode, 'drifted', 'fill'])
+                : _.get(driftedNodeStyle, [darkMode, 'default', 'fill']),
               radius: 30
             };
 
-            node.stateStyles = {
-              inactive: {
-                fill: node.drifted
-                  ? 'rgba(247, 186, 30,.2)'
-                  : 'rgba(232,242,255,.5)'
-              },
-              highlight: {
-                fill: node.drifted
-                  ? 'rgba(247, 186, 30,.7)'
-                  : 'rgba(142, 173, 231,.7)'
-              },
-              selected: {
-                stroke: node.drifted
-                  ? 'rgba(247, 186, 30,.8)'
-                  : 'rgb(33, 74, 196)',
-                lineWidth: 1
-              },
-              hover: {
-                stroke: node.drifted
-                  ? 'rgba(247, 186, 30,.8)'
-                  : 'rgb(33, 74, 196)',
-                lineWidth: 1
-              }
-            };
+            const stateStyles = node.drifted
+              ? _.get(
+                  nodeStateStyles,
+                  [darkMode, nodeKindType.ServiceResourceGroup, 'drifted'],
+                  lightStateStyles
+                )
+              : _.get(
+                  nodeStateStyles,
+                  [darkMode, nodeKindType.ServiceResourceGroup, 'default'],
+                  lightStateStyles
+                );
+            node.stateStyles = _.cloneDeep(stateStyles);
           } else {
             node.style = {
               ...style
             };
-            node.stateStyles = {
-              inactive: {
-                fill: 'rgba(255,255,255,.5)'
-              },
-              selected: {
-                stroke: 'rgb(33, 74, 196)',
-                lineWidth: 1
-              },
-              hover: {
-                stroke: 'rgb(33, 74, 196)',
-                lineWidth: 1
-              }
-            };
+            node.stateStyles = _.cloneDeep(
+              _.get(nodeStateStyles, [darkMode, 'normal'], lightStateStyles)
+            );
           }
 
           return node;
@@ -403,11 +388,6 @@
           }
 
           if (o.edgeType === edgeType.Composition) {
-            // style.endArrow = false;
-            // style.startArrow = {
-            //   path: G6.Arrow.diamond(12, 14, -7),
-            //   fill: 'rgba(102, 139, 220,1)'
-            // };
             const sourceNode = _.find(nodeList.value, (item) => {
               return item.id === o.source;
             });
@@ -417,15 +397,10 @@
                 width: 14,
                 height: 14
               };
-              console.log('icon========', sourceNode);
             }
           }
 
           if (o.edgeType === edgeType.Realization) {
-            // style.endArrow = {
-            //   path: G6.Arrow.triangle(8, 8, 0),
-            //   fill: '#86909c'
-            // };
             style.stroke = '#86909c';
             style.lineDash = [8, 3, 3];
             const targetNode = _.find(nodeList.value, (item) => {
@@ -455,21 +430,7 @@
         setNodeList();
         setLinks();
       };
-      // update each node theme
-      const updateNodeTheme = () => {
-        _.each(graph?.getNodes(), (item) => {
-          const model = item.getModel();
-          console.log('model=============', model);
-          graph.updateItem(item, {
-            ...model,
-            style: {
-              ...model.style,
-              ...darkNodeStyle.style
-            }
-          });
-        });
-        graph?.changeData();
-      };
+
       const nodeFilter = (model) => {
         // service page
         if (props.pageType === pageTypeScope.SERVICE)
@@ -614,6 +575,7 @@
       };
       const initNodeEvent = () => {
         graph?.on('node:mouseenter', (e) => {
+          console.log('node:mouseenter', e.item.getModel());
           graph?.setItemState(e.item, 'hover', true);
           resetContextMenuNode();
         });
@@ -657,7 +619,31 @@
           emit('canvasClick', ev);
         });
       };
-
+      const setDefaultNodeDefaultStyle = () => {
+        const mode = appStore.theme;
+        const nodeStyle = {
+          ...defaultNode,
+          labelCfg: {
+            ...defaultNode.labelCfg,
+            style: {
+              ...defaultNode.labelCfg.style,
+              ..._.get(defaultNodeStyle, [mode, 'labelCfg', 'style'])
+            }
+          },
+          style: {
+            ...defaultNode.style,
+            ..._.get(defaultNodeStyle, [mode, 'style'])
+          },
+          descriptionCfg: {
+            ...defaultNode.descriptionCfg,
+            style: {
+              ...defaultNode.descriptionCfg.style,
+              ..._.get(defaultNodeStyle, [mode, 'descriptionCfg', 'style'])
+            }
+          }
+        };
+        return nodeStyle;
+      };
       const createGraph = () => {
         graph = new G6.Graph({
           renderer: 'svg', // arrow style will be change
@@ -687,7 +673,7 @@
             }
           },
           pixelRatio: 2,
-          defaultNode,
+          defaultNode: setDefaultNodeDefaultStyle(),
           defaultEdge: {
             type: 'cubic-horizontal',
             style: {
@@ -695,11 +681,6 @@
               radius: 0,
               offset: 0,
               shadowBlur: 0,
-              // endArrow: {
-              //   path: G6.Arrow.vee(8, 8, 0),
-              //   fill: 'rgba(102, 139, 220,1)',
-              //   lineDash: [0, 0]
-              // },
               lineWidth: 1.2,
               stroke: 'rgba(66, 106, 208,.8)'
             }
@@ -710,35 +691,70 @@
               opacity: 0.8,
               animate: true
             },
-            inactived: {
-              opacity: 0.5
+            inactive: {
+              opacity: 0
             }
           },
 
-          nodeStateStyles: {
-            selected: {
-              stroke: 'rgb(33, 74, 196)',
-              lineWidth: 1
-            },
-            hover: {
-              stroke: 'rgb(33, 74, 196)',
-              lineWidth: 1
-            },
-            inactived: {
-              fill: 'rgba(255,255,255,0)'
-            }
-          },
-          comboStateStyles: {
-            selected: {
-              fill: 'transparent',
-              lineWidth: 1
-            }
-          },
+          nodeStateStyles: {},
           modes: {
             default: ['drag-canvas', 'zoom-canvas', 'click-select']
           },
           fitView: false
         });
+      };
+      // update each node theme
+      const updateNodeTheme = () => {
+        const mode = appStore.theme;
+        _.each(graph?.getNodes(), (item) => {
+          const model = item.getModel();
+
+          let stateStyles = _.get(nodeStateStyles, [mode, 'normal']);
+          if (model.kind === nodeKindType.ServiceResourceGroup) {
+            stateStyles = model.drifted
+              ? _.get(nodeStateStyles, [
+                  mode,
+                  nodeKindType.ServiceResourceGroup,
+                  'drifted'
+                ])
+              : _.get(nodeStateStyles, [
+                  mode,
+                  nodeKindType.ServiceResourceGroup,
+                  'default'
+                ]);
+          }
+          graph.updateItem(item, {
+            ...model,
+            labelCfg: {
+              ...model.labelCfg,
+              style: {
+                ...model.labelCfg.style,
+                ..._.cloneDeep(
+                  _.get(defaultNodeStyle, [mode, 'labelCfg', 'style'])
+                )
+              }
+            },
+            style: {
+              ...model.style,
+              ..._.cloneDeep(_.get(defaultNodeStyle, [mode, 'style']))
+            },
+            descriptionCfg: {
+              ...model.descriptionCfg,
+              style: {
+                ...model.descriptionCfg.style,
+                ..._.cloneDeep(
+                  _.get(defaultNodeStyle, [mode, 'descriptionCfg', 'style'])
+                )
+              }
+            },
+            stateStyles: {
+              ...model.stateStyles,
+              ..._.cloneDeep(stateStyles)
+            }
+          });
+        });
+        graph?.render();
+        toggleAllNodeShow(props.showAll);
       };
       const updateNodeFullscreen = () => {
         if (!graph) return;
@@ -755,8 +771,10 @@
         toggleAllNodeShow(props.showAll);
       };
       const init = () => {
+        initContextMenu();
         loading.value = true;
         graph?.clear();
+        graph?.destroy();
         defineCustomNode();
         initData();
         createGraph();
@@ -768,17 +786,17 @@
         fitView,
         toggleAllNodeShow
       });
-      // watch(
-      //   () => appStore.isDark,
-      //   () => {
-      //     if (graph && graphMount.value) {
-      //       updateNodeTheme();
-      //     }
-      //   },
-      //   {
-      //     immediate: false
-      //   }
-      // );
+      watch(
+        () => appStore.isDark,
+        () => {
+          if (graph && graphMount.value) {
+            init();
+          }
+        },
+        {
+          immediate: false
+        }
+      );
       watch(
         () => props.sourceData?.nodes,
         () => {

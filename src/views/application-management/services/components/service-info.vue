@@ -1,6 +1,6 @@
 <template>
   <div class="service">
-    <a-spin :loading="loading" style="width: 100%">
+    <a-spin :loading="loading" style="width: 100%;min-height: 200px'">
       <GroupForm
         ref="groupForm"
         style="padding: 0"
