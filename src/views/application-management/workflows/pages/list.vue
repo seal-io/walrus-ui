@@ -277,7 +277,7 @@
           >
             <template #icon>
               <icon-find-replace v-if="queryParams.query" />
-              <i v-else class="iconfont icon-pipeline"></i>
+              <i v-else class="iconfont icon-pipeline-2"></i>
             </template>
             <template #extra>
               <a-button

@@ -10,9 +10,9 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="0">
-      <HeaderInfo :info="currentInfo">
+      <HeaderInfo :info="currentInfo" icon-type="line">
         <template #icon>
-          <i class="iconfont icon-project"></i>
+          <i class="iconfont icon-layer"></i>
         </template>
         <template #title>
           <div class="title">
@@ -146,8 +146,6 @@
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
   import TemplateList from '@/views/application-management/templates/pages/list.vue';
   import CatalogList from '@/views/application-management/catalogs/pages/list.vue';
-  import IconBtnGroup from '@/components/icon-btn-group/index.vue';
-  import Workflow from '@/views/application-management/workflows/pages/edit.vue';
   import WorkflowList from '@/views/application-management/workflows/pages/list.vue';
   import { queryItemProject } from '../api';
   import { projectDetailTabs } from '../config';

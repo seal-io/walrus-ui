@@ -117,8 +117,8 @@
           border-radius: 50%;
 
           :deep(.iconfont) {
-            color: var(--color-white-2);
-            font-size: 22px;
+            color: var(--color-white-4);
+            font-size: 24px;
           }
         }
 
