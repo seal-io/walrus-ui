@@ -23,11 +23,18 @@
       fullscreen: {
         type: Boolean,
         default: false
+      },
+      isErrorStatus: {
+        type: Boolean,
+        default: false
       }
     },
     setup(props, { emit }) {
       const maxHeight = computed(() => {
-        return props.fullscreen ? 'calc(100vh - 310px)' : '310px';
+        if (props.isErrorStatus) {
+          return props.fullscreen ? 'calc(100vh - 360px)' : '310px';
+        }
+        return props.fullscreen ? 'calc(100vh - 320px)' : '310px';
       });
 
       const renderStaticLogs = () => {

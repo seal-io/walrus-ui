@@ -39,11 +39,11 @@
       min-height: 200px;
       padding: 0 10px;
       overflow-y: auto;
-      color: #ddd;
+      color: var(--color-logs-text);
       font-size: var(--font-size-small);
       white-space: pre-wrap;
       word-wrap: break-word;
-      background-color: #181d28;
+      background-color: var(--color-logs-bg);
       border: 1px solid var(--color-border-2);
       border-radius: var(--border-radius-small);
 

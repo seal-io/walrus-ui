@@ -13,6 +13,7 @@
   import { useAppStore } from '@/store';
   import resourceImages from '@/views/application-management/resource-images';
   import serviceImg from '@/assets/images/service.png';
+  import serviceImgDark from '@/assets/images/service-dark.png';
   import resourceImg from '@/assets/images/resource.png';
   import resourceImgDark from '@/assets/images/resource-dark.png';
   import dependencyIcon from '@/assets/images/dependency-03.png';
@@ -328,9 +329,10 @@
 
           // ========== logo icon ==========
           const resImg = isDark ? resourceImgDark : resourceImg;
+          const svcImg = isDark ? serviceImgDark : serviceImg;
           const defaultImg =
             resourceImages.get(node.providerType)?.get(node.resourceType) ||
-            (_.get(node, 'extensions.isService') ? serviceImg : resImg);
+            (_.get(node, 'extensions.isService') ? svcImg : resImg);
 
           node.logoIcon = {
             width: 32,
@@ -621,6 +623,7 @@
           emit('canvasClick', ev);
         });
       };
+
       const setDefaultNodeDefaultStyle = () => {
         const mode = appStore.theme;
         const nodeStyle = {
@@ -765,13 +768,30 @@
         graph?.read({ nodes: nodeList.value, edges: edgeList.value });
         toggleAllNodeShow(props.showAll);
       };
+
+      // add onerror event to image that under the svg, and set default image when error
+      const addImageErrorEvent = () => {
+        const svg = document.querySelector('#graph-mount svg');
+        if (!svg) return;
+        const images = svg.querySelectorAll('image');
+        _.each(images, (img) => {
+          img.onerror = () => {
+            img.setAttribute('href', resourceImg);
+          };
+        });
+      };
+
       const updateGraph = () => {
         loading.value = true;
         graph?.clear();
         initData();
         graph?.read({ nodes: nodeList.value, edges: edgeList.value });
         toggleAllNodeShow(props.showAll);
+        nextTick(() => {
+          addImageErrorEvent();
+        });
       };
+
       const init = () => {
         initContextMenu();
         loading.value = true;
@@ -783,6 +803,9 @@
         renderGraph();
         initNodeEvent();
         toggleAllNodeShow(props.showAll);
+        nextTick(() => {
+          addImageErrorEvent();
+        });
       };
       expose({
         fitView,
