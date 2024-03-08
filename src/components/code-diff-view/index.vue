@@ -33,6 +33,18 @@
         default() {
           return '';
         }
+      },
+      isLeftEmpty: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      isRightEmpty: {
+        type: Boolean,
+        default() {
+          return false;
+        }
       }
     },
     setup(props, ctx) {
@@ -75,6 +87,7 @@
               <div class="main">
                 <CodeChunk
                   class="left chunks"
+                  isEmpty={props.isLeftEmpty}
                   chunks={leftChunks.value}
                   title={props.leftTitle}
                   onCollapse={(item) => {
@@ -94,6 +107,7 @@
                 )}
                 <CodeChunk
                   class="right chunks"
+                  isEmpty={props.isRightEmpty}
                   chunks={rightChunks.value}
                   title={props.leftTitle}
                   onCollapse={(item) => {

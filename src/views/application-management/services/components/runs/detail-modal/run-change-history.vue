@@ -115,6 +115,8 @@
             <CodeDiffView
               maxHeight={maxHeight.value}
               content={diffContent.value}
+              isLeftEmpty={!diffContent.value.old}
+              isRightEmpty={!diffContent.value.new}
               class="m-t-10 m-b-10"
               v-slots={{
                 title: () => {

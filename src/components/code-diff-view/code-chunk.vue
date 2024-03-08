@@ -24,6 +24,10 @@
       title: {
         type: String,
         default: ''
+      },
+      isEmpty: {
+        type: Boolean,
+        default: false
       }
     },
     setup(props, ctx) {
@@ -46,7 +50,7 @@
           <>
             {_.map(item.chunks, (code, sIndex) => {
               return (
-                <div class={['chunk', item.type]}>
+                <div class={['chunk', item.type, { empty: props.isEmpty }]}>
                   {item.type !== 'blank' ? (
                     <span class="line-num">{item.startLine + sIndex}</span>
                   ) : (
@@ -105,6 +109,10 @@
     .chunk {
       display: flex;
       background-color: var(--color-white-3);
+
+      &.empty {
+        background-color: transparent !important;
+      }
 
       &.remove {
         background-color: var(--code-remove-text-line);

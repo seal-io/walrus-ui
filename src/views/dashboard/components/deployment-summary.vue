@@ -35,6 +35,7 @@
             :height="height"
             :data-config="dataConfig"
             :data="dataList"
+            :max-legend="6"
             :x-axis="xAxis"
             :title="$t('dashboard.deployment.history')"
           ></StackLineChart>
@@ -52,18 +53,6 @@
         </a-grid-item>
       </a-grid>
     </div>
-    <!-- <div class="m-b-20">
-      <div class="app-list-title">{{
-        $t('dashboard.deployment.lastest', {
-          name: $t('applications.applications.table.service')
-        })
-      }}</div>
-      <lastDeployApp
-        :title="$t('applications.applications.table.service')"
-        :list="serviceList"
-        :type="ServiceDataType.service"
-      ></lastDeployApp>
-    </div> -->
     <div>
       <div class="app-list-title">{{
         $t('dashboard.deployment.lastest', {
@@ -84,7 +73,7 @@
   import { computed, ref } from 'vue';
   import { useAppStore } from '@/store';
   import { useI18n } from 'vue-i18n';
-  import { map, get, ceil, sortBy } from 'lodash';
+  import { map, get, keys } from 'lodash';
   import StackLineChart from '@/components/stack-line-chart/index.vue';
   import { ServiceDataType } from '@/views/application-management/services/config';
   import pieChart from '@/components/pie-chart/index.vue';
@@ -120,7 +109,7 @@
     containLabel: true
   };
 
-  const { deployDataConfig, statusColorMap } = useStatusConfig();
+  const { deployDataConfig, statusColorMap, statusMap } = useStatusConfig();
   const appStore = useAppStore();
   const height = '300px';
   const pieCenter = ['50%', '50%'];
@@ -139,23 +128,13 @@
   const dataList = ref<{ name: string; value: number[] }[]>([]);
 
   const dataConfig = computed(() => {
-    return [
-      {
-        name: 'running',
-        label: t('dashboard.deployment.running'),
-        color: statusColorMap.value.running
-      },
-      {
-        name: 'failed',
-        label: t('dashboard.deployment.failed'),
-        color: statusColorMap.value.failed
-      },
-      {
-        name: 'succeeded',
-        label: t('dashboard.deployment.succeed'),
-        color: statusColorMap.value.succeed
-      }
-    ];
+    return map(deployDataConfig.value, (item) => {
+      return {
+        name: item.key,
+        color: item.itemStyle.color,
+        label: item.name
+      };
+    });
   });
   const pieOptions = computed(() => {
     return {
@@ -203,7 +182,7 @@
       summaryData.value = get(data, 'statusCount') || {};
       const revisions = get(data, 'statusStats');
       const result = getStackLineDataList(revisions, {
-        fields: ['running', 'succeeded', 'failed'],
+        fields: [...keys(statusMap)],
         xAxis: 'startTime'
       });
       dataList.value = result.data;
