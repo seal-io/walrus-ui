@@ -61,6 +61,7 @@
   const content = ref('');
   const scroller = ref();
   const isWheeled = ref(false);
+  const timeGap = ref(Date.now());
   let axiosToken: any = null;
   const { setChunkRequest } = useSetChunkRequest();
 
@@ -72,7 +73,7 @@
     const scrollerContainer = scroller.value || {};
     const { scrollHeight, clientHeight, scrollTop } = scrollerContainer;
     if (!isWheeled.value && scrollHeight > clientHeight + scrollTop) {
-      scroller.value.scrollTop += 5;
+      scroller.value.scrollTop += 10;
       window.requestAnimationFrame(updateScrollerPosition);
     }
   };
@@ -149,9 +150,11 @@
       min-height: 200px;
       padding: 0 10px;
       overflow-y: auto;
-      color: #ddd;
+      color: var(--color-logs-text);
+      font-size: var(--font-size-small);
       white-space: pre-wrap;
-      background-color: #181d28;
+      word-wrap: break-word;
+      background-color: var(--color-logs-bg);
       border: 1px solid var(--color-border-2);
       border-radius: var(--border-radius-small);
 

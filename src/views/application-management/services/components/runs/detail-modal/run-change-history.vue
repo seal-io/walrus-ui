@@ -19,6 +19,10 @@
         default() {
           return false;
         }
+      },
+      isErrorStatus: {
+        type: Boolean,
+        default: false
       }
     },
     setup(props, ctx) {
@@ -29,7 +33,10 @@
       const loading = ref(false);
 
       const maxHeight = computed(() => {
-        return props.fullscreen ? 'calc(100vh - 360px)' : '300px';
+        if (props.isErrorStatus) {
+          return props.fullscreen ? 'calc(100vh - 360px)' : '310px';
+        }
+        return props.fullscreen ? 'calc(100vh - 325px)' : '310px';
       });
 
       const isNoChange = computed(() => {

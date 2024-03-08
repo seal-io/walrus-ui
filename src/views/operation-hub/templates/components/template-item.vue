@@ -242,7 +242,7 @@
 
         .iconfont {
           color: rgb(var(--primary-5));
-          font-size: 50px;
+          font-size: 50px !important;
         }
       }
 

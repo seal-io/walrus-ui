@@ -8,7 +8,8 @@
     :visible="show"
     :mask-closable="false"
     :body-style="{
-      height: fullscreen ? 'auto' : '560px',
+      maxHeight: fullscreen ? 'calc(100vh - 80px)' : '600px',
+      minHeight: '500px',
       overflow: 'auto',
       fontSize: 'var(--font-size-small)'
     }"
@@ -76,6 +77,7 @@
             <runAttributes
               :run-data="basicData"
               :fullscreen="fullscreen"
+              :is-error-status="_.get(basicData, 'status.error')"
             ></runAttributes>
           </a-tab-pane>
           <a-tab-pane key="logs" :title="$t('applications.instance.tab.log')">
@@ -83,6 +85,7 @@
               :show="show"
               :run-data="basicData"
               :fullscreen="fullscreen"
+              :is-error-status="_.get(basicData, 'status.error')"
             ></runLogs>
           </a-tab-pane>
           <a-tab-pane
@@ -92,6 +95,7 @@
             <runChangeHistory
               :run-data="basicData"
               :fullscreen="fullscreen"
+              :is-error-status="_.get(basicData, 'status.error')"
             ></runChangeHistory>
           </a-tab-pane>
         </a-tabs>

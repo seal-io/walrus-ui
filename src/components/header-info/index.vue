@@ -113,7 +113,7 @@
           justify-content: center;
           width: 42px;
           height: 42px;
-          background-color: rgb(var(--arcoblue-5));
+          background-color: var(--color-header-icon);
           border-radius: 50%;
 
           :deep(.iconfont) {
@@ -129,7 +129,7 @@
           width: 56px;
           height: 56px;
           color: var(--color-white);
-          background-color: rgb(var(--arcoblue-5));
+          background-color: var(--color-header-icon);
           border-radius: 50%;
 
           :deep(.arco-icon) {
