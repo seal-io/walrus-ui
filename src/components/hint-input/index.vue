@@ -636,8 +636,8 @@
     }
 
     .complete-item-active {
-      color: var(--color-white);
-      background-color: rgb(var(--primary-6));
+      color: var(--color-white-5);
+      background-color: rgb(var(--color-hint-active-bg));
 
       .type {
         color: var(--color-white);

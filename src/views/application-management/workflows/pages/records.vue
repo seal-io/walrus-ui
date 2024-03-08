@@ -10,15 +10,9 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="0">
-      <HeaderInfo :info="{}">
+      <HeaderInfo :info="{}" icon-type="line">
         <template #icon>
-          <i
-            class="iconfont icon-pipeline"
-            style="
-              color: var(--color-white);
-              background-color: rgb(var(--arcoblue-5));
-            "
-          ></i>
+          <i class="iconfont icon-pipeline-2"></i>
         </template>
         <template #title>
           <div class="title">
