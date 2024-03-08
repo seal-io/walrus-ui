@@ -101,6 +101,8 @@
               <CodeDiffView
                 bordered={false}
                 content={diffContent.value}
+                isLeftEmpty={!diffContent.value.old}
+                isRightEmpty={!diffContent.value.new}
                 v-slots={{
                   leftTitle: diffContent.value.old
                     ? () => {
