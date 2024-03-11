@@ -1,5 +1,6 @@
 <template>
   <ComCard padding="0" class="list">
+    <IconFont type="icon-layer"></IconFont>
     <div>
       <a-spin :loading="loading" style="width: 100%">
         <div class="header">
@@ -258,10 +259,9 @@
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
-  import _, { get, pickBy, filter, update } from 'lodash';
+  import _, { get, pickBy, filter } from 'lodash';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import CommentModal from '@/views/commons/components/comment-modal/index.vue';
-  import dayjs from 'dayjs';
   import {
     reactive,
     ref,
@@ -282,9 +282,7 @@
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
-  import FilterBox from '@/components/filter-box/index.vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import { useUserStore, useAppStore } from '@/store';
   import { exportEnvironment } from '@/views/application-management/environments/api';
   import useDownload from '@/hooks/use-download';
