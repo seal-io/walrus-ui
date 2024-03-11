@@ -7,6 +7,7 @@ export interface INode extends Node {
   nodeId: string;
   icon?: string;
   name: string;
+  isDark?: boolean;
   resourceType: string;
   subType: string;
   data: ServiceResource;

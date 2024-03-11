@@ -178,21 +178,6 @@
             }}</span>
           </template>
         </a-table-column>
-        <!-- <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="left"
-          data-index="CostSynced"
-          :title="$t('operation.connectors.table.coststatus')"
-        >
-          <template #cell="{ record }">
-            <span v-if="record.category === ConnectorCategory.Kubernetes">{{
-              getCostStatus(record.status?.conditions || [])
-            }}</span>
-            <span v-else>-</span>
-          </template>
-        </a-table-column> -->
         <a-table-column
           ellipsis
           tooltip
@@ -253,7 +238,7 @@
               ? $t('common.result.nodata.title', {
                   type: $t('operation.connectors.table.connector')
                 })
-              : $t('common.nodata.added', {
+              : $t('common.nodata.created', {
                   type: $t('operation.connectors.table.connector')
                 })
           "
@@ -263,7 +248,7 @@
         >
           <template #icon>
             <icon-find-replace v-if="queryParams.query" />
-            <icon-layers v-else />
+            <i v-else class="iconfont icon-connector1"></i>
           </template>
           <template #extra>
             <primaryButtonGroup

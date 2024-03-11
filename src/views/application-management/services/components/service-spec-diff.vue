@@ -49,7 +49,7 @@
             userStore.hasProjectResourceActions({
               projectID,
               environmentID,
-              resource: Resources.ResourceRevisions,
+              resource: Resources.ResourceRuns,
               actions: ['PUT']
             }) &&
             _.includes(
@@ -83,7 +83,7 @@
               userStore.hasProjectResourceActions({
                 projectID,
                 environmentID,
-                resource: Resources.ResourceRevisions,
+                resource: Resources.ResourceRuns,
                 actions: ['PUT']
               }) &&
               _.includes(

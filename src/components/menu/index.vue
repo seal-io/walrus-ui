@@ -145,7 +145,10 @@
         versionInfo.value = await useAppVersion();
       };
       const handleShowVersion = () => {
-        showVersionModal(versionInfo.value as versionData);
+        showVersionModal({
+          data: versionInfo.value as versionData,
+          isDark: isDark.value
+        });
       };
 
       // In this case only two levels of menus are available

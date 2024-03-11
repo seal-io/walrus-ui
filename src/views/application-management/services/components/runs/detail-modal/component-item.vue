@@ -7,7 +7,6 @@
   import { StatusColor } from '@/views/config';
   import Copy from '@/components/copy/copy-command.vue';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
-  import testData from './config/test-data.json';
 
   export default defineComponent({
     props: {

@@ -116,62 +116,25 @@
               {
                 required: true,
                 message: $t('operation.connectors.rules.kubeconfig')
+              },
+              {
+                validator: credentialsValidator
               }
             ]"
           >
-            <ResizeableContainer
-              :min-height="140"
+            <AutoReadfile
+              ref="credentialsRef"
+              v-model="formData.configData.kubeconfig.value"
+              lang="yaml"
+              label="KubeConfig"
+              placeholder="KubeConfig"
+              required
               :min-width="InputWidth.LARGE"
-              wrapper="parentNode"
-              :act-edges="{ right: true, bottom: true }"
-              @change="handleResize"
-            >
-              <div
-                class="textarea-wrap"
-                :style="{
-                  width: `${textareaWidth}px`,
-                  height: `${textareaHeight}px`
-                }"
-              >
-                <seal-textarea
-                  v-model="formData.configData.kubeconfig.value"
-                  placeholder="KubeConfig"
-                  :required="true"
-                  :spellcheck="false"
-                  :style="{
-                    border: 'none',
-                    width: `100%`,
-                    height: `${textareaHeight}px`
-                  }"
-                  :auto-size="{ minRows: 6 }"
-                />
-              </div>
-            </ResizeableContainer>
-            <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div class="m-t-10 btn">
-                <a-upload
-                  action="/"
-                  :auto-upload="false"
-                  :show-file-list="false"
-                  :on-before-upload="handleBeforeUpload"
-                  @change="handleUploadSuccess"
-                >
-                  <template #upload-button>
-                    <div>
-                      <a-button type="primary" size="small">
-                        <template #icon><icon-file /></template>
-                        {{
-                          $t('operation.connectors.detail.readfile')
-                        }}</a-button
-                      >
-                      <span style="margin-left: 5px">{{
-                        $t('operation.connectors.detail.fileformat')
-                      }}</span>
-                    </div>
-                  </template>
-                </a-upload>
-              </div>
-            </template>
+              :min-height="200"
+              :tips="$t('operation.connectors.detail.fileformat')"
+              :view-status="false"
+              @change="handleKubeConfigChange"
+            ></AutoReadfile>
           </a-form-item>
           <!-- <a-form-item label="" :hide-label="pageAction === PageAction.EDIT">
             <template #label>
@@ -269,6 +232,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
   import ResizeableContainer from '@/components/resizeable-container/index.vue';
+  import AutoReadfile from '@/components/seal-form/form-components/auto-readfile.vue';
   import { ConnectorFormData } from '../config/interface';
   import { operationRootBread, ConnectorCategory } from '../config';
   import StatusLabel from '../components/status-label.vue';
@@ -286,6 +250,7 @@
   const submitLoading = ref(false);
   const textareaWidth = ref(InputWidth.LARGE);
   const textareaHeight = ref(180);
+  const credentialsRef = ref();
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
     name: '',
@@ -329,6 +294,21 @@
   const handleResize = ({ width, height }) => {
     textareaHeight.value = height;
     textareaWidth.value = width;
+  };
+
+  const credentialsValidator = (val, callback) => {
+    const errors = credentialsRef.value?.validate?.();
+    if (errors) {
+      callback(errors[0]?.text);
+    } else {
+      callback();
+    }
+  };
+
+  const handleKubeConfigChange = () => {
+    setTimeout(() => {
+      formref.value.validateField('configData.kubeconfig.value');
+    }, 100);
   };
   const getCostStatus = (conditions) => {
     const d = find(conditions, (item) => {

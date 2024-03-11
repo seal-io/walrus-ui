@@ -198,10 +198,10 @@
       (sItem) => sItem?.resource?.id === props.data.serviceId
     );
     // const collections = data?.collection || [];
-    basicData.value = _.find(
-      collections,
-      (item) => item.id === props.data.runId
-    );
+    const info = _.find(collections, (item) => item.id === props.data.runId);
+    if (info) {
+      basicData.value = info;
+    }
   };
   const updateHandler = (list) => {
     _.each(list, (data) => {

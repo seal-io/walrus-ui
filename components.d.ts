@@ -39,14 +39,10 @@ declare module 'vue' {
     AOption: typeof import('@arco-design/web-vue')['Option'];
     APagination: typeof import('@arco-design/web-vue')['Pagination'];
     AProgress: typeof import('@arco-design/web-vue')['Progress'];
-    ARangePicker: typeof import('@arco-design/web-vue')['RangePicker'];
     AResult: typeof import('@arco-design/web-vue')['Result'];
     ASelect: typeof import('@arco-design/web-vue')['Select'];
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];
-    AStatistic: typeof import('@arco-design/web-vue')['Statistic'];
-    AStep: typeof import('@arco-design/web-vue')['Step'];
-    ASteps: typeof import('@arco-design/web-vue')['Steps'];
     ASubMenu: typeof import('@arco-design/web-vue')['SubMenu'];
     ASwitch: typeof import('@arco-design/web-vue')['Switch'];
     ATable: typeof import('@arco-design/web-vue')['Table'];

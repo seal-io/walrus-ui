@@ -7,11 +7,11 @@ import {
 
 export default [
   {
-    resource: Resources.ResourceRevisions,
+    resource: Resources.ResourceRuns,
     title: 'permission.resource.project.appRevision',
     group: Group.AppManagement,
-    order: ResourcesOrder.ResourceRevisions,
-    resourceOrder: ProjectResourcesOrder.ResourceRevisions,
+    order: ResourcesOrder.ResourceRuns,
+    resourceOrder: ProjectResourcesOrder.ResourceRuns,
     actions: ['GET', 'DELETE']
   },
   {
