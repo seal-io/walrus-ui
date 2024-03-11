@@ -136,7 +136,7 @@ export const driftedNodeStyle = {
       fill: 'lightyellow'
     },
     default: {
-      fill: '#495c70'
+      fill: 'rgba(35, 42, 52,.9)'
     }
   }
 };

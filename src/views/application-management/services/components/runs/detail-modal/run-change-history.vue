@@ -59,11 +59,6 @@
               : '',
             new: JSON.stringify(data?.new?.computedAttributes, null, 2)
           };
-
-          console.log(
-            'diffContent=============',
-            _.isEqual(diffContent.value.old, diffContent.value.new)
-          );
         } catch (error) {
           diffContent.value = {
             old: '',

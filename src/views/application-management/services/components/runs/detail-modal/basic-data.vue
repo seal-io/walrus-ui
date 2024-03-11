@@ -1,6 +1,9 @@
 <script lang="tsx">
   import _ from 'lodash';
   import i18n from '@/locale';
+  import { useUserStore } from '@/store';
+  import { Resources, Actions } from '@/permissions/config';
+  import useCallCommon from '@/hooks/use-call-common';
   import { defineComponent, toRef, computed, ref } from 'vue';
   import { StatusColor } from '@/views/config';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
@@ -33,12 +36,22 @@
     emits: ['apply', 'cancel'],
     setup(props, { slots, emit }) {
       const info = toRef(props, 'runData');
+      const userStore = useUserStore();
+      const { route } = useCallCommon();
       const basicDataList = useBasicInfoData(runBasicConfig, info);
       const showTimer = ref(true);
 
       const isStopped = computed(() => {
         const status = _.get(props.runData, 'status.summaryStatus', '');
         return !RevisionWatchStatus.includes(status);
+      });
+      const hasPermission = computed(() => {
+        return userStore.hasProjectResourceActions({
+          projectID: route.params.projectId,
+          environmentID: route.params.environmentId as string,
+          resource: Resources.ResourceRuns,
+          actions: [Actions.PUT]
+        });
       });
       const renderStatusIcon = () => {
         let type: any = '';
@@ -80,7 +93,10 @@
       };
 
       const renderActions = () => {
-        if (ApplicableStatus.includes(props.runData?.status?.summaryStatus)) {
+        if (
+          ApplicableStatus.includes(props.runData?.status?.summaryStatus) &&
+          hasPermission.value
+        ) {
           return (
             <a-space
               direction="vertical"

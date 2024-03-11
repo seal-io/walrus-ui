@@ -190,7 +190,7 @@
                   userStore.hasProjectResourceActions({
                     projectID,
                     environmentID,
-                    resource: Resources.ResourceRevisions,
+                    resource: Resources.ResourceRuns,
                     actions: ['DELETE']
                   })
                 "
@@ -289,7 +289,6 @@
   import { websocketEventType } from '@/views/config';
   import { setDurationValue } from '@/views/config/utils';
   import { HistoryData } from '../../config/interface';
-  import revisionDetail from '../revision-detail.vue';
   import serviceSpecDiff from '../service-spec-diff.vue';
   import RunDetailModal from '../runs/detail-modal/index.vue';
   import {

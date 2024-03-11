@@ -4,6 +4,7 @@ import i18n from '@/locale/index';
 import { Modal } from '@arco-design/web-vue';
 import { get, startsWith } from 'lodash';
 import walrusLogo from '@/assets/images/walrus_logo.png';
+import walrusLogoWhite from '@/assets/images/walrus_logo_white.png';
 
 export const getVersion = (data) => {
   const version = get(data, 'version') || '';
@@ -27,7 +28,13 @@ export function fetchAppVersion(): { version: string; commitId: string } {
 export function queryAppServerVersion() {
   return axios.get(`/debug/version`);
 }
-export function showVersionModal(data: versionData) {
+export function showVersionModal({
+  data,
+  isDark
+}: {
+  data: versionData;
+  isDark: boolean;
+}) {
   Modal.open({
     // title: i18n.global.t('common.footer.version.title'),
     top: '20%',
@@ -35,7 +42,7 @@ export function showVersionModal(data: versionData) {
     title: () =>
       h('img', {
         style: 'width: auto;height: 44px;',
-        src: walrusLogo
+        src: isDark ? walrusLogoWhite : walrusLogo
       }),
     simple: true,
     alignCenter: false,

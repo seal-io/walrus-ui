@@ -30,7 +30,6 @@
     defaultNodeStyle,
     nodeStateStyles,
     lightStateStyles,
-    darkStatesStyles,
     driftedNodeStyle
   } from '../config/theme';
   import { IEdge, INode } from '../config/interface';

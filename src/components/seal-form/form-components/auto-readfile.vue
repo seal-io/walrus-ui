@@ -8,7 +8,7 @@
 
   export default defineComponent({
     name: 'AutoReadfile',
-    emits: ['update:modelValue'],
+    emits: ['update:modelValue', 'change'],
     props: {
       modelValue: {
         type: String,
@@ -48,6 +48,10 @@
         type: Number,
         default: InputWidth.LARGE
       },
+      minHeight: {
+        type: Number,
+        default: 180
+      },
       showGutter: {
         type: Boolean,
         default: true
@@ -63,8 +67,8 @@
     },
     setup(props, ctx) {
       const editor = ref();
-      const textareaWidth = ref(props.minWidth || InputWidth.LARGE);
-      const textareaHeight = ref(180);
+      const textareaWidth = ref(props.minWidth);
+      const textareaHeight = ref(props.minHeight);
 
       const handleResize = ({ width, height }) => {
         textareaHeight.value = props.label ? height - 36 : height;
@@ -80,6 +84,7 @@
 
         ctx.emit('update:modelValue', res);
         editor.value?.setValue?.(res);
+        ctx.emit('change', res);
       };
 
       const validate = () => {
@@ -171,17 +176,25 @@
         <div
           class="auto-reader"
           style={{
-            width: `${textareaWidth.value}px`
+            flex: 1
           }}
         >
           <ResizeableContainer
-            min-height={40}
-            min-width={props.minWidth || InputWidth.LARGE}
+            min-height={props.minHeight}
+            style={{
+              width: `${textareaWidth.value}px`
+            }}
             wrapper="parentNode"
             act-edges={{ right: true, bottom: true }}
             onChange={(data) => handleResize(data)}
           >
-            <div class="box">
+            <div
+              class="box"
+              style={{
+                width: `${textareaWidth.value}px`,
+                minWidth: `${props.minWidth}px`
+              }}
+            >
               {props.widget === 'editor' ? renderEditor() : renderTextarea()}
             </div>
           </ResizeableContainer>
@@ -194,6 +207,10 @@
 
 <style lang="less" scoped>
   .auto-reader {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+
     .tips {
       color: var(--color-text-3);
     }
@@ -206,6 +223,7 @@
         position: absolute;
         right: 2px;
         bottom: -5px;
+        z-index: 10;
         display: inline-block;
         color: var(--color-text-3);
         transform: rotate(45deg);
