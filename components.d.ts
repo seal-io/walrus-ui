@@ -33,6 +33,8 @@ declare module 'vue' {
     ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter'];
     ALayoutSider: typeof import('@arco-design/web-vue')['LayoutSider'];
     ALink: typeof import('@arco-design/web-vue')['Link'];
+    AList: typeof import('@arco-design/web-vue')['List'];
+    AListItemMeta: typeof import('@arco-design/web-vue')['ListItemMeta'];
     AMenu: typeof import('@arco-design/web-vue')['Menu'];
     AMenuItem: typeof import('@arco-design/web-vue')['MenuItem'];
     AModal: typeof import('@arco-design/web-vue')['Modal'];
@@ -45,6 +47,8 @@ declare module 'vue' {
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];
     AStatistic: typeof import('@arco-design/web-vue')['Statistic'];
+    AStep: typeof import('@arco-design/web-vue')['Step'];
+    ASteps: typeof import('@arco-design/web-vue')['Steps'];
     ASubMenu: typeof import('@arco-design/web-vue')['SubMenu'];
     ASwitch: typeof import('@arco-design/web-vue')['Switch'];
     ATable: typeof import('@arco-design/web-vue')['Table'];

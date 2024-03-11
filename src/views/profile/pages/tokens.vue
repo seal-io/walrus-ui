@@ -77,14 +77,18 @@
         </div>
       </a-list>
       <div v-if="!dataList.length && isLoad" class="create-desc">
-        <a-empty :description="$t('account.settings.token.desc')">
-          <template #image>
-            <i
-              class="iconfont icon-shouquan size-20"
-              style="font-size: 32px"
-            ></i>
+        <result-view :subtitle="$t('account.settings.token.desc')">
+          <template #icon>
+            <i class="iconfont icon-shouquan"></i>
           </template>
-        </a-empty>
+          <template #extra>
+            <a-button type="outline" @click="handleCreate"
+              ><icon-plus class="m-r-4" />{{
+                $t('common.button.create.now')
+              }}</a-button
+            >
+          </template>
+        </result-view>
       </div>
       <a-pagination
         style="padding: 10px 0"
