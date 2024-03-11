@@ -340,14 +340,18 @@
   .pipeline-node {
     background-color: var(--color-white);
 
+    .arco-link {
+      padding: 0 6px;
+    }
+
     &.dark {
       color: rgba(255, 255, 255, 0.7);
       background-color: var(--color-card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: none;
+      border: 1px solid transparent;
+      box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.2);
 
       &:hover {
-        box-shadow: 0 6px 6px rgba(var(--color-background-3), 80%);
+        border: 1px solid rgba(169, 174, 184, 0.6);
       }
 
       .arco-link {

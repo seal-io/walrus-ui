@@ -7,12 +7,12 @@
       :class="{ active: active === item.view }"
       @click="handleToggle(item.view)"
     >
-      <icon-font
+      <i
         v-if="item.iconfont"
-        :type="item.icon"
         :style="{ ...item.style }"
-        :class="{ active: active === item.view }"
-      />
+        class="iconfont"
+        :class="[{ active: active === item.view }, item.icon]"
+      ></i>
       <component
         :is="item.icon"
         v-else
@@ -77,7 +77,8 @@
       }
     }
 
-    :deep(.arco-icon) {
+    :deep(.arco-icon),
+    .iconfont {
       // margin-right: 6px;
       color: var(--color-text-2);
       font-size: 16px;
@@ -88,7 +89,8 @@
       }
     }
 
-    .arco-icon.active {
+    .arco-icon.active,
+    .iconfont.active {
       color: rgb(var(--arcoblue-6));
     }
   }

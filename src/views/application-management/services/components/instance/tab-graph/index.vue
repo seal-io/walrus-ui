@@ -1,10 +1,7 @@
 <template>
   <div ref="flowWrapper" class="flow-wrapper">
     <div class="g6-box">
-      <a-spin
-        :loading="loading"
-        style="width: 100%; backgroundcolor: var(--color-fill-2)"
-      >
+      <a-spin :loading="loading" style="width: 100%">
         <GraphG6
           ref="graph"
           :is-fullscreen="isFullscreen"
