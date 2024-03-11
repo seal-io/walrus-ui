@@ -12,7 +12,7 @@
       'overflow': 'auto',
       'line-height': 1
     }"
-    modal-class="oci-modal"
+    modal-class="user-modal"
     unmount-on-close
     :title="
       action === 'edit'
@@ -256,3 +256,17 @@
     formref.value.clearValidate();
   };
 </script>
+
+<style lang="less">
+  .arco-modal.user-modal {
+    .arco-input-group {
+      .seal-relative.wrapper {
+        border-radius: var(--border-radius-small) 0 0 var(--border-radius-small);
+
+        .arco-input-wrapper {
+          border-right: none;
+        }
+      }
+    }
+  }
+</style>
