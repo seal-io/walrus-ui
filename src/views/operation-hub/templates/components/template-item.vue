@@ -21,11 +21,12 @@
             <StatusLabel
               show-loading
               :size="12"
-              :status="{
+              :status-detail="{
                 status: get(dataInfo, 'status.summaryStatus') || '',
                 text: '',
                 message: '',
                 transitioning: get(dataInfo, 'status.transitioning'),
+                warning: get(dataInfo, 'status.warning'),
                 error: get(dataInfo, 'status.error')
               }"
             ></StatusLabel>
@@ -67,7 +68,7 @@
 <script lang="ts" setup>
   import _, { toLower, get } from 'lodash';
   import TemplateImg from '@/assets/images/template.png';
-  import { PropType, computed, ref, watch } from 'vue';
+  import { PropType, computed, ref, watch, warn } from 'vue';
   import { MoreAction } from '@/views/config/interface';
   import { useRouter } from 'vue-router';
   import { useAppStore } from '@/store';

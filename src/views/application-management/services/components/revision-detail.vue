@@ -46,11 +46,12 @@
             v-if="item.key === 'status'"
             style="display: flex; align-items: center"
             :zoom="0.9"
-            :status="{
+            :status-detail="{
               status: item.value?.summaryStatus || '',
               text: item.value?.summaryStatus,
               message: '',
               transitioning: get(item, 'value.transitioning'),
+              warning: get(item, 'value.warning'),
               error: get(item, 'value.error')
             }"
           ></StatusLabel>

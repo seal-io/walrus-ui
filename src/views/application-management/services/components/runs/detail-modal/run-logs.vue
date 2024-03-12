@@ -38,10 +38,6 @@
       });
 
       const renderStaticLogs = () => {
-        if (props.runData?.status?.summaryStatus === RevisionStatus.Running) {
-          return null;
-        }
-
         if (props.runData?.record) {
           return (
             <StaticLogs
@@ -68,26 +64,21 @@
       const renderWatchLogs = () => {
         return (
           <>
-            {RevisionWatchStatus.includes(
-              props.runData?.status?.summaryStatus
-            ) ? (
-              <>
-                <WatchLogs
-                  maxHeight={maxHeight.value}
-                  show={props.show}
-                  fullscreen={props.fullscreen}
-                  runData={props.runData}
-                ></WatchLogs>
-              </>
-            ) : null}
+            <WatchLogs
+              maxHeight={maxHeight.value}
+              show={props.show}
+              fullscreen={props.fullscreen}
+              runData={props.runData}
+            ></WatchLogs>
           </>
         );
       };
 
       return () => (
         <div class="logs-box">
-          {renderStaticLogs()}
-          {renderWatchLogs()}
+          {RevisionWatchStatus.includes(props.runData?.status?.summaryStatus)
+            ? renderWatchLogs()
+            : renderStaticLogs()}
         </div>
       );
     }

@@ -157,29 +157,6 @@
         );
       };
 
-      const renderEdit = () => {
-        return (
-          <>
-            {props.rowData.isModified ? (
-              <StatusLabel
-                style={{
-                  transform: 'scale(0.8)',
-                  marginRight: '-6px'
-                }}
-                bordered={true}
-                status={{
-                  status: i18n.global.t('common.status.edited'),
-                  inactive: false,
-                  text: i18n.global.t('common.status.edited'),
-                  message: '',
-                  transitioning: true,
-                  error: false
-                }}
-              ></StatusLabel>
-            ) : null}
-          </>
-        );
-      };
       const renderComponents = () => {
         if (!collapse.value) return null;
         return (

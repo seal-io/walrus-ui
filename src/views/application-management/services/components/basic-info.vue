@@ -50,14 +50,7 @@
             <>
               <StatusLabel
                 zoom={0.9}
-                status={{
-                  status: get(item, 'value.summaryStatus') || '',
-                  text: get(item, 'value.summaryStatus'),
-                  inactive: get(item, 'value.inactive'),
-                  message: get(item, 'value.summaryStatusMessage') || '',
-                  transitioning: get(item, 'value.transitioning'),
-                  error: get(item, 'value.error')
-                }}
+                status={get(item, 'value', {})}
               ></StatusLabel>
             </>
           );

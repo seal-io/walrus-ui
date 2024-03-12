@@ -62,6 +62,7 @@
   const scroller = ref();
   const isWheeled = ref(false);
   const timeGap = ref(Date.now());
+  const requestId: any = null;
   let axiosToken: any = null;
   const { setChunkRequest } = useSetChunkRequest();
 
@@ -72,14 +73,17 @@
   const updateScrollerPosition = () => {
     const scrollerContainer = scroller.value || {};
     const { scrollHeight, clientHeight, scrollTop } = scrollerContainer;
+    const t = Date.now();
     if (!isWheeled.value && scrollHeight > clientHeight + scrollTop) {
-      scroller.value.scrollTop += 10;
+      scroller.value.scrollTop += 5;
+      timeGap.value = t;
       window.requestAnimationFrame(updateScrollerPosition);
     }
   };
 
   const updateContent = (newVal) => {
     content.value = `${newVal}`;
+
     if (!isWheeled.value) {
       window.requestAnimationFrame(updateScrollerPosition);
     }
@@ -139,6 +143,7 @@
   );
   onBeforeUnmount(() => {
     axiosToken?.cancel?.();
+    window.cancelAnimationFrame(requestId);
   });
 </script>
 

@@ -301,14 +301,7 @@
             <span class="status">
               <StatusLabel
                 zoom={0.9}
-                status={{
-                  status: _.get(nodeData.value, 'status.summaryStatus'),
-                  text: _.get(nodeData.value, 'status.summaryStatus'),
-                  message: _.get(nodeData.value, 'status.summaryStatusMessage'),
-                  transitioning: _.get(nodeData.value, 'status.transitioning'),
-                  error: _.get(nodeData.value, 'status.error'),
-                  inactive: _.get(nodeData.value, 'status.inactive')
-                }}
+                status={_.get(nodeData.value, 'status', {})}
               ></StatusLabel>
             </span>
             <a-space class="btn">

@@ -55,8 +55,10 @@
       });
       const renderStatusIcon = () => {
         let type: any = '';
-        if (_.get(props.runData, 'status.transitioning')) {
+        if (_.get(props.runData, 'status.warning')) {
           type = 'warning';
+        } else if (_.get(props.runData, 'status.transitioning')) {
+          type = 'transitioning';
         } else if (_.get(props.runData, 'status.error')) {
           type = 'error';
         } else if (_.get(props.runData, 'status.inactive')) {
@@ -79,14 +81,7 @@
           <>
             <StatusLabel
               zoom={0.9}
-              status={{
-                status: _.get(props.runData, 'status.summaryStatus') || '',
-                inactive: _.get(props.runData, 'status.inactive'),
-                text: _.get(props.runData, 'status.summaryStatus'),
-                message: '',
-                transitioning: _.get(props.runData, 'status.transitioning'),
-                error: _.get(props.runData, 'status.error')
-              }}
+              status={_.get(props.runData, 'status', {})}
             ></StatusLabel>
           </>
         );

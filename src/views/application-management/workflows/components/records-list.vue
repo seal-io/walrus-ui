@@ -72,14 +72,7 @@
           <template #cell="{ record }">
             <StatusLabel
               :zoom="0.9"
-              :status="{
-                status: _.get(record, 'status.summaryStatus'),
-                text: _.get(record, 'status.summaryStatus'),
-                message: _.get(record, 'status.summaryStatusMessage'),
-                transitioning: _.get(record, 'status.transitioning'),
-                error: _.get(record, 'status.error'),
-                inactive: _.get(record, 'status.inactive')
-              }"
+              :status="_.get(record, 'status', {})"
             ></StatusLabel>
           </template>
         </a-table-column>

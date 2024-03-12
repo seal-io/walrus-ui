@@ -163,14 +163,7 @@
                     $t('operation.connectors.table.status')
                   }}</span>
                   <StatusLabel
-                    :status="{
-                      status: get(formData, 'status.summaryStatus') || '',
-                      text: get(formData, 'status.summaryStatus'),
-                      message:
-                        get(formData, 'status.summaryStatusMessage') || '',
-                      transitioning: get(formData, 'status.transitioning'),
-                      error: get(formData, 'status.error')
-                    }"
+                    :status="get(formData, 'status', {})"
                   ></StatusLabel>
                 </div>
               </SealFormItemWrap>

@@ -165,20 +165,7 @@
                 </a-tooltip>
                 <StatusLabel
                   :zoom="0.9"
-                  :status="{
-                    status: _.get(record, 'executions.0.status.summaryStatus'),
-                    text: _.get(record, 'executions.0.status.summaryStatus'),
-                    message: _.get(
-                      record,
-                      'executions.0.status.summaryStatusMessage'
-                    ),
-                    transitioning: _.get(
-                      record,
-                      'executions.0.status.transitioning'
-                    ),
-                    error: _.get(record, 'executions.0.status.error'),
-                    inactive: _.get(record, 'executions.0.status.inactive')
-                  }"
+                  :status="_.get(record, 'executions.0.status', {})"
                 ></StatusLabel>
               </span>
             </template>

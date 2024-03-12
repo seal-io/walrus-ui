@@ -19,15 +19,7 @@
             <span> {{ currentInfo.name }}</span>
             <StatusLabel
               :zoom="0.9"
-              :status="{
-                status: _.get(currentInfo, 'status.summaryStatus') || '',
-                text: _.get(currentInfo, 'status.summaryStatus'),
-                message:
-                  _.get(currentInfo, 'status.summaryStatusMessage') || '',
-                transitioning: _.get(currentInfo, 'status.transitioning'),
-                inactive: _.get(currentInfo, 'status.inactive'),
-                error: _.get(currentInfo, 'status.error')
-              }"
+              :status="_.get(currentInfo, 'status', {})"
             ></StatusLabel>
           </div>
           <div v-if="moreActions.length" class="dropdown">

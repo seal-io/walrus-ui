@@ -20,11 +20,12 @@
             <StatusLabel
               show-loading
               :size="12"
-              :status="{
+              :status-detail="{
                 status: get(dataInfo, 'status.summaryStatus') || '',
                 text: '',
                 message: '',
                 transitioning: get(dataInfo, 'status.transitioning'),
+                warning: get(dataInfo, 'status.warning'),
                 error: get(dataInfo, 'status.error')
               }"
             ></StatusLabel>

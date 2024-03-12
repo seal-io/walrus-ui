@@ -165,15 +165,7 @@
               :label="$t('operation.connectors.table.status')"
               :style="{ width: `${InputWidth.LARGE}px` }"
             >
-              <StatusLabel
-                :status="{
-                  status: get(formData, 'status.summaryStatus') || '',
-                  text: get(formData, 'status.summaryStatus'),
-                  message: get(formData, 'status.summaryStatusMessage') || '',
-                  transitioning: get(formData, 'status.transitioning'),
-                  error: get(formData, 'status.error')
-                }"
-              ></StatusLabel>
+              <StatusLabel :status="get(formData, 'status', {})"></StatusLabel>
             </SealFormItemWrap>
           </a-form-item>
         </a-form>
