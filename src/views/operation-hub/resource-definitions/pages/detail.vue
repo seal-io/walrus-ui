@@ -21,11 +21,11 @@
           flex-start
           :show-edit="
             pageAction === PageAction.VIEW &&
+            !_.get(formData, 'builtin') &&
             userStore.hasRolesActionsPermission({
               resource: Resources.ResourceDefinitions,
               actions: [Actions.PUT]
-            }) &&
-            !_.get(formData, 'builtin')
+            })
           "
           @edit="handleEditPage"
         >

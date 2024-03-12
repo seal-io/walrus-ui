@@ -349,7 +349,7 @@
         if (loading.value) {
           setTimeout(() => {
             loading.value = false;
-          }, 200);
+          }, 500);
         }
       }
     },
