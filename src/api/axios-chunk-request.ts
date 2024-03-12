@@ -178,7 +178,7 @@ export function useSetChunkRequest() {
           console.log('chunkrequest===', {
             result,
             url: `${url}?${qs.stringify(params)}`,
-            cres
+            raw: cres
           });
         }
       });

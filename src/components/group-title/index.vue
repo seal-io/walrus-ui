@@ -1,81 +1,101 @@
-<template>
-  <div
-    class="group-title"
-    :class="{
-      'bordered': bordered,
-      'is-detail': isDetail,
-      'iconed': iconed,
-      'flex-start': flexStart
-    }"
-  >
-    <div class="label">
-      <a-link v-if="showBack" @click="handleBack"
-        ><icon-arrow-left style="stroke-width: 5; font-size: 16px"
-      /></a-link>
-      <a-divider v-if="showBack" direction="vertical"></a-divider>
-      <div class="title-wrap">
-        <slot name="title">{{ title }}</slot>
-        <slot name="extra"></slot>
-        <a-link v-if="showEdit" class="m-l-10" @click="handleEdit">
-          <icon-edit></icon-edit>
-          <span class="mleft-5">{{ $t('common.button.edit') }}</span>
-        </a-link>
-      </div>
-    </div>
-    <div><slot name="right" class="right"></slot></div>
-  </div>
-</template>
-
-<script lang="ts" setup>
+<script lang="tsx">
+  import i18n from '@/locale';
   import useCallCommon from '@/hooks/use-call-common';
+  import { defineComponent } from 'vue';
 
-  defineProps({
-    title: String,
-    bordered: {
-      type: Boolean,
-      default() {
-        return true;
+  export default defineComponent({
+    props: {
+      title: String,
+      bordered: {
+        type: Boolean,
+        default() {
+          return true;
+        }
+      },
+      flexStart: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      isDetail: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      showBack: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      showEdit: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      iconed: {
+        type: Boolean,
+        default() {
+          return false;
+        }
       }
     },
-    flexStart: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
-    isDetail: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
-    showBack: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
-    showEdit: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
-    iconed: {
-      type: Boolean,
-      default() {
-        return false;
-      }
+    emits: ['edit'],
+    setup(props, { slots, emit }) {
+      const { router } = useCallCommon();
+      const handleBack = () => {
+        router.back();
+      };
+      const handleEdit = () => {
+        emit('edit');
+      };
+
+      return () => (
+        <div
+          class={[
+            'group-title',
+            {
+              'bordered': props.bordered,
+              'is-detail': props.isDetail,
+              'iconed': props.iconed,
+              'flex-start': props.flexStart
+            }
+          ]}
+        >
+          <div class="label">
+            {props.showBack && (
+              <>
+                <a-link onClick={() => handleBack()}>
+                  <icon-arrow-left
+                    style={{ 'stroke-width': 5, 'font-size': '16px' }}
+                  />
+                </a-link>
+                <a-divider direction="vertical"></a-divider>
+              </>
+            )}
+            <div class="title-wrap">
+              <>
+                {slots.title ? slots.title() : <span>{props.title}</span>}
+                {slots.extra?.()}
+                {props.showEdit && (
+                  <a-link class="m-l-10" onClick={() => handleEdit()}>
+                    <icon-edit></icon-edit>
+                    <span class="mleft-5">
+                      {i18n.global.t('common.button.edit')}
+                    </span>
+                  </a-link>
+                )}
+              </>
+            </div>
+          </div>
+          {slots.right && <div class="right">{slots.right?.()}</div>}
+        </div>
+      );
     }
   });
-  const emits = defineEmits(['edit']);
-  const { router } = useCallCommon();
-  const handleBack = () => {
-    router.back();
-  };
-  const handleEdit = () => {
-    emits('edit');
-  };
 </script>
 
 <style lang="less" scoped>

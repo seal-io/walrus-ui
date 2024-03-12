@@ -106,7 +106,10 @@
 
       return () => (
         <div>
-          <a-spin loading={loading.value} style={{ width: '100%' }}>
+          <a-spin
+            loading={loading.value}
+            style={{ width: '100%', minHeight: '100px' }}
+          >
             <CodeDiffView
               maxHeight={maxHeight.value}
               content={diffContent.value}
