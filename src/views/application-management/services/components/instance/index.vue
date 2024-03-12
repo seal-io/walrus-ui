@@ -9,15 +9,7 @@
           <div class="title">
             <span class="m-r-30"> {{ currentInfo.name }}</span>
             <StatusLabel
-              :status="{
-                inactive: _.get(currentInfo, 'status.inactive'),
-                status: _.get(currentInfo, 'status.summaryStatus') || '',
-                text: _.get(currentInfo, 'status.summaryStatus'),
-                message:
-                  _.get(currentInfo, 'status.summaryStatusMessage') || '',
-                transitioning: _.get(currentInfo, 'status.transitioning'),
-                error: _.get(currentInfo, 'status.error')
-              }"
+              :status="_.get(currentInfo, 'status', {})"
             ></StatusLabel>
           </div>
           <div v-if="actionList.length" class="dropdown">

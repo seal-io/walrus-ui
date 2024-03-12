@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1089792",
+      "name": "cloudy",
+      "font_class": "copy-cloud",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
       "icon_id": "10987954",
       "name": "Connector",
       "font_class": "Connector",

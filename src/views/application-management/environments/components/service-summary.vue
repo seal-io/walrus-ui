@@ -48,17 +48,14 @@
       flex-basis: 40px;
       align-items: center;
       justify-content: center;
+      margin-right: 10px;
       padding: 0;
       font-size: 12px;
       line-height: 1.6;
       border-radius: var(--border-radius-small);
 
-      &.error {
-        margin-right: 10px;
-      }
-
-      &.transitioning {
-        margin: 0 10px;
+      &.inactive {
+        margin-right: 0;
       }
     }
   }

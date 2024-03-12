@@ -149,16 +149,7 @@
           :title="$t('dashboard.table.status')"
         >
           <template #cell="{ record }">
-            <StatusLabel
-              :status="{
-                status: record.status?.summaryStatus,
-                text: record.status?.summaryStatus,
-                inactive: record.status?.inactive,
-                message: record.status?.summaryStatusMessage,
-                transitioning: record.status?.transitioning,
-                error: record.status?.error
-              }"
-            ></StatusLabel>
+            <StatusLabel :status="record.status"></StatusLabel>
           </template>
         </a-table-column>
         <a-table-column align="left" :title="$t('common.table.operation')">

@@ -1,4 +1,5 @@
 /*.json
 /*.js
 /src/assets/js/ace/*.js
+/src/assets/style/icon-font/*.js
 DIST

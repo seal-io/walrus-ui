@@ -604,21 +604,7 @@
                       style={{ width: `${InputWidth.LARGE}px` }}
                     >
                       <StatusLabel
-                        status={{
-                          status:
-                            get(formData.value, 'status.summaryStatus') || '',
-                          text: get(formData.value, 'status.summaryStatus'),
-                          message:
-                            get(
-                              formData.value,
-                              'status.summaryStatusMessage'
-                            ) || '',
-                          transitioning: get(
-                            formData.value,
-                            'status.transitioning'
-                          ),
-                          error: get(formData.value, 'status.error')
-                        }}
+                        status={get(formData.value, 'status', {})}
                       ></StatusLabel>
                     </SealFormItemWrap>
                   </a-form-item>

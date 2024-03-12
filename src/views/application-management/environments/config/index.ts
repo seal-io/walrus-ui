@@ -101,7 +101,7 @@ export const EnvironmentActions: MoreAction[] = [
   {
     label: 'common.button.clone',
     value: CommonButtonValue.Clone,
-    icon: 'icon-Clone-Cloud',
+    icon: 'icon-copy-cloud',
     iconfont: true,
     handler: '',
     status: 'normal',

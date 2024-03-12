@@ -94,16 +94,7 @@
           :title="$t('dashboard.table.status')"
         >
           <template #cell="{ record }">
-            <StatusLabel
-              :status="{
-                status: get(record, 'status.summaryStatus'),
-                inactive: get(record, 'status.inactive'),
-                text: get(record, 'status.summaryStatus'),
-                message: get(record, 'status.summaryStatusMessage'),
-                transitioning: get(record, 'status.transitioning'),
-                error: get(record, 'status.error')
-              }"
-            ></StatusLabel>
+            <StatusLabel :status="get(record, 'status', {})"></StatusLabel>
           </template>
         </a-table-column>
       </template>

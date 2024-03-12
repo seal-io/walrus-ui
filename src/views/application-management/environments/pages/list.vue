@@ -276,7 +276,8 @@
     ready: 1,
     transitioning: 2,
     error: 3,
-    inactive: 4
+    warning: 4,
+    inactive: 5
   };
   let timer: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();

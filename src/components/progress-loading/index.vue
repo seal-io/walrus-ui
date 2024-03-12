@@ -4,7 +4,9 @@
   export default defineComponent({
     props: {
       type: {
-        type: String as PropType<'success' | 'error' | 'warning' | 'inactive'>,
+        type: String as PropType<
+          'success' | 'error' | 'warning' | 'inactive' | 'transitioning'
+        >,
         default() {
           return '';
         }
@@ -32,14 +34,12 @@
       const renderProgress = () => {
         if (props.type === 'warning') {
           return (
-            <a-progress
-              class="arco-icon-loading progress"
-              size="mini"
-              status="warning"
-              color="var(--seal-color-warning)"
-              width={props.size}
-              stroke-width={props.strokeWidth}
-              percent={props.percent}
+            <icon-bulb
+              style={{
+                color: 'rgba(var(--warning-3))',
+                fontSize: `${props.size}px`,
+                strokeWidth: props.strokeWidth
+              }}
             />
           );
         }
@@ -76,6 +76,23 @@
         return null;
       };
 
+      const renderTransitioning = () => {
+        if (props.type === 'transitioning') {
+          return (
+            <a-progress
+              class="arco-icon-loading progress"
+              size="mini"
+              status="normal"
+              color="rgba(var(--arcoblue-5),1)"
+              width={props.size}
+              stroke-width={props.strokeWidth}
+              percent={props.percent}
+            />
+          );
+        }
+        return null;
+      };
+
       const renderInactive = () => {
         if (props.type === 'inactive') {
           return (
@@ -96,6 +113,7 @@
           {renderError()}
           {renderSuccess()}
           {renderInactive()}
+          {renderTransitioning()}
         </span>
       );
     }

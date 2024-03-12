@@ -150,27 +150,13 @@
             <template #latest="{ record }">
               <StatusLabel
                 :zoom="0.9"
-                :status="{
-                  status: get(record, 'runs.0.status.summaryStatus'),
-                  inactive: get(record, 'runs.0.status.inactive'),
-                  text: get(record, 'runs.0.status.summaryStatus'),
-                  message: get(record, 'runs.0.status.summaryStatusMessage'),
-                  transitioning: get(record, 'runs.0.status.transitioning'),
-                  error: get(record, 'runs.0.status.error')
-                }"
+                :status="get(record, 'runs.0.status', {})"
               ></StatusLabel>
             </template>
             <template #status="{ record }">
               <StatusLabel
                 :zoom="0.9"
-                :status="{
-                  status: get(record, 'status.summaryStatus'),
-                  inactive: get(record, 'status.inactive'),
-                  text: get(record, 'status.summaryStatus'),
-                  message: get(record, 'status.summaryStatusMessage'),
-                  transitioning: get(record, 'status.transitioning'),
-                  error: get(record, 'status.error')
-                }"
+                :status="get(record, 'status', {})"
               ></StatusLabel>
             </template>
             <template #actions="{ record }">

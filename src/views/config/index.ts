@@ -324,7 +324,8 @@ export const StatusColorValueMap = {
   warningBg: '--warning-3',
   success: '--green-6',
   inactiveColor: '--gray-6',
-  inactiveBg: '--gray-4'
+  inactiveBg: '--gray-4',
+  transitioning: '--arcoblue-5'
 };
 
 export const StatusDarkColorValueMap = {
@@ -348,7 +349,8 @@ export const StatusLightColorValueMap = {
 export const StatusColorBgMap = {
   ready: `rgba(var(${StatusColorValueMap.success}),0.7)`,
   error: `rgba(var(${StatusColorValueMap.error}),0.7)`,
-  transitioning: `rgba(var(${StatusColorValueMap.warningBg}))`,
+  transitioning: `rgba(var(${StatusColorValueMap.transitioning}),0.9)`,
+  warning: `rgba(var(${StatusColorValueMap.warningBg}))`,
   inactive: `rgba(var(${StatusColorValueMap.inactiveBg}),1)`
 };
 
@@ -365,6 +367,7 @@ export const StatusLightColorBgMap = {
   transitioning: `rgba(${StatusLightColorValueMap.warningBg})`,
   inactive: `rgba(${StatusLightColorValueMap.inactiveBg},1)`
 };
+
 // color1: background color; color5: font color
 export const StatusColor = {
   error: {
@@ -373,8 +376,13 @@ export const StatusColor = {
     icon: 'icon-close-circle-fill'
   },
   warning: {
-    text: `rgba(var(${StatusColorValueMap.warningColor}),1)`, // color
-    bg: `rgba(var(${StatusColorValueMap.warningBg}),0.3)`, // backgroundColor #f9cc45
+    text: `rgba(var(${StatusColorValueMap.warningColor}),0.9)`,
+    bg: `rgba(var(${StatusColorValueMap.warningBg}),0.3)`,
+    icon: ''
+  },
+  transitioning: {
+    text: `rgba(var(${StatusColorValueMap.transitioning}),1)`,
+    bg: `rgba(var(${StatusColorValueMap.transitioning}),0.2)`,
     icon: ''
   },
   success: {

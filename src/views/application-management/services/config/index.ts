@@ -342,7 +342,7 @@ export const serviceBatchAction: MoreAction[] = [
   {
     label: 'common.button.clone',
     value: serviceActionMap.clone,
-    icon: 'icon-Clone-Cloud',
+    icon: 'icon-copy-cloud',
     iconfont: true,
     handler: '',
     status: 'normal',
@@ -477,7 +477,7 @@ export const serviceActions: MoreAction[] = [
   {
     label: 'common.button.clone',
     value: serviceActionMap.clone,
-    icon: 'icon-Clone-Cloud',
+    icon: 'icon-copy-cloud',
     iconfont: true,
     handler: '',
     status: 'normal',
