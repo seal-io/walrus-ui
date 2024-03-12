@@ -6,15 +6,17 @@
           <a-progress
             class="arco-icon-loading progress"
             size="mini"
-            status="warning"
-            :color="StatusColor.warning.text"
-            :width="14"
+            status="normal"
+            :color="StatusColor.transitioning.text"
+            :width="16"
             :stroke-width="3"
-            :percent="0.2"
+            :percent="0.6"
           />
-          <span class="text" :style="{ color: StatusColor.warning.text }">{{
-            statusInfo.status
-          }}</span>
+          <span
+            class="text"
+            :style="{ color: StatusColor.transitioning.text }"
+            >{{ statusInfo.text }}</span
+          >
         </span>
         <span v-else-if="statusInfo.error">
           <icon-font

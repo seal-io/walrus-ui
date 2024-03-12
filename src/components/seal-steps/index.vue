@@ -1,5 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
+  import { useAppStore } from '@/store';
   import { PropType, defineComponent, toRefs } from 'vue';
   import { StatusColorBgMap } from '@/views/config';
 
@@ -21,6 +22,7 @@
     },
     setup(props) {
       const { steps } = toRefs(props);
+      const appStore = useAppStore();
 
       return () => (
         <a-space class="steps-box">
@@ -30,7 +32,15 @@
                 <span
                   class={['item', item.status]}
                   style={{
-                    backgroundColor: _.get(StatusColorBgMap, item.colorStatus)
+                    backgroundColor: appStore.isDark
+                      ? `rgba(var(${_.get(
+                          StatusColorBgMap,
+                          item.colorStatus
+                        )}),0.6)`
+                      : `rgba(var(${_.get(
+                          StatusColorBgMap,
+                          item.colorStatus
+                        )}),0.7)`
                   }}
                 ></span>
               </a-tooltip>
@@ -50,44 +60,9 @@
       display: flex;
       width: 14px;
       height: 14px;
+      color: var(--color-white);
       background-color: var(--color-fill-3);
       border-radius: var(--border-radius-mini);
-
-      &.Ready {
-        color: var(--color-white);
-        // background-color: rgba(var(--green-6), 0.7);
-
-        // &::after {
-        //   background-color: rgba(var(--green-6), 0.7);
-        // }
-      }
-
-      &.Error {
-        color: var(--color-white);
-        // background-color: rgba(var(--red-6), 0.7);
-
-        // &::after {
-        //   background-color: rgba(var(--red-6), 0.7);
-        // }
-      }
-
-      &.Running {
-        color: var(--color-white);
-        // background-color: rgb(251, 222, 55);
-
-        // &::after {
-        //   background-color: rgb(251, 222, 55);
-        // }
-      }
-
-      &.Pending {
-        color: var(--color-white);
-        // background-color: rgba(var(--gray-4), 0.9);
-
-        // &::after {
-        //   background-color: rgba(var(--gray-4), 0.9);
-        // }
-      }
     }
   }
 </style>

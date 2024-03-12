@@ -319,13 +319,16 @@ export const HintKeyMaps = {
 };
 
 export const StatusColorValueMap = {
-  error: '--red-6',
+  errorColor: '--red-6',
+  errorBg: '--red-4',
   warningColor: '--warning-6',
-  warningBg: '--warning-3',
-  success: '--green-6',
+  warningBg: '--warning-4',
+  successColor: '--green-6',
+  successBg: '--green-4',
   inactiveColor: '--gray-6',
   inactiveBg: '--gray-4',
-  transitioning: '--arcoblue-5'
+  transitioningColor: '--arcoblue-5',
+  transitioningBg: '--arcoblue-4'
 };
 
 export const StatusDarkColorValueMap = {
@@ -347,11 +350,11 @@ export const StatusLightColorValueMap = {
 };
 
 export const StatusColorBgMap = {
-  ready: `rgba(var(${StatusColorValueMap.success}),0.7)`,
-  error: `rgba(var(${StatusColorValueMap.error}),0.7)`,
-  transitioning: `rgba(var(${StatusColorValueMap.transitioning}),0.9)`,
-  warning: `rgba(var(${StatusColorValueMap.warningBg}))`,
-  inactive: `rgba(var(${StatusColorValueMap.inactiveBg}),1)`
+  ready: StatusColorValueMap.successColor,
+  error: StatusColorValueMap.errorColor,
+  transitioning: StatusColorValueMap.transitioningColor,
+  warning: StatusColorValueMap.warningColor,
+  inactive: StatusColorValueMap.inactiveColor
 };
 
 export const StatusDarkColorBgMap = {
@@ -371,23 +374,23 @@ export const StatusLightColorBgMap = {
 // color1: background color; color5: font color
 export const StatusColor = {
   error: {
-    text: `rgba(var(${StatusColorValueMap.error}), 0.8)`,
-    bg: `rgba(var(${StatusColorValueMap.error}), 0.1)`,
+    text: `rgba(var(${StatusColorValueMap.errorColor}), 0.8)`,
+    bg: `rgba(var(${StatusColorValueMap.errorBg}), 0.13)`,
     icon: 'icon-close-circle-fill'
   },
   warning: {
     text: `rgba(var(${StatusColorValueMap.warningColor}),0.9)`,
-    bg: `rgba(var(${StatusColorValueMap.warningBg}),0.3)`,
+    bg: `rgba(var(${StatusColorValueMap.warningBg}),0.15)`,
     icon: ''
   },
   transitioning: {
-    text: `rgba(var(${StatusColorValueMap.transitioning}),1)`,
-    bg: `rgba(var(${StatusColorValueMap.transitioning}),0.2)`,
+    text: `rgba(var(${StatusColorValueMap.transitioningColor}),1)`,
+    bg: `rgba(var(${StatusColorValueMap.transitioningBg}),0.15)`,
     icon: ''
   },
   success: {
-    text: `rgba(var(${StatusColorValueMap.success}), 0.9)`,
-    bg: `rgba(var(${StatusColorValueMap.success}), 0.1)`,
+    text: `rgba(var(${StatusColorValueMap.successColor}), 0.9)`,
+    bg: `rgba(var(${StatusColorValueMap.successBg}), 0.1)`,
     icon: 'icon-check-circle-fill'
   },
   inactive: {
