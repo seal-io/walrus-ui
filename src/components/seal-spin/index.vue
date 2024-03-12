@@ -7,6 +7,7 @@
       return () => (
         <a-spin
           {...attrs}
+          style={{ minHeight: '100px' }}
           v-slots={{
             tip: slots.tip ? () => slots.tip?.() : null,
             icon: slots.icon ? () => slots.icon?.() : null,

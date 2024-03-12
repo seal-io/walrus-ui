@@ -3,27 +3,10 @@
     <div ref="wrapper" class="wrap" :class="{ fullscreen: fullscreen }">
       <div class="flex">
         <a-space>
-          <!-- <a-select v-model="theme" :options="themeList"> </a-select> -->
-          <!-- <a-button type="text" size="small" @click="handleToggleFullScreen">
-          <template #icon>
-            <i
-              class="icon iconfont"
-              :class="{
-                'icon-fullscreen': !isFullscreen,
-                'icon-fullscreen-exit': isFullscreen
-              }"
-            ></i>
-          </template>
-          <span>{{
-            isFullscreen
-              ? $t('applications.environment.graph.cancelfullscreen')
-              : $t('applications.environment.graph.fullscreen')
-          }}</span>
-        </a-button> -->
           <a-button
             v-if="activeKey === 'form'"
-            size="small"
             type="text"
+            style="color: rgb(var(--link-6))"
             @click="handleToggleMode('editor')"
           >
             <template #icon><icon-code /></template>
@@ -32,6 +15,7 @@
           <a-button
             v-if="activeKey === 'editor'"
             type="text"
+            style="color: rgb(var(--link-6))"
             @click="handleToggleMode('form')"
           >
             <template #icon><icon-eye /></template>
@@ -55,7 +39,12 @@
           "
           :size="16"
         >
-          <a-button v-if="readOnly" type="text" @click="handleEdit">
+          <a-button
+            v-if="readOnly"
+            type="text"
+            style="color: rgb(var(--link-6))"
+            @click="handleEdit"
+          >
             <template #icon><icon-edit /></template>
             {{ $t('common.button.edit') }}
           </a-button>
@@ -79,7 +68,12 @@
           </div>
         </a-space>
       </div>
-      <a-tabs v-model:active-key="activeKey" size="mini" class="edit-tab">
+      <a-tabs
+        v-model:active-key="activeKey"
+        size="mini"
+        class="edit-tab"
+        lazy-load
+      >
         <a-tab-pane key="editor" :title="$t('common.button.edit')">
           <div class="editor">
             <AceEditor
@@ -99,11 +93,14 @@
           class="group-form-tab"
         >
           <div class="form" :class="{ isFullscreen }">
-            <groupForm
-              :key="formKey"
-              v-model:form-data="originFormData"
-              :schema="schemaVariables"
-            ></groupForm>
+            <seal-spin :loading="loading" style="width: 100%">
+              <groupForm
+                v-if="!loading"
+                :key="formKey"
+                v-model:form-data="originFormData"
+                :schema="schemaVariables"
+              ></groupForm>
+            </seal-spin>
           </div>
         </a-tab-pane>
       </a-tabs>
@@ -113,19 +110,13 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  // import Ajv from 'ajv';
-  import QuestionPopup from '@/components/question-popup/index.vue';
   import { useUserStore } from '@/store';
-  import {
-    InjectSchemaFormStatusKey,
-    PageAction,
-    QAlinkMap
-  } from '@/views/config';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useFullscreen } from '@vueuse/core';
   import { Message } from '@arco-design/web-vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import { PropType, ref, provide, watch, computed } from 'vue';
+  import { PropType, ref, provide, watch, computed, nextTick } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import groupForm from '@/components/dynamic-form/group-form.vue';
   import {
@@ -141,17 +132,6 @@
     resetTemplateSchemaByVersionId
   } from '../api';
   import { schemaActionList } from '../config/index';
-
-  const themeList = [
-    {
-      label: 'monokai',
-      value: 'monokai'
-    },
-    {
-      label: 'light',
-      value: 'twilight'
-    }
-  ];
 
   const props = defineProps({
     schema: {
@@ -210,6 +190,7 @@
   const projectID = route.params.projectId || '';
   const formKey = ref(Date.now());
   const fullscreen = ref(false);
+  const loading = ref(true);
   const { isFullscreen, toggle } = useFullscreen(wrapper);
 
   const actionList = computed((row) => {
@@ -242,11 +223,6 @@
     activeKey.value = mode;
   };
 
-  const handleToggleFullScreen = () => {
-    // toggle();
-    fullscreen.value = !fullscreen.value;
-  };
-
   const previewForm = () => {
     const jsonCode = yaml2Json(code.value);
     const variables = _.get(jsonCode, 'components.schemas.variables');
@@ -259,20 +235,6 @@
     };
   };
 
-  const validateSchema = async () => {
-    // try {
-    //   const ajv = new Ajv();
-    //   const data = previewForm();
-    //   const validate = ajv.compile(data.jsonCode.components.schemas.variables);
-    //   const res = validate(data.formData);
-    //   console.log('res========', res, validate);
-    //   return true;
-    // } catch (error: any) {
-    //   Message.error(error.message);
-    //   console.log('error========', error);
-    //   return false;
-    // }
-  };
   const updateTemplateSchema = async () => {
     if (!props.versionId && props.page === 'template') return;
 
@@ -294,7 +256,6 @@
     });
   };
   const handlePutTemplateSchema = async () => {
-    // validateSchema();
     const valid = validateYaml(code.value);
     if (valid.error) {
       Message.error(valid.error.message);
@@ -363,7 +324,9 @@
     (val) => {
       if (val) {
         initData();
-        previewForm();
+        nextTick(() => {
+          previewForm();
+        });
       }
     },
     {
@@ -380,7 +343,14 @@
           Message.error(valid.error.message);
           return;
         }
-        previewForm();
+        setTimeout(() => {
+          previewForm();
+        });
+        if (loading.value) {
+          setTimeout(() => {
+            loading.value = false;
+          }, 200);
+        }
       }
     },
     {

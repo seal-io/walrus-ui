@@ -324,9 +324,11 @@
         label: _.capitalize(key),
         order: orderMap[key]
       };
-    }).sort((a, b) => {
-      return a.order - b.order;
-    });
+    })
+      .sort((a, b) => {
+        return a.order - b.order;
+      })
+      .filter((item) => item.status !== 'warning');
   };
   const handleCreate = () => {
     router.push({
