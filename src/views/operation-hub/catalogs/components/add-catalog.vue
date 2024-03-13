@@ -123,7 +123,7 @@
             :style="{ width: `${InputWidth.LARGE}px` }"
           ></seal-input>
           <template #extra>
-            <span>{{ $t('catalogs.form.filterPattern.desc') }}</span>
+            <span v-html="$t('catalogs.form.filterPattern.desc')"></span>
           </template>
         </a-form-item>
         <a-form-item

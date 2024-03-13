@@ -247,6 +247,9 @@
       ) {
         return false;
       }
+      if (item.value === serviceActionMap.viewRun) {
+        return false;
+      }
       return item.filterFun ? item.filterFun(currentInfo.value) : true;
     });
     const res = _.map(list, (o) => {

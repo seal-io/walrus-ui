@@ -303,7 +303,8 @@ export const serviceActionMap = {
   export: 'export',
   sync: 'sync',
   stop: 'stop',
-  start: 'start'
+  start: 'start',
+  viewRun: 'viewRun'
 };
 
 export const rollbackPreviewActions: MoreAction[] = [
@@ -550,16 +551,30 @@ export const serviceActions: MoreAction[] = [
     }
   },
   {
-    label: 'applications.applications.history.running',
-    value: serviceActionMap.logs,
-    icon: 'icon-log',
+    label: 'applications.applications.history.detail',
+    value: serviceActionMap.viewRun,
+    icon: 'icon-detail-info',
     iconfont: true,
-    style: {
-      marginRight: '7px'
-    },
     handler: '',
-    status: 'normal'
+    status: 'normal',
+    disabled: false,
+    filterFun(currentInfo) {
+      return (
+        get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Undeployed
+      );
+    }
   },
+  // {
+  //   label: 'applications.applications.history.running',
+  //   value: serviceActionMap.logs,
+  //   icon: 'icon-log',
+  //   iconfont: true,
+  //   style: {
+  //     marginRight: '7px'
+  //   },
+  //   handler: '',
+  //   status: 'normal'
+  // },
   {
     label: 'common.button.rollback',
     value: serviceActionMap.rollback,

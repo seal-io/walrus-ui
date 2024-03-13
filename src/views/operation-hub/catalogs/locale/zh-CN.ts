@@ -9,7 +9,7 @@ export default {
   'catalogs.form.source.url': '来源',
   'catalogs.form.filterPattern': '过滤规则',
   'catalogs.form.filterPattern.desc':
-    '输入正则表达式，例如：^test.*$，表示只同步名称以test开头的模板',
+    '输入正则表达式，例如：<span style="color: var(--color-text-2)">^terraform-.*$</span>，表示只同步名称以 <span style="color: var(--color-text-2)">terraform-</span> 开头的模板',
   'catalogs.form.rules.type': '类型必选',
   'catalogs.form.source.desc': '完整的组织地址，例：{url}'
 };

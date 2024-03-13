@@ -9,7 +9,7 @@ export default {
   'catalogs.form.source.url': 'Source',
   'catalogs.form.filterPattern': 'Filter Pattern',
   'catalogs.form.filterPattern.desc':
-    'Enter a regular expression, e.g.: ^test.*$, to indicate that only templates with names starting with test will be synchronized',
+    'Enter a regular expression, e.g.: <span style="color: var(--color-text-2)">^terraform-.*$</span>, to indicate that only templates with names starting with <span style="color: var(--color-text-2)">terraform-</span> will be synchronized',
   'catalogs.form.rules.type': 'Type is required',
   'catalogs.form.source.desc': 'Complete organization address, e.g.: {url}'
 };
