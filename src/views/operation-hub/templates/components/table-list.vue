@@ -178,7 +178,15 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useAppStore } from '@/store';
   import _, { map, pickBy, remove } from 'lodash';
-  import { ref, reactive, onMounted, nextTick, computed, PropType } from 'vue';
+  import {
+    ref,
+    reactive,
+    onMounted,
+    onBeforeUnmount,
+    nextTick,
+    computed,
+    PropType
+  } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { UseSortDirection } from '@/utils/common';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -196,6 +204,10 @@
     TEMPLATE_API,
     PROJECT_API_PREFIX
   } from '../api';
+  import {
+    listenFilterTemplateAction,
+    removeFilterTemplateActionListener
+  } from '../../hooks/filter-catalog-listener';
 
   const props = defineProps({
     currentView: {
@@ -512,6 +524,15 @@
       // ignore
     }
   };
+
+  listenFilterTemplateAction((data) => {
+    setTimeout(() => {
+      queryParams.catalogID = data.id;
+      handleSearch();
+    }, 100);
+    console.log('template list listenFilterCatalogAction', data);
+  });
+
   onMounted(() => {
     fetchData();
     getCatalogList();
@@ -519,6 +540,9 @@
       createTemplateChunkRequest();
       createCatalogChunkRequest();
     });
+  });
+  onBeforeUnmount(() => {
+    removeFilterTemplateActionListener();
   });
 </script>
 

@@ -8,6 +8,7 @@
       :pagination="false"
       row-key="id"
       :row-selection="rowSelectionRef"
+      @cell-click="handleCellClick"
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -28,7 +29,7 @@
           }"
         >
           <template #cell="{ record }">
-            <span>{{ record.name }}</span>
+            <a-link :hoverable="false">{{ record.name }}</a-link>
           </template>
         </a-table-column>
 
@@ -154,6 +155,7 @@
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { queryCatalogs, refreshCatalog, deleteCatalogs } from '../api';
   import { actionList } from '../config';
+  import { emitFilterCatalogAction } from '../../hooks/filter-catalog-listener';
 
   const props = defineProps({
     list: {
@@ -213,6 +215,12 @@
       ? rowSelection
       : null;
   });
+
+  const handleCellClick = (row, col) => {
+    if (col.dataIndex === 'name') {
+      emitFilterCatalogAction(row);
+    }
+  };
 
   const setActionList = (row) => {
     const list = _.filter(actionList, (item) => {

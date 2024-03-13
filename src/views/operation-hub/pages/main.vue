@@ -53,14 +53,6 @@
           >
             <Connectors></Connectors>
           </a-tab-pane>
-
-          <!-- <template #extra>
-            <IconBtnGroup
-              v-if="activeKey === OperatorHubTabs.TEMPLATES"
-              v-model:active="dataView[activeKey]"
-              :icon-list="iconList"
-            ></IconBtnGroup>
-          </template> -->
         </a-tabs>
       </ComCard>
     </ComCard>
@@ -69,7 +61,7 @@
 
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
-  import { ref, reactive } from 'vue';
+  import { ref, nextTick, reactive, onBeforeUnmount } from 'vue';
   import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import { OperatorHubTabs } from '@/views/config';
   import HeaderInfo from '@/components/header-info/index.vue';
@@ -79,6 +71,11 @@
   import Catalogs from '../catalogs/pages/list.vue';
   import GlobalVariables from '../variables/pages/list.vue';
   import ResourceDefinition from '../resource-definitions/pages/list.vue';
+  import {
+    listenFilterCatalogAction,
+    removeFilterCatalogActionListener,
+    emitFilterTemplateAction
+  } from '../hooks/filter-catalog-listener';
 
   const iconList = [
     {
@@ -105,6 +102,15 @@
   const handleTabChange = (val) => {
     setPageTabActive(val);
   };
+  listenFilterCatalogAction((data) => {
+    handleTabChange(OperatorHubTabs.TEMPLATES);
+    setTimeout(() => {
+      emitFilterTemplateAction(data);
+    }, 100);
+  });
+  onBeforeUnmount(() => {
+    removeFilterCatalogActionListener();
+  });
 </script>
 
 <script lang="ts">
