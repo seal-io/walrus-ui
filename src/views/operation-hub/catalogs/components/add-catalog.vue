@@ -3,7 +3,7 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="532"
+    :width="600"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
@@ -111,6 +111,22 @@
           </template>
         </a-form-item>
         <a-form-item
+          field="filterPattern"
+          :label="$t('catalogs.form.filterPattern')"
+          hide-asterisk
+          :hide-label="true"
+        >
+          <seal-input
+            v-model.trim="formData.filterPattern"
+            :label="$t('catalogs.form.filterPattern')"
+            :required="false"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+          ></seal-input>
+          <template #extra>
+            <span>{{ $t('catalogs.form.filterPattern.desc') }}</span>
+          </template>
+        </a-form-item>
+        <a-form-item
           :label="$t('operation.environments.table.description')"
           hide-asterisk
           :hide-label="true"
@@ -120,7 +136,7 @@
             v-model="formData.description"
             :label="$t('operation.environments.table.description')"
             :style="{ width: `${InputWidth.LARGE}px` }"
-            :auto-size="{ minRows: 4, maxRows: 4 }"
+            :auto-size="{ minRows: 3, maxRows: 4 }"
             :max-length="200"
             show-word-limit
           ></seal-textarea>
@@ -213,7 +229,7 @@
   const submitLoading = ref(false);
   const formData: CatalogFormData = reactive({
     description: '',
-    // icon: '',
+    filterPattern: '',
     name: '',
     source: '',
     type: 'Github'
@@ -247,6 +263,7 @@
     formData.description = '';
     formData.name = '';
     formData.source = '';
+    formData.filterPattern = '';
     formData.type = 'Github';
     emit('update:dataInfo', {});
   };

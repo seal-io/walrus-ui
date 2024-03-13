@@ -1,6 +1,5 @@
 <template>
   <ComCard padding="0" class="list">
-    <IconFont type="icon-layer"></IconFont>
     <div>
       <a-spin :loading="loading" style="width: 100%">
         <div class="header">

@@ -30,7 +30,10 @@
         @change="handleSelectedChange"
       >
         <template #prefix>
-          <icon-font type="icon-filter" style="color: var(--color-text-2)" />
+          <i
+            class="iconfont icon-filter"
+            style="color: var(--color-text-2)"
+          ></i>
         </template>
         <a-option
           v-for="(item, index) in dataConfig"

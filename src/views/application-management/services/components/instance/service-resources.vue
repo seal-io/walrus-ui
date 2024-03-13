@@ -45,11 +45,10 @@
           :title="$t('common.table.name')"
         >
           <template #cell="{ record }">
-            <icon-font
+            <i
               v-if="_.get(record, 'composition.id')"
-              type="icon-node"
-              class="mright-5 icon-node"
-            ></icon-font>
+              class="iconfont mright-5 icon-node"
+            ></i>
             <span>{{ record.name }}</span>
           </template>
         </a-table-column>

@@ -47,7 +47,7 @@
             @click="handleDraftModule"
           >
             <template #icon>
-              <icon-font type="icon-ChatGPT"></icon-font>
+              <i class="iconfont icon-ChatGPT"></i>
             </template>
             <span>{{ $t('operation.templates.button.gpt') }}</span>
           </a-button>
