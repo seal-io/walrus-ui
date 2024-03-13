@@ -134,7 +134,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
   import { ProjectTabs } from '@/views/config';
-  import { ref, onMounted, reactive } from 'vue';
+  import { ref, onMounted, onBeforeUnmount, reactive } from 'vue';
   import _ from 'lodash';
   import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import useCallCommon from '@/hooks/use-call-common';
@@ -147,6 +147,11 @@
   import TemplateList from '@/views/application-management/templates/pages/list.vue';
   import CatalogList from '@/views/application-management/catalogs/pages/list.vue';
   import WorkflowList from '@/views/application-management/workflows/pages/list.vue';
+  import {
+    listenFilterCatalogAction,
+    removeFilterCatalogActionListener,
+    emitFilterTemplateAction
+  } from '@/views/operation-hub/hooks/filter-catalog-listener';
   import { queryItemProject } from '../api';
   import { projectDetailTabs } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
@@ -238,6 +243,13 @@
     initActiveTab();
     breadCrumbList.value = await initBreadValues([]);
   };
+  listenFilterCatalogAction((data) => {
+    handleTabChange(ProjectTabs.TEMPLATES);
+    setTimeout(() => {
+      emitFilterTemplateAction(data);
+    }, 100);
+  });
+
   onMounted(() => {
     initBread();
     projectStore.setEnterProjectDefault({
@@ -246,6 +258,11 @@
       list: false
     });
   });
+
+  onBeforeUnmount(() => {
+    removeFilterCatalogActionListener();
+  });
+
   init();
 </script>
 
