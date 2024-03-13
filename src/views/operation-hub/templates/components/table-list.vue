@@ -147,7 +147,11 @@
                 >
                   <template #icon>
                     <icon-find-replace v-if="queryParams.query" />
-                    <icon-layers v-else style="font-size: 22px" />
+                    <i
+                      v-else
+                      class="iconfont icon-layers-2"
+                      style="font-size: 18px"
+                    ></i>
                   </template>
                   <template #extra>
                     <a-button

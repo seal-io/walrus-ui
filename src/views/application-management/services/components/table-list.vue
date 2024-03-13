@@ -147,10 +147,12 @@
               <span v-else>{{ record.name }}</span>
             </template>
             <template #latest="{ record }">
-              <StatusLabel
-                :zoom="0.9"
-                :status="get(record, 'runs.0.status', {})"
-              ></StatusLabel>
+              <span class="flex">
+                <StatusLabel
+                  :zoom="0.9"
+                  :status="get(record, 'runs.0.status', {})"
+                ></StatusLabel>
+              </span>
             </template>
             <template #status="{ record }">
               <StatusLabel
@@ -238,6 +240,11 @@
       :title="$t('applications.service.batchDeploy')"
       @confirm="handleComfirmComment"
     ></CommentModal>
+    <RunDetailModal
+      v-model:show="showRunDetailModal"
+      :title="$t('applications.applications.history.detail')"
+      :data="runData"
+    ></RunDetailModal>
   </ComCard>
 </template>
 
@@ -279,6 +286,7 @@
     ServiceDataType,
     StartableStatus,
     ProvideServiceInfoKey,
+    RevisionStatus,
     ServiceStatus
   } from '../config';
   import {
@@ -301,6 +309,7 @@
   import ResourceItem from './resource-item.vue';
   import resourceControl from './instance/resource-control.vue';
   import useResourceControl from './hooks/use-resource-control';
+  import RunDetailModal from './runs/detail-modal/index.vue';
 
   const props = defineProps({
     title: {
@@ -368,6 +377,8 @@
   provide(ProvideServiceInfoKey, currentServiceInfo);
 
   let fetchToken: any = null;
+  const showRunDetailModal = ref(false);
+  const runData = ref<any>({});
   const activeResource = ref<any>({});
   const showCommentModal = ref(false);
   const showDeleteModal = ref(false);
@@ -418,19 +429,22 @@
       handleRowSelectChange([]);
     }
   };
-  const getEndpoints = (row) => {
-    const list = _.map(row.endpoints || [], (item) => {
-      return {
-        label: item.name,
-        value: item.url,
-        icon: ''
-      };
-    }).filter(
-      (item) =>
-        _.startsWith(item.label, 'http') || _.startsWith(item.label, 'https')
-    );
-    return list;
+
+  const handleViewLatestRun = (row) => {
+    currentServiceInfo.value = row;
+    const latestRun = _.get(row, 'runs.0', {});
+    runData.value = {
+      serviceId: row.id,
+      runId: latestRun.id,
+      projectId: projectID,
+      environmentId: environmentID
+    };
+
+    setTimeout(() => {
+      showRunDetailModal.value = true;
+    }, 100);
   };
+
   const setActionList = (row) => {
     const list = _.filter(serviceActions, (item) => {
       return item.filterFun ? item.filterFun(row) : true;
@@ -703,6 +717,7 @@
     actionHandlerMap.set(serviceActionMap.delete, handleDelete);
     actionHandlerMap.set(serviceActionMap.clone, handleCloneService);
     actionHandlerMap.set(serviceActionMap.export, handleExportYaml);
+    actionHandlerMap.set(serviceActionMap.viewRun, handleViewLatestRun);
   };
   const init = async () => {
     userStore.setInfo({ currentProject: projectID });

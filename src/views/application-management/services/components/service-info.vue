@@ -187,6 +187,7 @@
   watch(
     () => serviceInfo.value.id,
     () => {
+      console.log('serviceInfo.value.id', serviceInfo.value.id);
       if (serviceInfo.value.id) {
         init();
       }

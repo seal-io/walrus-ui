@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "39538473",
+      "name": "layers-2",
+      "font_class": "layers-2",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    },
+    {
+      "icon_id": "39538415",
+      "name": "detailinfo",
+      "font_class": "detail-info",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
       "icon_id": "1089792",
       "name": "cloudy",
       "font_class": "copy-cloud",
