@@ -476,6 +476,20 @@ export const serviceActions: MoreAction[] = [
     }
   },
   {
+    label: 'applications.applications.history.detail',
+    value: serviceActionMap.viewRun,
+    icon: 'icon-detail-info',
+    iconfont: true,
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun(currentInfo) {
+      return (
+        get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Undeployed
+      );
+    }
+  },
+  {
     label: 'common.button.clone',
     value: serviceActionMap.clone,
     icon: 'icon-copy-cloud',
@@ -548,20 +562,6 @@ export const serviceActions: MoreAction[] = [
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.POST]
       });
-    }
-  },
-  {
-    label: 'applications.applications.history.detail',
-    value: serviceActionMap.viewRun,
-    icon: 'icon-detail-info',
-    iconfont: true,
-    handler: '',
-    status: 'normal',
-    disabled: false,
-    filterFun(currentInfo) {
-      return (
-        get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Undeployed
-      );
     }
   },
   // {

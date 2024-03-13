@@ -29,5 +29,5 @@ export default {
   'dashboard.datepicker.day': 'Day',
   'dashboard.datepicker.month': 'Month',
   'dashboard.datepicker.year': 'Year',
-  'dashboard.createProject.tips': "You don't have a project yet, go create one!"
+  'dashboard.createProject.tips': "You don't have a project yet!"
 };
