@@ -19,10 +19,7 @@
           >
         </span>
         <span v-else-if="statusInfo.error">
-          <icon-font
-            type="icon-warning-filling-copy"
-            class="size-16"
-          ></icon-font>
+          <i class="size-16 icon-warning-filling-copy iconfont"></i>
         </span>
         <span v-else>
           <icon-check-circle-fill

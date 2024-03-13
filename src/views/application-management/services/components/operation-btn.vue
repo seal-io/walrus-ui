@@ -13,7 +13,7 @@
       :content="$t('common.button.cancel')"
     >
       <a-link>
-        <icon-font type="icon-quxiao" @click="handleCancel"></icon-font>
+        <i class="iconfont icon-quxiao" @click="handleCancel"></i>
       </a-link>
     </a-tooltip>
     <a-tooltip

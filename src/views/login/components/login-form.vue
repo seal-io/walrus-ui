@@ -27,6 +27,7 @@
                 v-for="item in locales"
                 :key="item.value"
                 :value="item.value"
+                style="font-size: var(--font-size-normal)"
               >
                 {{ item.label }}
               </a-doption>

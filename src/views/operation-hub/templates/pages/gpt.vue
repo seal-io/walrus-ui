@@ -26,13 +26,13 @@
         <a-space v-if="showFix">
           <a-link class="link-btn" @click="handleFixCall">
             <template #icon>
-              <icon-font type="icon-icontypropertyrepair"></icon-font>
+              <i class="iconfont icon-icontypropertyrepair"></i>
             </template>
             <span>{{ $t('operation.templates.detail.receiveFix') }}</span>
           </a-link>
           <a-link class="link-btn" @click="handleUndoCall">
             <template #icon>
-              <icon-font type="icon-quxiao"></icon-font>
+              <i class="iconfont icon-quxiao"></i>
             </template>
             <span>{{ $t('operation.templates.detail.cancelFix') }}</span>
           </a-link>
@@ -72,7 +72,7 @@
             @click="handleCompletionExplain"
           >
             <template #icon>
-              <icon-font type="icon-shengchenglujing-01"></icon-font>
+              <i class="iconfont icon-shengchenglujing-01"></i>
             </template>
             <span>{{ $t('operation.templates.detail.explain') }}</span>
           </a-button>
@@ -130,10 +130,7 @@
                     $t('operation.templates.detail.correctionview')
                   }}</div>
                 </template>
-                <icon-font
-                  type="icon-shoudongxiaoyan"
-                  class="size-16"
-                ></icon-font>
+                <i class="size-16 icon-shoudongxiaoyan iconfont"></i>
               </a-button>
             </a-tooltip>
           </a-tooltip>

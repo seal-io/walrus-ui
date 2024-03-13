@@ -1,18 +1,6 @@
 <template>
   <div class="tab-content-wrap">
     <div class="icon-btn-group margin-b10">
-      <!-- <icon-font
-        type="icon-table"
-        class="size-14"
-        :class="{ active: currentView === 'list' }"
-        @click="handleToggle('list')"
-      />
-      <a-divider direction="vertical" :margin="1"></a-divider>
-      <icon-code-square
-        class="size-14"
-        :class="{ active: currentView === 'json' }"
-        @click="handleToggle('json')"
-      /> -->
       <IconBtnGroup
         v-model:active="currentView"
         :icon-list="iconList"

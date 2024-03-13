@@ -10,6 +10,7 @@ export interface CatalogRowData extends TemplateRowData {
 }
 export interface CatalogFormData {
   description: string;
+  filterPattern: string;
   icon?: string;
   name: string;
   source: string;

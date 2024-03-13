@@ -130,11 +130,10 @@
               v-if="_.includes([ConnectorCategory.Custom], record.category)"
               class="mright-5"
             >
-              <icon-font
-                type="icon-custom"
-                class="size-16"
+              <i
+                class="size-16 iconfont icon-custom"
                 style="color: rgb(var(--arcoblue-5))"
-              ></icon-font>
+              ></i>
             </span>
             <span v-else class="mright-5">
               <ProviderIcon :provider="toLower(record.type)"></ProviderIcon>
