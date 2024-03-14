@@ -136,26 +136,6 @@
               @change="handleKubeConfigChange"
             ></AutoReadfile>
           </a-form-item>
-          <!-- <a-form-item label="" :hide-label="pageAction === PageAction.EDIT">
-            <template #label>
-              <div class="label-wrap">
-                <span class="text">{{
-                  $t('operation.connectors.form.finopsenable')
-                }}</span>
-              </div>
-            </template>
-            <seal-checkbox
-              v-if="pageAction == PageAction.EDIT"
-              v-model="formData.enableFinOps"
-              :style="{ width: `${InputWidth.LARGE - 20}px` }"
-              :label="$t('operation.connectors.rules.enable')"
-            ></seal-checkbox>
-            <span v-else class="readonly-view-label">{{
-              formData.enableFinOps
-                ? $t('operation.connectors.finops.enable')
-                : $t('operation.connectors.finops.disable')
-            }}</span>
-          </a-form-item> -->
           <a-form-item
             v-if="pageAction === PageAction.VIEW"
             hide-label
@@ -168,16 +148,6 @@
               <StatusLabel :status="get(formData, 'status', {})"></StatusLabel>
             </SealFormItemWrap>
           </a-form-item>
-          <!-- <a-form-item
-            v-if="pageAction === PageAction.VIEW"
-            :label="$t('operation.connectors.table.coststatus')"
-          >
-            <div class="readonly-view-label description-content">
-              <span>{{
-                getCostStatus(get(formData, 'status.conditions') || [])
-              }}</span>
-            </div>
-          </a-form-item> -->
         </a-form>
       </div>
       <EditPageFooter v-if="pageAction === PageAction.EDIT">
