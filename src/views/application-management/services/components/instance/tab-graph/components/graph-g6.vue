@@ -149,7 +149,7 @@
             const renderExecHtml = () => {
               if (!executable) return '';
               return `<li code="exec" class="iconfont icon-terminal">
-                <span class="m-l-3">${i18n.global.t(
+                <span class="m-l-3" code="exec">${i18n.global.t(
                   'applications.instance.tab.term'
                 )}</span>
               </li>`;
