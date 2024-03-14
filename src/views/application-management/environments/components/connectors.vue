@@ -37,7 +37,7 @@
             <span v-if="record.category === ConnectorCategory.Custom">-</span>
             <StatusLabel
               v-else
-              :status="{
+              :status-detail="{
                 status: get(record, 'status.summaryStatus'),
                 text: get(record, 'status.summaryStatus'),
                 message: get(record, 'status.summaryStatusMessage'),
