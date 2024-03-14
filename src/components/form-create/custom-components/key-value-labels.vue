@@ -14,6 +14,7 @@
   import LabelsList from './labels-list.vue';
 
   export default defineComponent({
+    inheritAttrs: false,
     emits: ['update:value', 'update:labelList'],
     props: {
       labels: {

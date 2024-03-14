@@ -29,6 +29,7 @@
   import { ProviderFormRefKey } from '../config';
 
   export default defineComponent({
+    inheritAttrs: false,
     props: {
       ...schemaFieldProps,
       rules: {

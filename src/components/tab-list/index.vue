@@ -7,7 +7,7 @@
       :class="{ active: item.key === activeKey }"
     >
       <span @click="handleTabChange(item)">
-        {{ $t(item.label || '') }}
+        {{ item.label && $t(item.label) }}
       </span>
     </span>
   </a-space>

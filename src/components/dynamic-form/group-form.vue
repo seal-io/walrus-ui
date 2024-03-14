@@ -55,11 +55,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import {
-    InjectSchemaFormStatusKey,
-    PageAction,
-    InjectShowInputHintKey
-  } from '@/views/config';
+  import { InjectShowInputHintKey } from '@/views/config';
   import { PropType, watch, ref, nextTick, toRaw, provide, inject } from 'vue';
   import SingleForm from './single-form.vue';
   import { FieldSchema, FormGroup } from './interface';
@@ -110,7 +106,6 @@
     }
   });
 
-  const schemaFormStatus = inject(InjectSchemaFormStatusKey, ref(''));
   const emits = defineEmits(['update:formData', 'change', 'renderEnd']);
   const activeKey = ref<string>('schemaForm');
   const refMap = ref<any>({});

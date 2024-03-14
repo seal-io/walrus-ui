@@ -3,6 +3,7 @@
   import { defineComponent } from 'vue';
 
   export default defineComponent({
+    inheritAttrs: false,
     setup(props, { attrs }) {
       const popupInfo = attrs.popupInfo || attrs['popup-info'];
       return () => (

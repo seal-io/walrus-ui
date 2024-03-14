@@ -40,14 +40,14 @@ export const profileMenu = [
     icon: '<i class="iconfont icon-language"></i>',
     children: [
       {
-        name: '中文',
+        name: 'language.zh',
         key: 'chinese',
         route: PROFILE.UserCenter,
         value: 'zh-CN',
         icon: '<i class="iconfont icon-fuhao-zhongwen" />'
       },
       {
-        name: 'English',
+        name: 'language.en',
         key: 'english',
         value: 'en-US',
         icon: '<i class="iconfont icon-english" />'

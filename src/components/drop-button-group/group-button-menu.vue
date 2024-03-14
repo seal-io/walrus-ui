@@ -8,6 +8,7 @@
   type DropdownPosition = 'top' | 'tl' | 'tr' | 'bottom' | 'bl' | 'br';
 
   export default defineComponent({
+    inheritAttrs: false,
     emits: ['select', 'click'],
     props: {
       actions: {

@@ -87,7 +87,7 @@
                             hoverable={true}
                             target="_blank"
                           >
-                            {i18n.global.t(item.label || '')}
+                            {item.label && i18n.global.t(item.label)}
                           </a-link>
                         </div>
                       );

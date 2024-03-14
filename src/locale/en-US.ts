@@ -38,6 +38,8 @@ export default {
   'navbar.action.locale': 'Switch to English',
   'navbar.totalView': 'Dashboard',
   'navbar.appearance': 'Appearance',
+  'language.zh': '中文',
+  'language.en': 'English',
   ...localeCommon,
   ...localeSettings,
   ...localeLogin,

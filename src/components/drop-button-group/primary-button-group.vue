@@ -11,6 +11,7 @@
     disabled?: boolean;
   }
   export default defineComponent({
+    inheritAttrs: false,
     emits: ['select'],
     props: {
       actions: {

@@ -9,7 +9,7 @@
         <span class="item-content">
           <!-- <i v-if="menu.iconfont" class="iconfont" :class="[menu.icon]"></i>
           <component :is="menu.icon" v-else-if="menu.icon"></component> -->
-          <span class="label menu">{{ $t(menu.label || '') }}</span>
+          <span class="label menu">{{ menu.label && $t(menu.label) }}</span>
         </span>
       </span>
     </a-breadcrumb-item>
@@ -155,10 +155,10 @@
               @click="handleClickItem(item)"
             >
               <!-- <component :is="item.icon" v-if="item.icon"></component> -->
-              {{ $t(item.label || '') }}
+              {{ item.label && $t(item.label) }}
             </a-link>
             <span v-else>
-              {{ $t(item.label || '') }}
+              {{ item.label && $t(item.label) }}
             </span>
           </span>
         </span>

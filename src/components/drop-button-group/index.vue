@@ -16,6 +16,7 @@
   import ButtonList from './button-list.vue';
 
   export default defineComponent({
+    inheritAttrs: false,
     emits: ['click', 'select'],
     props: {
       actions: {

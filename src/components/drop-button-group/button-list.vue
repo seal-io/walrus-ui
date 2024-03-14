@@ -29,6 +29,7 @@
 <script lang="ts" setup>
   import { PropType } from 'vue';
   import { MoreAction } from '@/views/config/interface';
+  import def from 'ajv/dist/vocabularies/discriminator';
 
   defineProps({
     actions: {
@@ -42,5 +43,11 @@
 
   const handleClick = (data) => {
     emits('select', data.value);
+  };
+</script>
+
+<script lang="ts">
+  export default {
+    inheritAttrs: false
   };
 </script>
