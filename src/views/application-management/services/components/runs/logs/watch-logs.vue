@@ -143,7 +143,6 @@
   );
   onBeforeUnmount(() => {
     axiosToken?.cancel?.();
-    window.cancelAnimationFrame(requestId);
   });
 </script>
 

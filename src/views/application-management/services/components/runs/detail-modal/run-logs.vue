@@ -36,6 +36,21 @@
         }
         return props.fullscreen ? 'calc(100vh - 320px)' : '310px';
       });
+      watch(
+        () => props.runData,
+        (newVal) => {
+          if (newVal) {
+            console.log(
+              'props.rundata.status=======',
+              props.runData?.status?.summaryStatus
+            );
+          }
+        },
+        {
+          immediate: true,
+          deep: true
+        }
+      );
 
       const renderStaticLogs = () => {
         if (props.runData?.record) {
@@ -69,6 +84,11 @@
               show={props.show}
               fullscreen={props.fullscreen}
               runData={props.runData}
+              key={
+                props.runData?.status?.summaryStatus === RevisionStatus.Running
+                  ? 'running'
+                  : 'planning'
+              }
             ></WatchLogs>
           </>
         );
