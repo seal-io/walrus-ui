@@ -313,24 +313,6 @@
   };
   const setLanguageTools = () => {
     langTools.setCompleters();
-    // langTools.addCompleter({
-    //   identifierRegexps: [identifer],
-    //   getCompletions(
-    //     editor: any,
-    //     session: any,
-    //     pos: Position,
-    //     prefix: any,
-    //     callback: any
-    //   ) {
-    //     const wordRange = editor.session.getTextRange({
-    //       start: { row: 0, column: 0 },
-    //       end: pos
-    //     });
-    //     const valuePath = getValuePath(wordRange) || '';
-    //     const list = getCompletionList(valuePath);
-    //     callback(null, list);
-    //   }
-    // });
   };
   const handleInput = (val) => {
     emits('change', val);
@@ -396,6 +378,7 @@
     () => props.readOnly,
     (newVal) => {
       aceEditor?.setOption('readOnly', newVal);
+      aceEditor?.setOption('useWorker', !newVal);
     },
     { immediate: false }
   );
@@ -417,7 +400,6 @@
         emits('input', val);
         emits('update:modelValue', val);
         clearDiffRowDecoration(args);
-        console.log('editor=====', val);
       });
       aceEditor.on('blur', function (args: any) {
         const val = aceEditor.getValue();
@@ -428,7 +410,7 @@
         // maxLines: Infinity,
         // minLines: 10,
         wrap: true,
-        useWorker: true,
+        useWorker: !props.readOnly,
         showPrintMargin: false,
         fontSize: 14,
         readOnly: props.readOnly,
