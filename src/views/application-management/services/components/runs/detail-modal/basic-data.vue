@@ -173,6 +173,7 @@
               data-info={basicDataList.value}
               cols={2}
               layout={props.layout}
+              align="right"
               v-slots={{
                 value: ({ data, value }) => {
                   if (data.key === 'componentChangeSummary') {
@@ -185,6 +186,7 @@
                         show={showTimer.value}
                         value={data.value}
                         stopped={isStopped.value}
+                        class="flex"
                       ></ClockTimer>
                     );
                   }
