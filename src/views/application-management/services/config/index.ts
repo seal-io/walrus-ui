@@ -484,9 +484,7 @@ export const serviceActions: MoreAction[] = [
     status: 'normal',
     disabled: false,
     filterFun(currentInfo) {
-      return (
-        get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Undeployed
-      );
+      return get(currentInfo, 'runs', []).length > 0;
     }
   },
   {
