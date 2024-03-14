@@ -1,6 +1,6 @@
 export default {
   'permission.resource.project.appResource': 'Resource Components',
-  'permission.resource.project.appRevision': 'Resource Revisions',
+  'permission.resource.project.appRevision': 'Resource Runs',
   'permission.resource.project.roleAuth': 'Members',
   'permission.resource.project.secret': 'Variables',
   'permission.resource.project.appList': 'Resource List',

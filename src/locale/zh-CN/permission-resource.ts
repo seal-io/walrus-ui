@@ -1,6 +1,6 @@
 export default {
   'permission.resource.project.appResource': '资源组件',
-  'permission.resource.project.appRevision': '资源历史记录',
+  'permission.resource.project.appRevision': '资源执行记录',
   'permission.resource.project.roleAuth': '成员',
   'permission.resource.project.secret': '变量',
   'permission.resource.project.appList': '资源列表',
