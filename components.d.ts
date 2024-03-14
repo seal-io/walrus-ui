@@ -29,6 +29,7 @@ declare module 'vue' {
     AInputSearch: typeof import('@arco-design/web-vue')['InputSearch'];
     ALayout: typeof import('@arco-design/web-vue')['Layout'];
     ALayoutContent: typeof import('@arco-design/web-vue')['LayoutContent'];
+    ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter'];
     ALayoutSider: typeof import('@arco-design/web-vue')['LayoutSider'];
     ALink: typeof import('@arco-design/web-vue')['Link'];
     AList: typeof import('@arco-design/web-vue')['List'];

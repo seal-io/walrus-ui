@@ -87,9 +87,4 @@
   });
 </script>
 
-<style lang="less" scoped>
-  .time-box {
-    display: inline-block;
-    // width: 65px;
-  }
-</style>
+<style lang="less" scoped></style>

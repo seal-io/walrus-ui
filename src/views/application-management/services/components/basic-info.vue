@@ -35,6 +35,10 @@
       tableLayout: {
         type: String,
         default: 'auto'
+      },
+      align: {
+        type: String,
+        default: 'left'
       }
     },
     setup(props, { slots, emit }) {
@@ -72,6 +76,7 @@
               column={props.cols}
               layout={props.layout}
               table-layout={props.tableLayout}
+              align={props.align}
             >
               {_.map(props.dataInfo, (item, index) => {
                 return (
