@@ -6,26 +6,19 @@
       ></Breadcrumb>
     </BreadWrapper>
 
-    <!-- <HeaderInfo :info="{ name: $t('menu.dashboard') }">
-      <template #icon>
-        <i class="iconfont icon-dashboard-Fill"></i>
-      </template>
-    </HeaderInfo> -->
     <a-spin style="width: 100%" :loading="loading">
-      <a-space v-if="!isEmpty" :size="8" direction="vertical" fill>
+      <a-space
+        v-if="!isEmpty"
+        :size="8"
+        direction="vertical"
+        fill
+        style="background-color: var(--color-pagedivider-bg)"
+      >
         <overview
           v-model:isEmpty="isEmpty"
           v-model:loading="loading"
         ></overview>
         <DeploymentSummary></DeploymentSummary>
-        <!-- <CostSummary
-          v-if="
-            userStore.hasRolesActionsPermission({
-              resource: Resources.Dashboards,
-              actions: [Actions.POST]
-            })
-          "
-        ></CostSummary> -->
       </a-space>
       <ComCard v-else>
         <a-empty class="relative">
@@ -59,15 +52,10 @@
   import { ref } from 'vue';
   import { PROJECT } from '@/router/config';
   import useCallCommon from '@/hooks/use-call-common';
-  import { Resources, Actions } from '@/permissions/config';
-  import { useUserStore } from '@/store';
-  import HeaderInfo from '@/components/header-info/index.vue';
   import overview from '../components/overview.vue';
   import DeploymentSummary from '../components/deployment-summary.vue';
-  import CostSummary from '../components/cost-summary.vue';
 
   const { router } = useCallCommon();
-  const userStore = useUserStore();
   const isEmpty = ref(false);
   const loading = ref(false);
 

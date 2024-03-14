@@ -197,8 +197,8 @@
       data.collection || [],
       (sItem) => sItem?.resource?.id === props.data.serviceId
     );
-    // const collections = data?.collection || [];
     const info = _.find(collections, (item) => item.id === props.data.runId);
+    console.log('updateRevisions================', info);
     if (info) {
       basicData.value = info;
     }
