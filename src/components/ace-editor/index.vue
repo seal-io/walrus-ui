@@ -19,14 +19,20 @@
       class="ace-box"
       :class="{ dark: appStore.theme === 'dark' }"
       :style="{
-        height: _.isNumber(height) ? `${height}px` : height
+        height: `max(
+          ${editorMinHeight},
+          ${_.isNumber(height) ? `${height}px` : height}
+        )`
       }"
     >
       <div
         :id="`${editorId}-${traceKey}`"
         ref="editorRef"
         :style="{
-          minHeight: _.isNumber(height) ? `${height}px` : height
+          minHeight: `max(
+          ${editorMinHeight},
+          ${_.isNumber(height) ? `${height}px` : height}
+        )`
         }"
       ></div>
     </div>
@@ -135,6 +141,12 @@
         return 'aceEditor';
       }
     },
+    minHeight: {
+      type: [Number, String],
+      default() {
+        return 0;
+      }
+    },
     height: {
       type: [Number, String],
       default() {
@@ -214,10 +226,15 @@
   const identifer2 =
     /([a-zA-Z_0-9$\-\u00A2-\u2000\u2070-\uFFFF]+\.)*([a-zA-Z_0-9$\-\u00A2-\u2000\u2070-\uFFFF]*)$/;
 
+  const editorMinHeight = computed(() => {
+    const minHeight = props.minHeight || props.height;
+    return _.isNumber(minHeight) ? `${minHeight}px` : minHeight;
+  });
   const resetGutterDiffDecoration = (row) => {
     aceEditor?.session?.removeGutterDecoration(row, 'row-add-icon');
     aceEditor?.session?.removeGutterDecoration(row, 'row-delete-icon');
   };
+
   const setHighLightLine = (row, className) => {
     const markerId = aceEditor?.session?.addMarker(
       new Range(row, 0, row, 1000),
