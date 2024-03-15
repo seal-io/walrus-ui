@@ -451,6 +451,7 @@
   watch(
     () => props.hintData,
     () => {
+      console.log('props.hintData', props.hintData);
       completeData.value = props.hintData;
     },
     {

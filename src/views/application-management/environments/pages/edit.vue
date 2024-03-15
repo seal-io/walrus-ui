@@ -232,7 +232,7 @@
             <CloneService
               key="resourceRef"
               ref="resourceRef"
-              v-model:hint-data="completeData"
+              :hint-data="cloneCompleteData"
               :data-list="resourceList"
               :title="$t('menu.applicationManagement.resource')"
               clone-type="environment"
@@ -286,7 +286,8 @@
     InputWidth,
     EnvironmentTypeMap,
     EnvironmentTypeOrder,
-    SaveActions
+    SaveActions,
+    HintKeyMaps
   } from '@/views/config';
   import { ref, computed, provide, onMounted, nextTick } from 'vue';
   import _, {
@@ -315,6 +316,7 @@
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import useCompleteData from '@/views/application-management/services/hooks/use-complete-data';
   import { BreadcrumbOptions } from '@/views/config/interface';
+  import { queryProjectVairables } from '@/views/application-management/variables/api';
   import CloneService from '../components/clone-service.vue';
   import { EnvironFormData } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
@@ -329,7 +331,6 @@
 
   const {
     setCompleteData,
-    getProjectVariables,
     getServiceList,
     serviceDataList,
     completeData,
@@ -370,6 +371,7 @@
     labels: {},
     list: []
   });
+  const projectVariables = ref<any[]>([]);
 
   const formData = ref<EnvironFormData>({
     projectID: route.params.projectId as string,
@@ -384,6 +386,21 @@
     resources: []
   });
 
+  const cloneCompleteData = computed(() => {
+    const variables = _.map(formData.value.variables, (item) => {
+      return {
+        value: item.name,
+        label: item.name,
+        tips: item.value,
+        showTips: false,
+        sensitive: item.sensitive
+      };
+    });
+    return {
+      ...completeData.value,
+      [HintKeyMaps.var]: [...projectVariables.value, ...variables]
+    };
+  });
   const EnvironmentTypeList = computed(() => {
     return _.map(userStore.applicableEnvironmentTypes, (item) => {
       return {
@@ -616,6 +633,26 @@
       formData.value.draft = true;
     }
     handleSubmit();
+  };
+  const getProjectVariables = async () => {
+    try {
+      const params = {
+        page: -1,
+        includeInherited: true
+      };
+      const { data } = await queryProjectVairables(params);
+      projectVariables.value = _.map(data?.items || [], (item) => {
+        return {
+          label: item.name,
+          value: item.name,
+          tips: item.value,
+          showTips: false,
+          sensitive: item.sensitive
+        };
+      });
+    } catch (error) {
+      projectVariables.value = [];
+    }
   };
   const cancelCallback = () => {
     if (route.name === PROJECT.EnvDetail) {

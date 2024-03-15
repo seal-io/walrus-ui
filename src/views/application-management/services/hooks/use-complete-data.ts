@@ -123,7 +123,6 @@ export default function useCompleteData(props?) {
     } else {
       await getTemplates();
     }
-    console.log('dataType.value==========', dataType.value);
   };
   // get item template version, isOnSelect is a flag for select event
   const getTemplateVersions = async (
@@ -136,7 +135,6 @@ export default function useCompleteData(props?) {
     ) {
       return;
     }
-    console.log('formTemplateData==========', formTemplateData);
     const templateID = formTemplateData.template?.id;
     const isVisited = _.find(
       allTemplateVersions.value,
@@ -172,20 +170,19 @@ export default function useCompleteData(props?) {
     }
   };
 
+  // optional args includeInherited, default is true
   const getProjectVariables = async () => {
     try {
       const params = {
         page: -1,
         includeInherited: true
       };
-      const workflowParams = {
-        projectID: props.value?.flow?.projectId,
-        environmentID: props.value?.flow?.environmentId
-      };
-      if (props.value?.flow?.projectId) {
+
+      if (props?.value?.flow?.projectId) {
         const { data } = await queryEnvironmentVariables({
           ...params,
-          ...workflowParams
+          projectID: props.value?.flow?.projectId,
+          environmentID: props.value?.flow?.environmentId
         });
         variableList.value = data.items || [];
       } else {

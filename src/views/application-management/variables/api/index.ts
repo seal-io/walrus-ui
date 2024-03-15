@@ -35,6 +35,16 @@ export interface ResultType {
   pagination: Pagination;
 }
 
+export const queryProjectVairables = (params: QueryType) => {
+  let url = VARIABLE_API;
+  url = `${PROJECT_API_PREFIX()}${VARIABLE_API}`;
+  return axios.get<ResultType>(`${url}`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
 export const queryVariables = (params: QueryType) => {
   let url = VARIABLE_API;
   if (isProjectContext()) {
