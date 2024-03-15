@@ -50,7 +50,8 @@
               editor-id="firstEditor"
               :editor-default-value="defaultValue"
               lang="terraform"
-              :height="500"
+              :min-height="500"
+              :height="editorHeight"
               @change="handleCodeChange"
             ></AceEditor>
           </a-grid-item>
@@ -201,6 +202,7 @@
     removed?: boolean;
     added?: boolean;
   }
+  const editorHeight = 'calc(100vh - 400px)';
   const optionList = ref<{ label: string; value: string }[]>([]);
   const { router, t, locale } = useCallCommon();
   const correctionButton = ref();
@@ -244,7 +246,7 @@
       if (index === 0) {
         item.line = item.count;
       } else {
-        item.line = item.count + get(diffResult.value, `${index - 1}.line`);
+        item.line = item.count + get(diffResult.value, `${index - 1}.line`, 0);
       }
       return item;
     });
