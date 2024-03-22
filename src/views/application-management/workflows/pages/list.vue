@@ -25,6 +25,7 @@
           </a-space>
         </template>
         <template #button-group>
+          <a-button type="primary" @click="handleCreateDAG">DAG</a-button>
           <a-button
             v-if="
               userStore.hasProjectResourceActions({
@@ -393,6 +394,15 @@
   const handleCreate = () => {
     router.push({
       name: WORKFLOW.Edit,
+      params: {
+        projectId: route.params.projectId,
+        action: PageAction.EDIT
+      }
+    });
+  };
+  const handleCreateDAG = () => {
+    router.push({
+      name: 'WorkflowDag',
       params: {
         projectId: route.params.projectId,
         action: PageAction.EDIT

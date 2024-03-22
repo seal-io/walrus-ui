@@ -1,4 +1,5 @@
 <script lang="tsx">
+  import i18n from '@/locale';
   import _ from 'lodash';
   import { defineComponent, toRefs, ref, PropType, inject } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -14,10 +15,34 @@
           return '';
         }
       },
+      index: {
+        type: Number,
+        default() {
+          return 0;
+        }
+      },
       stepData: {
         type: Object as PropType<Step>,
         default() {
           return {};
+        }
+      },
+      stepList: {
+        type: Array as PropType<Step[]>,
+        default() {
+          return [];
+        }
+      },
+      isSerial: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      hoverable: {
+        type: Boolean,
+        default() {
+          return false;
         }
       }
     },
@@ -25,17 +50,15 @@
     setup(props, { emit }) {
       const { t } = useCallCommon();
       const stageData = inject('stageData');
-      const { position, stepData } = toRefs(props);
+      const { position } = toRefs(props);
       const drag = ref(false);
       const list = ref([1]);
 
       const handleInsertPrev = (index) => {
-        list.value.splice(index + 1, 0, 1);
-        emit('insertPrev');
+        emit('insertPrev', index);
       };
       const handleInsertNext = (index) => {
-        list.value.splice(index, 0, 1);
-        emit('insertNext');
+        emit('insertNext', index);
       };
 
       const handleAddTask = () => {
@@ -51,23 +74,52 @@
         drag.value = false;
       };
 
-      const handleEditTask = () => {
-        emit('edit');
+      const handleEditTask = (index) => {
+        emit('edit', index);
       };
 
-      const renderStep = (item, index) => {
+      const renderStep = (index) => {
+        const stepData = props.isSerial
+          ? props.stepList[index]
+          : props.stepData;
+        if (!stepData) return null;
         return (
           <div class="step-box" key={index}>
             <div class="prev btn-wrap">
-              {/* <a-tooltip content="添加串行任务">
-                <icon-plus-circle-fill class="plus-btn" onClick={() => handleInsertPrev(index)}/>
-              </a-tooltip> */}
+              <a-tooltip
+                content={i18n.global.t('workflow.stage.add.seriesTask')}
+              >
+                <icon-plus-circle-fill
+                  class="btn-icon plus-btn"
+                  onClick={() => handleInsertPrev(index)}
+                />
+              </a-tooltip>
             </div>
-            <div class="step-content">{stepData.value.name}</div>
+            <div class="step-content" onClick={() => handleEditTask(index)}>
+              <i
+                class={[
+                  'iconfont task-type-icon',
+                  {
+                    'icon-fuwu': stepData?.type === TaskTypes.SERVICE,
+                    'icon-jiaoseshouquan':
+                      stepData?.type === TaskTypes.APPROVAL,
+                    'size-12': stepData?.type === TaskTypes.APPROVAL
+                  }
+                ]}
+              ></i>
+              <Autotip>
+                <span>{stepData?.name}</span>
+              </Autotip>
+            </div>
             <div class="next btn-wrap">
-              {/* <a-tooltip content="添加串行任务">
-                <icon-plus-circle-fill class="plus-btn" onClick={() => handleInsertNext(index)}/>
-              </a-tooltip> */}
+              <a-tooltip
+                content={i18n.global.t('workflow.stage.add.seriesTask')}
+              >
+                <icon-plus-circle-fill
+                  class="btn-icon plus-btn"
+                  onClick={() => handleInsertNext(index)}
+                />
+              </a-tooltip>
             </div>
           </div>
         );
@@ -117,20 +169,23 @@
         return (
           <div class="step-box">
             <div class="prev btn-wrap"></div>
-            <div class="step-content" onClick={() => handleEditTask()}>
+            <div
+              class="step-content"
+              onClick={() => handleEditTask(props.index)}
+            >
               <i
                 class={[
                   'iconfont task-type-icon',
                   {
-                    'icon-fuwu': stepData.value?.type === TaskTypes.SERVICE,
+                    'icon-fuwu': props.stepData?.type === TaskTypes.SERVICE,
                     'icon-jiaoseshouquan':
-                      stepData.value?.type === TaskTypes.APPROVAL,
-                    'size-12': stepData.value?.type === TaskTypes.APPROVAL
+                      props.stepData?.type === TaskTypes.APPROVAL,
+                    'size-12': props.stepData?.type === TaskTypes.APPROVAL
                   }
                 ]}
               ></i>
               <Autotip>
-                <span>{stepData.value.name}</span>
+                <span>{props.stepData.name}</span>
               </Autotip>
             </div>
             <div class="next btn-wrap"></div>
@@ -138,10 +193,28 @@
         );
       };
 
+      const renderParallelSteps = () => {
+        return (
+          <div class={['flow-step', position.value]}>
+            <div class="box">{renderStep(props.index)}</div>
+          </div>
+        );
+      };
+
+      const renderSerialSteps = () => {
+        return (
+          <div class={['flow-step']}>
+            <div class="box">
+              {_.map(props.stepList, (item, index) => {
+                return renderStep(index);
+              })}
+            </div>
+          </div>
+        );
+      };
+
       return () => (
-        <div class={['flow-step', position.value]}>
-          <div class="box">{renderStepContent()}</div>
-        </div>
+        <>{props.isSerial ? renderSerialSteps() : renderParallelSteps()}</>
       );
     }
   });
@@ -292,7 +365,7 @@
 
       .plus-btn {
         display: none;
-        color: var(--color-text-3);
+        color: rgb(var(--arcoblue-5));
         font-size: 20px;
         cursor: pointer;
 

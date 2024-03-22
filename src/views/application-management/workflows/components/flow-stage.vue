@@ -14,6 +14,7 @@
   import { deleteModal } from '@/utils/monitor';
   import FlowStep from './flow-step.vue';
   import ParallelButton from './parallel-button.vue';
+  import FlowSplitLine from './split-line.vue';
   import CreateFlowTask from './create-flow-task.vue';
   import { Step, Stage } from '../config/interface';
 
@@ -99,14 +100,21 @@
           show.value = false;
         }, 100);
       };
-      const handleInsertNext = (index) => {};
+      const handleInsertNext = (index) => {
+        const data = _.cloneDeep(stepList.value[index]);
+        stepList.value.splice(index + 1, 0, data);
+      };
 
-      const handleInsertPrev = (index) => {};
+      const handleInsertPrev = (index) => {
+        const data = _.cloneDeep(stepList.value[index]);
+        stepList.value.splice(index, 0, data);
+      };
 
       const handleDeleteStage = () => {
         emit('delete');
       };
-      const handleEditTask = (item, index) => {
+      const handleEditTask = (index) => {
+        const item = stepList.value[index];
         action.value = 'edit';
         activeStep.value = _.cloneDeep(item);
         activeIndex.value = index;
@@ -125,6 +133,50 @@
       };
       const handleInputStageName = (val) => {
         stageData.value.name = _.trim(val);
+      };
+
+      // render serial steps
+      const renderSteps = () => {
+        if (!stepList.value.length) return null;
+        const isSerialSteps = _.some(stepList.value, (item) => {
+          return !!_.get(item, 'when');
+        });
+        console.log('isSerialSteps', isSerialSteps);
+        if (isSerialSteps) {
+          return (
+            <FlowStep
+              stepList={stepList.value}
+              isSerial={true}
+              onInsertNext={(idx) => handleInsertNext(idx)}
+              onInsertPrev={(idx) => handleInsertPrev(idx)}
+              onEdit={(idx) => handleEditTask(idx)}
+              hoverable={hoverable.value}
+            ></FlowStep>
+          );
+        }
+        return stepList.value.map((item, index) => {
+          return (
+            <>
+              <FlowStep
+                key={index}
+                isSerial={false}
+                onInsertNext={(idx) => handleInsertNext(idx)}
+                onInsertPrev={(idx) => handleInsertPrev(idx)}
+                onEdit={(idx) => handleEditTask(idx)}
+                step-data={item}
+                stepList={stepList.value}
+                index={index}
+                position={
+                  index === stepList.value.length - 1 &&
+                  !hoverable.value &&
+                  stepList.value.length > 1
+                    ? 'last'
+                    : 'middle'
+                }
+              ></FlowStep>
+            </>
+          );
+        });
       };
       return () => (
         <div
@@ -149,6 +201,11 @@
                   max-length={validateInputLength.NAME}
                   show-word-limit={true}
                   class={[{ 'border-less': !nameEditable.value }]}
+                  onKeydown={(e) => {
+                    if (e.keyCode === 13) {
+                      input.value.blur();
+                    }
+                  }}
                   onBlur={() => handleInputBlur()}
                 ></a-input>
               ) : (
@@ -177,43 +234,27 @@
               <span class="mleft-5 btn-holder"></span>
             )}
           </div>
-          <div class="stage-content">
-            {stepList.value.length ? (
-              stepList.value.map((item, index) => {
-                return (
-                  <>
-                    <FlowStep
-                      key={index}
-                      onInsertNext={() => handleInsertNext(index)}
-                      onInsertPrev={() => handleInsertPrev(index)}
-                      onEdit={() => handleEditTask(item, index)}
-                      step-data={item}
-                      position={
-                        index === stepList.value.length - 1 &&
-                        !hoverable.value &&
-                        stepList.value.length > 1
-                          ? 'last'
-                          : 'middle'
-                      }
-                    ></FlowStep>
-                  </>
-                );
-              })
-            ) : (
-              <ParallelButton
-                btn-text={t('workflow.stage.add.task')}
-                position="last"
-                class={['non-step']}
-                onAddParallel={() => handleAddParallel()}
-              ></ParallelButton>
-            )}
-            {hoverable.value ? (
-              <ParallelButton
-                btn-text={t('workflow.stage.add.paratask')}
-                position="last"
-                onAddParallel={() => handleAddParallel()}
-              ></ParallelButton>
-            ) : null}
+          <div class="stage-steps flex">
+            <div class="stage-content">
+              {renderSteps()}
+              {(hoverable.value || !stepList.value.length) && (
+                <ParallelButton
+                  btn-text={
+                    !stepList.value.length
+                      ? t('workflow.stage.add.task')
+                      : t('workflow.stage.add.paratask')
+                  }
+                  position="middle"
+                  class={[{ 'non-step': !hoverable.value }]}
+                  onAddParallel={() => handleAddParallel()}
+                ></ParallelButton>
+              )}
+            </div>
+            <FlowSplitLine
+              btnText="add step"
+              position="middle"
+              type="internal"
+            ></FlowSplitLine>
           </div>
           <CreateFlowTask
             v-model:show={show.value}

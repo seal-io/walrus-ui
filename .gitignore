@@ -5,3 +5,4 @@ dist-ssr
 *.local
 components.d.ts
 .vscode
+.idea

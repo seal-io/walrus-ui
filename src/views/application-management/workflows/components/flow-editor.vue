@@ -18,6 +18,7 @@
   } from '../config';
   import { queryPipelineDetail } from '../api';
   import VariableList from './variable-list.vue';
+  import { ArgoTestData } from '../config/argo-test';
 
   export default defineComponent({
     props: {
@@ -37,6 +38,7 @@
       const show = ref(false);
       const loading = ref(false);
       const unfold = ref(true);
+      const templateList = ref<any[]>([]);
 
       const flowBasic = ref<any>({
         name: '',
@@ -46,7 +48,7 @@
         timeout: null,
         variables: []
       });
-      const stageList = ref<Stage[]>([]);
+      const stageList = ref<any[]>([]);
       const drag = ref(false);
 
       const workflowVariables = computed(() => {
@@ -125,34 +127,59 @@
         });
       };
 
+      const getStages = () => {
+        templateList.value = ArgoTestData.spec.templates || [];
+        const stages =
+          _.find(
+            templateList.value,
+            (template: any) => template.name === ArgoTestData?.spec?.entrypoint
+          )?.steps || [];
+        return stages;
+      };
+
+      const getSteps = (stage) => {
+        return (
+          _.find(
+            templateList.value,
+            (template: any) => template.name === stage.name
+          )?.steps[0] || []
+        );
+      };
+
       const renderFlowContent = (data) => {
         const { element, index } = data;
+        const steps = getSteps(element);
         return (
           <div class="flow-content-group">
-            <FlowSplitLine
-              onAddStage={() => handleInsertStagePrev(index)}
-              position={setPosition(index, stageList.value)}
-            ></FlowSplitLine>
+            {index === 0 && (
+              <FlowSplitLine
+                btnText={t('workflow.stage.add.button')}
+                onAdd={() => handleInsertStagePrev(index)}
+                position={setPosition(index, stageList.value)}
+              ></FlowSplitLine>
+            )}
             <FlowStage
-              stepList={element.steps}
+              stepList={steps}
               stageData={element}
               stageLength={stageList.value.length}
               onDelete={() => handleDeleteStage(index)}
             ></FlowStage>
-            {index === stageList.value.length - 1 ? (
+            {index === stageList.value.length - 1 && (
               <FlowSplitLine
-                onAddStage={() => handleInsertStageNext(index)}
+                btnText={t('workflow.stage.add.button')}
+                onAdd={() => handleInsertStageNext(index)}
                 position="last"
               ></FlowSplitLine>
-            ) : null}
+            )}
           </div>
         );
       };
 
       // use in no drag
       const renderStage = () => {
+        stageList.value = getStages();
         return stageList.value.map((element, index) => {
-          return renderFlowContent({ element, index });
+          return renderFlowContent({ element: element[0] || null, index });
         });
       };
 

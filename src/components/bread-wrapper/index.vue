@@ -84,6 +84,7 @@
       align-items: center;
       justify-content: space-between;
       width: 100%;
+      height: 100%;
       padding-left: var(--card-content-padding);
       background-color: var(--color-white);
       border-radius: 24px 0 0 0;

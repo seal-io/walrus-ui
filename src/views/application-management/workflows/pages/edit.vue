@@ -37,16 +37,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
-  import { Resources, Actions } from '@/permissions/config';
+  import { computed, ref } from 'vue';
+  import { Actions, Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { WORKFLOW } from '@/router/config';
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import { getListLabel } from '@/utils/func';
-  import { BreadcrumbOptions } from '@/views/config/interface';
   import flowEditor from '../components/flow-editor.vue';
-  import { createPipeline, updatePipeline, applyPipeline } from '../api';
+  import { createPipeline, updatePipeline } from '../api';
 
   const height = 'calc(100vh - 100px)';
   const userStore = useUserStore();
@@ -92,9 +91,7 @@
   };
 
   const setBreadCrumbList = async () => {
-    const list = await initBreadValues(['pipeline']);
-
-    breadCrumbList.value = list;
+    breadCrumbList.value = await initBreadValues(['pipeline']);
 
     const [projectList, pipelineList] = await Promise.all([
       getProjectList(),
@@ -121,7 +118,7 @@
     }
   };
   const init = async () => {
-    setBreadCrumbList();
+    await setBreadCrumbList();
   };
 
   const handleSubmit = async () => {

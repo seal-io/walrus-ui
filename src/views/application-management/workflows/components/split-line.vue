@@ -9,20 +9,45 @@
         default() {
           return '';
         }
+      },
+      showLine: {
+        type: Boolean,
+        default() {
+          return true;
+        }
+      },
+      type: {
+        type: String,
+        default() {
+          return '';
+        }
+      },
+      btnText: {
+        type: String,
+        default() {
+          return '';
+        }
       }
     },
-    emits: ['addStage'],
+    emits: ['add'],
     setup(props, { emit }) {
       const { t } = useCallCommon();
       const { position } = toRefs(props);
       const handleAddStage = () => {
-        emit('addStage');
+        emit('add');
       };
 
       return () => (
         <div class="split-line">
-          <div class={['split-line-btn', position.value]}>
-            <a-tooltip content={t('workflow.stage.add.button')}>
+          <div
+            class={[
+              'split-line-btn',
+              { 'show-line': props.showLine },
+              position.value,
+              props.type
+            ]}
+          >
+            <a-tooltip content={props.btnText}>
               <icon-plus-circle-fill
                 class="plus-btn"
                 onClick={() => handleAddStage()}
@@ -46,6 +71,10 @@
       height: 100%;
 
       &::before {
+        width: 0;
+      }
+
+      &.show-line::before {
         position: absolute;
         top: 0;
         bottom: 0;
@@ -91,6 +120,16 @@
 
         &:hover {
           color: rgb(var(--arcoblue-5));
+        }
+      }
+
+      &.internal {
+        &::after {
+          top: 27px;
+        }
+
+        .plus-btn {
+          top: 18px;
         }
       }
     }
