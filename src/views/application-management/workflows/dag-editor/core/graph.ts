@@ -1,7 +1,8 @@
 import { Graph, Node, Edge, Platform, CellView } from '@antv/x6';
 import useStencil from '../plugins/use-stencil';
 import useTransform from '../plugins/use-transform';
-// import useSnapline from '../plugins/use-snapline';
+import useSnapline from '../plugins/use-snapline';
+import useKeyboard from '../plugins/use-keyboard';
 import connecting from './connecting';
 
 export default function createGraph({
@@ -15,6 +16,7 @@ export default function createGraph({
     width: width || 1400,
     height: height || 600,
     connecting: {
+      allowBlank: false,
       router: 'manhattan',
       connector: {
         name: 'rounded',
@@ -75,21 +77,21 @@ export default function createGraph({
     interacting: {
       nodeMovable: true,
       magnetConnectable: true
+    },
+    embedding: {
+      enabled: true,
+      findParent({ node }) {
+        const bbox = node.getBBox();
+        return this.getNodes().filter((node) => {
+          const data = node.getData<any>();
+          if (data && data.parent) {
+            const targetBBox = node.getBBox();
+            return bbox.isIntersectWithRect(targetBBox);
+          }
+          return false;
+        });
+      }
     }
-    // embedding: {
-    //   enabled: true,
-    //   findParent({ node }) {
-    //     const bbox = node.getBBox();
-    //     return this.getNodes().filter((node) => {
-    //       const data = node.getData<any>();
-    //       if (data && data.parent) {
-    //         const targetBBox = node.getBBox();
-    //         return bbox.isIntersectWithRect(targetBBox);
-    //       }
-    //       return false;
-    //     });
-    //   }
-    // }
   });
 
   // register plugins
@@ -97,7 +99,8 @@ export default function createGraph({
   stencilContainer.value?.appendChild?.(stencil.container);
 
   useTransform(graph);
-  // useSnapline(graph);
+  useSnapline(graph);
+  // useKeyboard(graph);
 
   return graph;
 }

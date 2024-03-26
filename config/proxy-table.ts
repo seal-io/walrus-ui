@@ -8,11 +8,18 @@ const proxyTableList = [
   'verify-auth',
   'ws',
   'wss',
-  'walrus-file-hub'
+  'walrus-file-hub',
+  'api'
 ];
 
-export default function createProxyTable(target?) {
+export default function createProxyTable(remote?) {
   const proxyTable = proxyTableList.reduce((obj, api) => {
+    let target = remote;
+    if (api === 'api') {
+      target = 'https://localhost:2746';
+    } else {
+      target = remote;
+    }
     obj[`^/${api}`] = {
       target: target ? `${target}` : 'https://localhost',
       changeOrigin: true,

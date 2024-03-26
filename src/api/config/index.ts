@@ -20,6 +20,7 @@ export const NoBaseURLApiList: string[] = [
   '/debug/version',
   '/cli',
   '/proxy',
+  '/api',
   '/walrus-file-hub'
 ];
 

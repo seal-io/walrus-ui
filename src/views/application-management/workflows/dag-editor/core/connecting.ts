@@ -18,12 +18,12 @@ export default (store?) => {
     },
     // 是否允许边链接到节点
     allowNode: false,
-    // 是否允许边链接到另一个边
-    allowEdge: false,
-    // 是否允许边连接到连接桩，默认为 true
-    allowPort: true,
-    // 是否允许在相同的起始节点和终止之间创建多条边
-    allowMulti: false,
+    // // 是否允许边链接到另一个边
+    // allowEdge: false,
+    // // 是否允许边连接到连接桩，默认为 true
+    // allowPort: true,
+    // // 是否允许在相同的起始节点和终止之间创建多条边
+    // allowMulti: false,
 
     anchor: 'center',
     connectionPoint: {
@@ -41,7 +41,7 @@ export default (store?) => {
         // 忽略起始或终止节点，忽略后不参与障碍物计算。
         // excludeTerminals: ['source', 'target'], // 'target' source
         // 排除职能带 部门 描述
-        excludeShapes: ['duty', 'dutyorg', 'dutydes'],
+        excludeShapes: [],
         // excludeNodes() {
         //   return store.dutyCellIds;
         // },

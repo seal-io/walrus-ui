@@ -107,7 +107,8 @@ export const ProjectTabs = {
   VARIABLES: 'variables',
   TEMPLATES: 'templates',
   CATALOGS: 'catalogs',
-  WORKFLOW: 'workflow'
+  WORKFLOW: 'workflow',
+  DAG: 'dag'
 };
 
 export const PipelineTabs = {

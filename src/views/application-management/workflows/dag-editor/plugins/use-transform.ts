@@ -1,15 +1,24 @@
 import { Transform } from '@antv/x6-plugin-transform';
-import { Node } from '@antv/x6';
 
 export default (graph) => {
   graph.use(
     new Transform({
       resizing: {
         enabled: true,
-        minWidth: 1,
-        maxWidth: 200,
-        minHeight: 1,
-        maxHeight: 150,
+        minWidth: 60,
+        maxWidth(node) {
+          if (node.data.parent) {
+            return 100000;
+          }
+          return 200;
+        },
+        minHeight: 30,
+        maxHeight(node) {
+          if (node.data.parent) {
+            return 100000;
+          }
+          return 100;
+        },
         orthogonal: false,
         restrict: false,
         preserveAspectRatio: false

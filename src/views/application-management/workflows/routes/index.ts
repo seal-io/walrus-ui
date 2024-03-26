@@ -5,10 +5,12 @@ import { PageAction } from '@/views/config';
 
 export default [
   {
-    path: 'project/:projectId/workflow/dag',
+    path: 'project/:projectId/workflow/:name',
     name: 'WorkflowDag',
     component: () =>
-      import('@/views/application-management/workflows/pages/dag.vue'),
+      import(
+        '@/views/application-management/workflows/dag-editor/pages/detail.vue'
+      ),
     meta: {
       hideInMenu: true,
       hideMenu: false,

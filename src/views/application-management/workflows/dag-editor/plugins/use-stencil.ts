@@ -30,15 +30,22 @@ export default function useStencil(graph) {
     }
   });
 
-  const RectShape = graph.createNode({ shape: 'lane-rect', label: 'Rect' });
+  const RectShape = graph.createNode({ shape: 'task-node', label: 'Task' });
   const PolygonShape = graph.createNode({
     shape: 'lane-polygon',
     width: 80,
     height: 80,
-    label: 'Polygon'
+    label: 'Approval'
   });
 
-  stencil.load([RectShape], 'Basic');
+  const StageShape = graph.createNode({
+    shape: 'lane',
+    width: 30,
+    height: 60,
+    label: 'Stage'
+  });
+
+  stencil.load([RectShape, StageShape], 'Basic');
   stencil.load([PolygonShape], 'Advanced');
 
   return stencil;

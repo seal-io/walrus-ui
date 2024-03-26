@@ -89,6 +89,8 @@ export const defineConnector = (edgeName?: string) => {
     ...edgeConfig,
     connector: { name: 'curveConnector' }
   });
+
+  Graph.registerEdge('lane-edge', Edge, true);
 };
 
 export default {};

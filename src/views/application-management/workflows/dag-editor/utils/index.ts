@@ -1,12 +1,30 @@
 import { yaml2Json } from '@/components/form-create/config/yaml-parse';
-import { parseExpression } from '@/components/form-create/config/experssion-parser';
 import _ from 'lodash';
+import { NODE_GAP, NODE_SIZE } from '../config';
 
+const generateStageEdges = (stages) => {
+  const result: { id: string; source: string; target: string }[] = [];
+  for (let i = 0; i < result.length - 1; i += 1) {
+    const source = stages[i][0];
+    const target = stages[i + 1][0];
+    result.push({
+      source: source.name,
+      target: target.name,
+      id: `${source.name}-${target.name}`
+    });
+  }
+  return result;
+};
 const parseDependsSteps = (expression, target) => {
   if (!expression) {
     return [];
   }
-  const dependencies: { id: string; source: string; target: string }[] = [];
+  const dependencies: {
+    id: string;
+    source: string;
+    target: string;
+    shape: string;
+  }[] = [];
   const cacheStepName: string[] = [];
 
   const logicalRegex = /\|\||&&|!/g;
@@ -21,7 +39,10 @@ const parseDependsSteps = (expression, target) => {
       dependencies.push({
         id: `${stepName}-${target}`,
         source: stepName,
-        target
+        target,
+        sourcePort: 'right',
+        targetPort: 'left',
+        shape: 'lane-edge'
       });
     }
   });
@@ -34,17 +55,25 @@ const parseDependenciesSteps = (list, target) => {
   if (!steps.length) {
     return [];
   }
-  const dependencies: { id: string; source: string; target: string }[] = [];
+  const dependencies: {
+    id: string;
+    source: string;
+    target: string;
+    shape: string;
+  }[] = [];
   // deDuplication list
   _.each(steps, (step) => {
     dependencies.push({
       id: `${step}-${target}`,
       source: step,
-      target
+      target,
+      shape: 'lane-edge'
     });
   });
   return dependencies;
 };
+
+export const parseNodesStatus = () => {};
 export const parseWorkflowSpec = (data: any) => {
   // const json = yaml2Json(data);
   const result: any = {
@@ -52,18 +81,22 @@ export const parseWorkflowSpec = (data: any) => {
     edges: []
   };
   const json = data;
-  const templates = json.spec.templates || [];
+  const templates = json?.spec?.templates || [];
   const stageList =
     _.find(
       templates,
       (template: any) => template.name === json?.spec?.entrypoint
     )?.steps || [];
 
-  _.each(stageList, (stage: any) => {
+  _.each(stageList, (stage: any, index) => {
     result.nodes.push({
       id: stage[0].name,
       label: stage[0].name,
       shape: 'lane',
+      position: {
+        x: +index * 100,
+        y: 0
+      },
       data: {
         parent: true,
         raw: stage
@@ -71,7 +104,7 @@ export const parseWorkflowSpec = (data: any) => {
     });
     const tasks = _.get(
       _.find(templates, (template: any) => template.name === stage[0].name),
-      'steps.0',
+      'dag.tasks',
       []
     );
 
@@ -79,12 +112,16 @@ export const parseWorkflowSpec = (data: any) => {
       result.nodes.push({
         id: task.name,
         label: task.name,
-        shape: 'lane-rect',
+        shape: 'task-node',
         parent: stage[0].name,
+        position: {
+          relative: true
+        },
         data: {
           group: stage[0].name,
           parent: false,
-          raw: task
+          raw: task,
+          nodesStatus: json.status?.nodes
         }
       });
       if (task.depends) {
@@ -99,7 +136,17 @@ export const parseWorkflowSpec = (data: any) => {
     });
   });
 
+  // result.edges = result.edges.concat(generateStageEdges(stageList));
+
   return result;
+};
+
+export const setPosition = (nodes, edges) => {
+  // get no source nodes
+  const noSourceNodes = _.difference(
+    _.map(nodes, 'id'),
+    _.map(edges, 'target')
+  );
 };
 
 export default {};

@@ -170,6 +170,19 @@ export const ArgoTestData = {
               }
             },
             {
+              name: 'F',
+              depends: 'B',
+              template: 'whalesay',
+              arguments: {
+                parameters: [
+                  {
+                    name: 'message',
+                    value: 'hello1'
+                  }
+                ]
+              }
+            },
+            {
               name: 'D',
               depends: 'Approval-1',
               template: 'whalesay',
@@ -184,19 +197,6 @@ export const ArgoTestData = {
             },
             {
               name: 'E',
-              depends: 'B',
-              template: 'whalesay',
-              arguments: {
-                parameters: [
-                  {
-                    name: 'message',
-                    value: 'hello1'
-                  }
-                ]
-              }
-            },
-            {
-              name: 'F',
               depends: 'B',
               template: 'whalesay',
               arguments: {

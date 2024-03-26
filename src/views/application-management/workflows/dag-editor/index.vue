@@ -1,8 +1,9 @@
 <script lang="tsx">
   import '@antv/x6-vue-shape';
-  import { Cell } from '@antv/x6';
+  import _ from 'lodash';
+  import { Cell, Node, Point } from '@antv/x6';
   import dagre from 'dagre';
-  import { defineComponent, onMounted, ref } from 'vue';
+  import { defineComponent, onMounted, ref, nextTick, watch } from 'vue';
   import { useAppStore } from '@/store';
   import { useResizeObserver } from '@vueuse/core';
   import resigterNode from './shapes';
@@ -10,7 +11,10 @@
   import initEvents from './core/events';
   import testData from './config/test-data';
   import { ArgoTestData } from '../config/argo-test';
-  import { parseWorkflowSpec } from './utils.ts';
+  import dagData from '../config/dag-data';
+  import { parseWorkflowSpec } from './utils';
+  import { NODE_SIZE, NODE_GAP } from './config';
+  import BasicInfo from '../components/basic-info.vue';
 
   export default defineComponent({
     props: {
@@ -21,6 +25,12 @@
       loading: {
         type: Boolean,
         default: false
+      },
+      dagData: {
+        type: Object,
+        default() {
+          return {};
+        }
       }
     },
     setup(props, { emit }) {
@@ -31,7 +41,8 @@
       const appStore = useAppStore();
       const width = ref(0);
       const height = ref(0);
-      const showStencil = ref(true);
+      const showStencil = ref(false);
+      const showModal = ref(false);
       const dir: any = 'LR';
 
       useResizeObserver(graphWrapper, (entries) => {
@@ -46,18 +57,49 @@
         graphIns?.resize(width.value, height.value);
       });
 
+      const layoutStages = () => {
+        const stages = _.filter(
+          graphIns.getNodes(),
+          (node: any) => node.shape === 'lane'
+        );
+
+        _.each(stages, (stage, index) => {
+          const list = _.sortBy(stage.getChildren(), (child: any, i) => {
+            return child.position()?.x;
+          });
+          stage.position(_.get(list[0]?.position(), 'x') - 50, 0);
+
+          const contentWidth =
+            _.get(_.nth(list, -1).position(), 'x') -
+            _.get(_.nth(list, 0).position(), 'x');
+          stage.setData({ width: contentWidth });
+        });
+      };
+
       // 自动布局
       const layout = () => {
         const nodes = graphIns.getNodes();
         const edges = graphIns.getEdges();
-        const g = new dagre.graphlib.Graph();
-        g.setGraph({ rankdir: dir, nodesep: 50, ranksep: 100 });
+        const g = new dagre.graphlib.Graph({
+          multigraph: false,
+          compound: false
+        });
+        g.setGraph({
+          rankdir: dir,
+          nodesep: NODE_GAP.nodeSep,
+          ranksep: NODE_GAP.rankSep
+        });
         g.setDefaultEdgeLabel(() => ({}));
 
-        const width = 100;
-        const height = 60;
-        nodes.forEach((node) => {
-          g.setNode(node.id, { width, height });
+        const taskNodes = _.filter(nodes, (node: any) => node.shape !== 'lane');
+
+        const { width, height } = NODE_SIZE;
+        _.each(taskNodes, (node) => {
+          g.setNode(node.id, {
+            width,
+            height,
+            rank: 1
+          });
         });
 
         edges.forEach((edge) => {
@@ -71,64 +113,43 @@
         g.nodes().forEach((id) => {
           const node = graphIns.getCellById(id) as Node;
           if (node) {
-            const pos = g.node(id);
-            node.position(pos.x, pos.y);
+            const pos = g.node(id) as Point;
+            node.position(pos.x, pos.y, { relative: false });
           }
         });
+      };
 
-        // edges.forEach((edge) => {
-        //   const source = edge.getSourceNode()!;
-        //   const target = edge.getTargetNode()!;
-        //   const sourceBBox = source.getBBox();
-        //   const targetBBox = target.getBBox();
-
-        //   if ((dir === 'LR' || dir === 'RL') && sourceBBox.y !== targetBBox.y) {
-        //     const gap =
-        //       dir === 'LR'
-        //         ? targetBBox.x - sourceBBox.x - sourceBBox.width
-        //         : -sourceBBox.x + targetBBox.x + targetBBox.width;
-        //     const fix = dir === 'LR' ? sourceBBox.width : 0;
-        //     const x = sourceBBox.x + fix + gap / 2;
-        //     edge.setVertices([
-        //       { x, y: sourceBBox.center.y },
-        //       { x, y: targetBBox.center.y }
-        //     ]);
-        //   } else if (
-        //     (dir === 'TB' || dir === 'BT') &&
-        //     sourceBBox.x !== targetBBox.x
-        //   ) {
-        //     const gap =
-        //       dir === 'TB'
-        //         ? targetBBox.y - sourceBBox.y - sourceBBox.height
-        //         : -sourceBBox.y + targetBBox.y + targetBBox.height;
-        //     const fix = dir === 'TB' ? sourceBBox.height : 0;
-        //     const y = sourceBBox.y + fix + gap / 2;
-        //     edge.setVertices([
-        //       { x: sourceBBox.center.x, y },
-        //       { x: targetBBox.center.x, y }
-        //     ]);
-        //   } else {
-        //     edge.setVertices([]);
-        //   }
-        // });
+      const setChildNodes = () => {
+        const stageNodes = _.filter(
+          graphIns.getNodes(),
+          (node: any) => node.shape === 'lane'
+        );
+        _.each(stageNodes, (node) => {
+          const childNodes = _.filter(
+            graphIns.getNodes(),
+            (childNode: any) =>
+              childNode.store?.data?.parent === node.store?.data?.id
+          );
+          // add child
+          _.each(childNodes, (childNode) => {
+            node.addChild(childNode);
+          });
+        });
       };
       const setData = () => {
-        const t1 = new Date().getTime();
-        const data = parseWorkflowSpec(ArgoTestData);
-        const cells: Cell[] = [];
-        // testData.forEach((item: any) => {
-        //   if (item.shape === 'lane-edge') {
-        //     cells.push(graphIns.createEdge(item));
-        //   } else {
-        //     cells.push(graphIns.createNode(item));
-        //   }
-        // });
-        // graphIns.resetCells(cells);
-        const t2 = new Date().getTime();
-        console.log('time=============', data, t2 - t1);
+        const data = parseWorkflowSpec(props.dagData);
+
         graphIns.fromJSON(data);
+        setChildNodes();
         layout();
+        layoutStages();
         graphIns.zoomToFit({ padding: 10, maxScale: 1 });
+      };
+      const resigterEvent = () => {
+        graphIns.on('node:dblclick', ({ node }) => {
+          console.log('node click', node);
+          showModal.value = true;
+        });
       };
       const init = () => {
         graphIns?.dispose?.();
@@ -137,13 +158,14 @@
 
         graphIns = createGraph({
           container,
-          width: '100%',
-          height: '100%',
+          width: null,
+          height: null,
           stencilContainer
         });
         setData();
         // init events
-        initEvents(graphIns);
+        initEvents(graphIns, graphWrapper.value);
+        resigterEvent();
       };
 
       const renderStencil = () => {
@@ -157,38 +179,55 @@
           ></div>
         );
       };
-      onMounted(() => {
-        init();
-      });
+      const fitPosition = () => {
+        // graphIns?.positionPoint({ x: 0, y: 0 }, 50, 50);
+        // graphIns?.zoomTo(1);
+        graphIns.zoomToFit();
+      };
+      onMounted(() => {});
 
+      watch(
+        () => props.dagData,
+        (newVal) => {
+          if (!_.isEmpty(newVal)) {
+            init();
+            nextTick(() => {
+              fitPosition();
+            });
+          }
+        }
+      );
       return () => (
-        <div class={['wrapper', { dark: appStore.theme === 'dark' }]}>
-          <a-spin
-            style={{ width: '100%' }}
-            loading={props.loading}
-            class={['spin', { 'show-stencil': showStencil.value }]}
-          >
-            {renderStencil()}
-            <div
-              ref={(el) => {
-                graphWrapper.value = el;
-              }}
-              class="graphWrapper"
-              style={{
-                height: '100%',
-                width: '100%'
-              }}
+        <>
+          <div class={['wrapper', { dark: appStore.theme === 'dark' }]}>
+            <a-spin
+              style={{ width: '100%' }}
+              loading={props.loading}
+              class={['spin', { 'show-stencil': showStencil.value }]}
             >
+              {renderStencil()}
               <div
                 ref={(el) => {
-                  container.value = el;
+                  graphWrapper.value = el;
                 }}
-                style={{ width: '100%', height: '100%' }}
-                class="content-container"
-              ></div>
-            </div>
-          </a-spin>
-        </div>
+                class="graphWrapper"
+                style={{
+                  height: '100%',
+                  width: '100%'
+                }}
+              >
+                <div
+                  ref={(el) => {
+                    container.value = el;
+                  }}
+                  style={{ width: '100%', height: '100%' }}
+                  class="content-container"
+                ></div>
+              </div>
+            </a-spin>
+          </div>
+          <BasicInfo v-model:show={showModal.value}></BasicInfo>
+        </>
       );
     }
   });
@@ -209,6 +248,7 @@
     .stencil {
       position: absolute;
       top: 0;
+      bottom: 0;
       left: 0;
       width: 200px;
       height: 100%;

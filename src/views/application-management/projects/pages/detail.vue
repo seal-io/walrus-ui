@@ -124,6 +124,9 @@
           >
             <members></members>
           </a-tab-pane>
+          <a-tab-pane :key="ProjectTabs.DAG" title="Argo Test">
+            <DAGList></DAGList>
+          </a-tab-pane>
         </a-tabs>
       </ComCard>
     </ComCard>
@@ -152,6 +155,7 @@
     removeFilterCatalogActionListener,
     emitFilterTemplateAction
   } from '@/views/operation-hub/hooks/filter-catalog-listener';
+  import DAGList from '@/views/application-management/workflows/dag-editor/pages/list.vue';
   import { queryItemProject } from '../api';
   import { projectDetailTabs } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';

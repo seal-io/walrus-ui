@@ -31,6 +31,7 @@
   "dependencies": {
     "@antv/g6": "^4.8.10",
     "@antv/x6": "^2.18.1",
+    "@antv/x6-plugin-keyboard": "^2.2.3",
     "@antv/x6-plugin-snapline": "^2.1.7",
     "@antv/x6-plugin-stencil": "^2.1.5",
     "@antv/x6-plugin-transform": "^2.1.8",

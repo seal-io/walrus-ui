@@ -25,31 +25,8 @@
           </a-space>
         </template>
         <template #button-group>
-          <a-button
-            v-if="
-              userStore.hasProjectResourceActions({
-                projectID,
-                resource: Resources.Workflows,
-                actions: [Actions.POST]
-              })
-            "
-            type="primary"
-            @click="handleCreate"
-            >{{ $t('applications.workflow.create') }}</a-button
-          >
-          <a-button
-            v-if="
-              userStore.hasProjectResourceActions({
-                projectID,
-                resource: Resources.Workflows,
-                actions: [Actions.DELETE]
-              })
-            "
-            type="primary"
-            status="warning"
-            :disabled="!selectedKeys.length"
-            @click="() => handleDelete()"
-            >{{ $t('common.button.delete') }}</a-button
+          <a-button type="primary" @click="handleCreateDAG"
+            >New Workflow</a-button
           >
         </template>
       </FilterBox>
@@ -105,21 +82,7 @@
             }"
           >
             <template #cell="{ record }">
-              <a-link
-                v-if="
-                  userStore.hasProjectResourceActions({
-                    projectID: record.project?.id,
-                    resource: Resources.WorkflowExecutions,
-                    actions: [Actions.GET]
-                  })
-                "
-                :hoverable="false"
-                type="text"
-                size="small"
-              >
-                {{ record.name }}
-              </a-link>
-              <span v-else>{{ record.name }}</span>
+              <a-link>{{ record.metadata.name }}</a-link>
             </template>
           </a-table-column>
           <a-table-column
@@ -132,40 +95,11 @@
           >
             <template #cell="{ record }">
               <span class="flex">
-                <a-tooltip
-                  v-if="_.get(record, 'executions.0.version')"
-                  :content="
-                    $t('workflow.task.run.order', {
-                      order:
-                        currentLocale === 'en-US'
-                          ? ordinalNumber(_.get(record, 'executions.0.version'))
-                          : _.get(record, 'executions.0.version')
-                    })
-                  "
-                >
-                  <div style="width: 50px">
-                    <a-button
-                      v-if="
-                        userStore.hasProjectResourceActions({
-                          projectID: record.project?.id,
-                          resource: Resources.WorkflowExecutions,
-                          actions: [Actions.GET]
-                        })
-                      "
-                      type="text"
-                      style="padding-right: 10px; padding-left: 0"
-                      @click="handleViewResult(record)"
-                    >
-                      #{{ _.get(record, 'executions.0.version') }}
-                    </a-button>
-                    <span v-else>
-                      #{{ _.get(record, 'executions.0.version') }}</span
-                    >
-                  </div>
-                </a-tooltip>
                 <StatusLabel
                   :zoom="0.9"
-                  :status="_.get(record, 'executions.0.status', {})"
+                  :status="{
+                    summaryStatus: _.get(record, 'status.phase', '')
+                  }"
                 ></StatusLabel>
               </span>
             </template>
@@ -173,23 +107,13 @@
           <a-table-column
             ellipsis
             :cell-style="{ minWidth: '40px' }"
-            :body-cell-style="{ fontSize: 0 }"
             align="left"
-            data-index="stages"
-            :title="$t('applications.workflow.table.stage')"
+            data-index="status.progress"
+            title="Progress"
           >
             <template #cell="{ record }">
-              <SealSteps :steps="setRunStatus(record)"></SealSteps>
+              <span>{{ _.get(record, 'status.progress', '') }}</span>
             </template>
-          </a-table-column>
-          <a-table-column
-            ellipsis
-            tooltip
-            :cell-style="{ minWidth: '40px' }"
-            align="left"
-            data-index="executions.0.trigger.user"
-            :title="$t('workflow.task.run.user')"
-          >
           </a-table-column>
           <a-table-column
             ellipsis
@@ -325,17 +249,12 @@
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
   import SealSteps from '@/components/seal-steps/index.vue';
-  import runConfig from '../components/run-config.vue';
+  import runConfig from '../../components/run-config.vue';
 
-  import { moreActions, WorkflowStatusList } from '../config';
-  import { PipelineRow } from '../config/interface';
-  import {
-    queryPipelines,
-    deletePipeline,
-    applyPipeline,
-    PROJECT_API_PREFIX,
-    PIPELINE_API
-  } from '../api';
+  import { moreActions, WorkflowStatusList } from '../../config';
+  import { PipelineRow } from '../../config/interface';
+  import { queryWorkflows, deleteWorkflow } from '../api';
+  import { applyPipeline } from '../../api';
 
   let timer: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -399,16 +318,22 @@
       }
     });
   };
+  const handleCreateDAG = () => {
+    router.push({
+      name: 'WorkflowDag',
+      params: {
+        projectId: route.params.projectId,
+        action: PageAction.EDIT,
+        name: 'argo'
+      }
+    });
+  };
 
   const fetchData = async () => {
     try {
       loading.value = true;
-      const params: any = {
-        ...pickBy(queryParams, (val) => !!val),
-        sort: [sort.value]
-      };
 
-      const { data } = await queryPipelines(params);
+      const { data } = await queryWorkflows();
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
       loading.value = false;
@@ -474,23 +399,20 @@
 
   const handleView = (row) => {
     router.push({
-      name: WORKFLOW.Records,
+      name: 'WorkflowDag',
       params: {
-        projectId: row.project?.id,
-        flowId: row.id
+        projectId: route.params.projectId,
+        action: PageAction.EDIT,
+        name: row.metadata.name
+      },
+      query: {
+        uid: row.metadata.uid
       }
     });
   };
 
   const handleCellClick = (row, col) => {
-    if (
-      col.dataIndex === 'name' &&
-      userStore.hasProjectResourceActions({
-        projectID: row.project?.id,
-        resource: Resources.WorkflowExecutions,
-        actions: [Actions.GET]
-      })
-    ) {
+    if (col.dataIndex === 'name') {
       handleView(row);
     }
   };
@@ -506,15 +428,15 @@
       }
     });
   };
-  const handleDeleteConfirm = async (delList?: string[]) => {
+  const handleDeleteConfirm = async (row) => {
     try {
       loading.value = true;
-      const ids = map(delList || selectedKeys.value, (val) => {
-        return {
-          id: val as string
-        };
-      });
-      await deletePipeline({ items: ids });
+      // const ids = map(delList || selectedKeys.value, (val) => {
+      //   return {
+      //     id: val as string
+      //   };
+      // });
+      await deleteWorkflow({ name: row.metadata.name });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
@@ -525,8 +447,8 @@
       loading.value = false;
     }
   };
-  const handleDelete = async (ids?: string[]) => {
-    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
+  const handleDelete = async (row) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(row) });
   };
 
   const handleDropSelect = (val, row) => {
@@ -547,7 +469,7 @@
       return;
     }
     if (val === 'delete') {
-      handleDelete([row.id]);
+      handleDelete(row);
     }
   };
   const updateHandler = (list) => {
@@ -556,18 +478,18 @@
     });
   };
   const createWorkflowsChunkRequest = () => {
-    const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}`;
-    try {
-      setChunkRequest({
-        url: `${url}`,
-        params: {
-          ..._.pickBy(_.omit(queryParams, ['page', 'perPage']), (val) => !!val)
-        },
-        handler: updateHandler
-      });
-    } catch (error) {
-      // ignore
-    }
+    // const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}`;
+    // try {
+    //   setChunkRequest({
+    //     url: `${url}`,
+    //     params: {
+    //       ..._.pickBy(_.omit(queryParams, ['page', 'perPage']), (val) => !!val)
+    //     },
+    //     handler: updateHandler
+    //   });
+    // } catch (error) {
+    //   // ignore
+    // }
   };
 
   onMounted(() => {
