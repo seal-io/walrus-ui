@@ -16,14 +16,14 @@ export default (store?) => {
         dx: Platform.IS_SAFARI ? 4 : -8
       }
     },
-    // 是否允许边链接到节点
-    allowNode: false,
-    // // 是否允许边链接到另一个边
-    // allowEdge: false,
-    // // 是否允许边连接到连接桩，默认为 true
-    // allowPort: true,
-    // // 是否允许在相同的起始节点和终止之间创建多条边
-    // allowMulti: false,
+    // edge connect to node
+    allowNode: true,
+    // edge connect to edge
+    allowEdge: false,
+    // edge connect to port
+    allowPort: true,
+    // between two nodes
+    allowMulti: false,
 
     anchor: 'center',
     connectionPoint: {
@@ -37,16 +37,14 @@ export default (store?) => {
         // 路由算法步进步长，其值越小计算量越大。推荐使用画布的网格大小
         step: 5,
         // 设置锚点距离转角的最小距离，和 orth 路由配置一致。20
-        padding: 5,
+        padding: 10,
         // 忽略起始或终止节点，忽略后不参与障碍物计算。
-        // excludeTerminals: ['source', 'target'], // 'target' source
-        // 排除职能带 部门 描述
+        excludeTerminals: ['source', 'target'],
+
         excludeShapes: [],
-        // excludeNodes() {
-        //   return store.dutyCellIds;
-        // },
+        excludeNodes: [],
         // 忽略隐藏的节点，忽略后不参与障碍物计算。
-        excludeHiddenNodes: true
+        excludeHiddenNodes: false
       }
     },
     // 连接器将起点、路由返回的点、终点加工为 <path> 元素的 d 属性，决定了边渲染到画布后的样式

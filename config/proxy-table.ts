@@ -16,7 +16,7 @@ export default function createProxyTable(remote?) {
   const proxyTable = proxyTableList.reduce((obj, api) => {
     let target = remote;
     if (api === 'api') {
-      target = 'https://localhost:2746';
+      target = 'http://192.168.194.9';
     } else {
       target = remote;
     }

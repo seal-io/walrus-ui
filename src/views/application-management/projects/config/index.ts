@@ -78,6 +78,12 @@ export const projectDetailTabs = [
     value: ProjectTabs.WORKFLOW,
     resource: Resources.ProjectSubjects,
     component: 'workflow'
+  },
+  {
+    label: 'Argo Test',
+    value: ProjectTabs.DAG,
+    resource: Resources.ProjectSubjects,
+    component: 'dag'
   }
 ];
 

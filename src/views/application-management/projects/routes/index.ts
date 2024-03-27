@@ -57,7 +57,8 @@ export default [
         PROJECT.TemplateDetail,
         WORKFLOW.Detail,
         WORKFLOW.Edit,
-        WORKFLOW.Records
+        WORKFLOW.Records,
+        WORKFLOW.DagEditor
       ],
       icon: 'icon-apps'
     }

@@ -2,7 +2,7 @@ import { NodeShape } from '../../config';
 import Component from './component.vue';
 
 export default {
-  shape: 'lane',
+  shape: NodeShape.Stage,
   inherit: 'vue-shape',
   component: Component,
   // markup: [

@@ -3,6 +3,8 @@
   import _ from 'lodash';
   import { Cell, Node, Point } from '@antv/x6';
   import dagre from 'dagre';
+  import { PageAction } from '@/views/config';
+  import useCallCommon from '@/hooks/use-call-common';
   import { defineComponent, onMounted, ref, nextTick, watch } from 'vue';
   import { useAppStore } from '@/store';
   import { useResizeObserver } from '@vueuse/core';
@@ -13,7 +15,7 @@
   import { ArgoTestData } from '../config/argo-test';
   import dagData from '../config/dag-data';
   import { parseWorkflowSpec } from './utils';
-  import { NODE_SIZE, NODE_GAP } from './config';
+  import { NODE_SIZE, NODE_GAP, NodeShape } from './config';
   import BasicInfo from '../components/basic-info.vue';
 
   export default defineComponent({
@@ -31,6 +33,10 @@
         default() {
           return {};
         }
+      },
+      action: {
+        type: String,
+        default: PageAction.EDIT
       }
     },
     setup(props, { emit }) {
@@ -41,7 +47,7 @@
       const appStore = useAppStore();
       const width = ref(0);
       const height = ref(0);
-      const showStencil = ref(false);
+      const showStencil = ref(true);
       const showModal = ref(false);
       const dir: any = 'LR';
 
@@ -60,23 +66,23 @@
       const layoutStages = () => {
         const stages = _.filter(
           graphIns.getNodes(),
-          (node: any) => node.shape === 'lane'
+          (node: any) => node.shape === NodeShape.Stage
         );
 
         _.each(stages, (stage, index) => {
           const list = _.sortBy(stage.getChildren(), (child: any, i) => {
             return child.position()?.x;
           });
-          stage.position(_.get(list[0]?.position(), 'x') - 50, 0);
+          stage.position(_.get(list[0]?.position?.(), 'x') - 50, 0);
 
           const contentWidth =
-            _.get(_.nth(list, -1).position(), 'x') -
-            _.get(_.nth(list, 0).position(), 'x');
+            _.get(_.nth(list, -1)?.position(), 'x') -
+            _.get(_.nth(list, 0)?.position(), 'x');
           stage.setData({ width: contentWidth });
         });
       };
 
-      // 自动布局
+      // custom layout
       const layout = () => {
         const nodes = graphIns.getNodes();
         const edges = graphIns.getEdges();
@@ -89,9 +95,16 @@
           nodesep: NODE_GAP.nodeSep,
           ranksep: NODE_GAP.rankSep
         });
-        g.setDefaultEdgeLabel(() => ({}));
 
-        const taskNodes = _.filter(nodes, (node: any) => node.shape !== 'lane');
+        /* eslint-disable */
+        g.setDefaultEdgeLabel(() => {
+          return { weigth: 1 };
+        });
+
+        const taskNodes = _.filter(
+          nodes,
+          (node: any) => node.shape !== NodeShape.Stage
+        );
 
         const { width, height } = NODE_SIZE;
         _.each(taskNodes, (node) => {
@@ -122,7 +135,7 @@
       const setChildNodes = () => {
         const stageNodes = _.filter(
           graphIns.getNodes(),
-          (node: any) => node.shape === 'lane'
+          (node: any) => node.shape === NodeShape.Stage
         );
         _.each(stageNodes, (node) => {
           const childNodes = _.filter(
@@ -151,19 +164,25 @@
           showModal.value = true;
         });
       };
+
       const init = () => {
         graphIns?.dispose?.();
         // register custom node
         resigterNode();
 
+        console.log('size+++++++++', {
+          width: width.value,
+          height: height.value
+        });
         graphIns = createGraph({
           container,
           width: null,
           height: null,
           stencilContainer
         });
-        setData();
-        // init events
+        if (!_.isEmpty(props.dagData)) {
+          setData();
+        }
         initEvents(graphIns, graphWrapper.value);
         resigterEvent();
       };
@@ -184,17 +203,23 @@
         // graphIns?.zoomTo(1);
         graphIns.zoomToFit();
       };
-      onMounted(() => {});
+      onMounted(() => {
+        init();
+        nextTick(() => {
+          fitPosition();
+        });
+      });
 
       watch(
         () => props.dagData,
         (newVal) => {
-          if (!_.isEmpty(newVal)) {
-            init();
-            nextTick(() => {
-              fitPosition();
-            });
-          }
+          init();
+          nextTick(() => {
+            fitPosition();
+          });
+        },
+        {
+          immediate: false
         }
       );
       return () => (

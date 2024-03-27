@@ -2,12 +2,15 @@ import { register } from '@antv/x6-vue-shape';
 import { Graph, Edge } from '@antv/x6';
 import StageNode from './stage/index';
 import TaskNode from './task/index';
+import ApprovalNode from './approval/index';
 import { edgeConfig, defineConnector } from './edge/index';
 import ports from '../core/ports';
+import { NodeShape } from '../config';
 
 export default () => {
   register(StageNode);
   register(TaskNode);
+  register(ApprovalNode);
   defineConnector();
   // Graph.registerNode(
   //   'lane-rect',
@@ -53,5 +56,5 @@ export default () => {
     true
   );
 
-  Graph.registerEdge('lane-edge', edgeConfig, true);
+  // Graph.registerEdge(NodeShape.Edge, edgeConfig, true);
 };

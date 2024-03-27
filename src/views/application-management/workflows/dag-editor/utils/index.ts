@@ -1,7 +1,14 @@
 import { yaml2Json } from '@/components/form-create/config/yaml-parse';
 import _ from 'lodash';
-import { NODE_GAP, NODE_SIZE } from '../config';
+import { NodeShape } from '../config';
 
+interface EdgeItem {
+  id: string;
+  source: string;
+  target: string;
+  shape: string;
+  [key: string]: any;
+}
 const generateStageEdges = (stages) => {
   const result: { id: string; source: string; target: string }[] = [];
   for (let i = 0; i < result.length - 1; i += 1) {
@@ -15,16 +22,12 @@ const generateStageEdges = (stages) => {
   }
   return result;
 };
+
 const parseDependsSteps = (expression, target) => {
   if (!expression) {
     return [];
   }
-  const dependencies: {
-    id: string;
-    source: string;
-    target: string;
-    shape: string;
-  }[] = [];
+  const dependencies: EdgeItem[] = [];
   const cacheStepName: string[] = [];
 
   const logicalRegex = /\|\||&&|!/g;
@@ -42,7 +45,7 @@ const parseDependsSteps = (expression, target) => {
         target,
         sourcePort: 'right',
         targetPort: 'left',
-        shape: 'lane-edge'
+        shape: NodeShape.Edge
       });
     }
   });
@@ -55,25 +58,74 @@ const parseDependenciesSteps = (list, target) => {
   if (!steps.length) {
     return [];
   }
-  const dependencies: {
-    id: string;
-    source: string;
-    target: string;
-    shape: string;
-  }[] = [];
+  const dependencies: EdgeItem[] = [];
   // deDuplication list
   _.each(steps, (step) => {
     dependencies.push({
       id: `${step}-${target}`,
       source: step,
       target,
-      shape: 'lane-edge'
+      sourcePort: 'right',
+      targetPort: 'left',
+      shape: NodeShape.Edge
     });
   });
   return dependencies;
 };
 
-export const parseNodesStatus = () => {};
+const parseStepsFlowData = (stageData, stage, result, json) => {
+  const tasks = _.get(stageData, 'steps.0', []);
+
+  _.each(tasks, (task: any) => {
+    result.nodes.push({
+      id: task.name,
+      label: task.name,
+      shape: NodeShape.Task,
+      parent: stage[0].name,
+      position: {
+        relative: false
+      },
+      data: {
+        group: stage[0].name,
+        parent: false,
+        raw: task,
+        nodesStatus: json.status?.nodes
+      }
+    });
+  });
+};
+
+const parseDagTasksData = (stageData, stage, result, json) => {
+  const tasks = _.get(stageData, 'dag.tasks', []);
+
+  _.each(tasks, (task: any) => {
+    result.nodes.push({
+      id: task.name,
+      label: task.name,
+      shape: NodeShape.Task,
+      parent: stage[0].name,
+      position: {
+        relative: false
+      },
+      data: {
+        group: stage[0].name,
+        parent: false,
+        raw: task,
+        nodesStatus: json.status?.nodes
+      }
+    });
+    if (task.depends) {
+      result.edges = result.edges.concat(
+        parseDependsSteps(task.depends, task.name)
+      );
+    } else if (task.dependencies) {
+      result.edges = result.edges.concat(
+        parseDependenciesSteps(task.dependencies, task.name)
+      );
+    }
+  });
+};
+
 export const parseWorkflowSpec = (data: any) => {
   // const json = yaml2Json(data);
   const result: any = {
@@ -92,7 +144,7 @@ export const parseWorkflowSpec = (data: any) => {
     result.nodes.push({
       id: stage[0].name,
       label: stage[0].name,
-      shape: 'lane',
+      shape: NodeShape.Stage,
       position: {
         x: +index * 100,
         y: 0
@@ -102,38 +154,19 @@ export const parseWorkflowSpec = (data: any) => {
         raw: stage
       }
     });
-    const tasks = _.get(
-      _.find(templates, (template: any) => template.name === stage[0].name),
-      'dag.tasks',
-      []
-    );
 
-    _.each(tasks, (task: any) => {
-      result.nodes.push({
-        id: task.name,
-        label: task.name,
-        shape: 'task-node',
-        parent: stage[0].name,
-        position: {
-          relative: true
-        },
-        data: {
-          group: stage[0].name,
-          parent: false,
-          raw: task,
-          nodesStatus: json.status?.nodes
-        }
-      });
-      if (task.depends) {
-        result.edges = result.edges.concat(
-          parseDependsSteps(task.depends, task.name)
-        );
-      } else if (task.dependencies) {
-        result.edges = result.edges.concat(
-          parseDependenciesSteps(task.dependencies, task.name)
-        );
-      }
-    });
+    const stageData = _.find(
+      templates,
+      (template: any) => template.name === stage[0].name
+    );
+    // 1. multiple steps task
+    if (_.get(stageData, 'steps')) {
+      parseStepsFlowData(stageData, stage, result, json);
+    }
+    // 2. dag task
+    if (_.get(stageData, 'dag')) {
+      parseDagTasksData(stageData, stage, result, json);
+    }
   });
 
   // result.edges = result.edges.concat(generateStageEdges(stageList));

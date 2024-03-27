@@ -15,16 +15,17 @@ export default function createGraph({
     container: container.value,
     width: width || 1400,
     height: height || 600,
-    connecting: {
-      allowBlank: false,
-      router: 'manhattan',
-      connector: {
-        name: 'rounded',
-        args: {
-          radius: 20
-        }
-      }
-    },
+    connecting: connecting(),
+    // connecting: {
+    //   allowBlank: false,
+    //   router: 'manhattan',
+    //   connector: {
+    //     name: 'rounded',
+    //     args: {
+    //       radius: 20
+    //     }
+    //   }
+    // },
     translating: {
       restrict: false
       // restrict(cellView: CellView) {
@@ -52,7 +53,8 @@ export default function createGraph({
       color: 'var(--color-workflow-bg)'
     },
     grid: {
-      visible: true
+      visible: true,
+      size: 10
     },
 
     mousewheel: {
@@ -98,7 +100,7 @@ export default function createGraph({
   const stencil = useStencil(graph);
   stencilContainer.value?.appendChild?.(stencil.container);
 
-  useTransform(graph);
+  // useTransform(graph);
   useSnapline(graph);
   // useKeyboard(graph);
 

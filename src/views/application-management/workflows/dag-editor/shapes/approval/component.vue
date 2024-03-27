@@ -2,7 +2,7 @@
   import _, { find } from 'lodash';
   import { defineComponent, ref, computed, inject } from 'vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import { NODE_SIZE, PHASES } from '../../config';
+  import { APPROVAL_NODE_SIZE, PHASES } from '../../config';
 
   export default defineComponent({
     props: {
@@ -33,28 +33,30 @@
         <div
           class="task"
           style={{
-            width: `${NODE_SIZE.width}px`,
-            height: `${NODE_SIZE.height}px`
+            width: `${APPROVAL_NODE_SIZE.width}px`,
+            height: `${APPROVAL_NODE_SIZE.height}px`
           }}
         >
-          <span class="status">
-            <StatusLabel
-              status={{
-                summaryStatus: status.value.phase,
-                summaryStatusMessage: status.value.message,
-                transitioning: _.includes(
-                  [PHASES.Pending, PHASES.Running],
-                  status.value.phase
-                ),
-                error: _.includes(
-                  [PHASES.Failed, PHASES.Error],
-                  status.value.phase
-                ),
-                inactive: _.includes([PHASES.Omitted], status.value.phase)
-              }}
-            ></StatusLabel>
-          </span>
-          <div class="title">{props.node.store?.data?.label}</div>
+          <div class="inner">
+            <span class="status">
+              <StatusLabel
+                status={{
+                  summaryStatus: status.value.phase,
+                  summaryStatusMessage: status.value.message,
+                  transitioning: _.includes(
+                    [PHASES.Pending, PHASES.Running],
+                    status.value.phase
+                  ),
+                  error: _.includes(
+                    [PHASES.Failed, PHASES.Error],
+                    status.value.phase
+                  ),
+                  inactive: _.includes([PHASES.Omitted], status.value.phase)
+                }}
+              ></StatusLabel>
+            </span>
+            <div class="title">{props.node.store?.data?.label}</div>
+          </div>
         </div>
       );
     }
@@ -72,6 +74,12 @@
     border-right: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
     box-shadow: 0 2px 4px 0 rgba(var(--gray-5), 60%);
+    transform: rotate(45deg) skew(-10deg, -10deg);
+    transform-origin: center center;
+
+    .inner {
+      transform: skew(10deg, 10deg) rotate(-45deg);
+    }
 
     .status {
       position: absolute;

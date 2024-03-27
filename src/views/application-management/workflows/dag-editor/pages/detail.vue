@@ -36,6 +36,7 @@
     </BreadWrapper>
     <ComCard>
       <DagEditor
+        :action="pageAction"
         style="height: calc(100vh - 110px)"
         :dag-data="dagData"
       ></DagEditor>
@@ -59,19 +60,21 @@
   const dagData = ref({});
   const nodesStatus = ref({});
   const projectID = route.params.projectID as string;
+  const flowName = route.query.name as string;
+  const pageAction = route.params.action as string;
 
   provide('nodesStatus', nodesStatus);
 
   const fetchData = async () => {
+    if (!flowName) return;
     try {
       const params = {
-        name: route.params.name as string
+        name: flowName
       };
       const { data } = await queryWorkflowItem(params);
       dagData.value = data;
       nodesStatus.value = data.status?.nodes || {};
     } catch (error) {
-      console.log('error', error);
       dagData.value = {};
       nodesStatus.value = {};
     }
@@ -80,7 +83,7 @@
   const handleRetry = async () => {
     try {
       const data = {
-        name: route.params.name as string
+        name: flowName
       };
       await retryWorkflow(data);
       execSucceed();
@@ -92,7 +95,7 @@
   const handleStop = async () => {
     try {
       const data = {
-        name: route.params.name as string
+        name: flowName
       };
       await stopWorkflow(data);
       execSucceed();

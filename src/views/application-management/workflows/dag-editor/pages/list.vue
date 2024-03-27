@@ -96,9 +96,18 @@
             <template #cell="{ record }">
               <span class="flex">
                 <StatusLabel
-                  :zoom="0.9"
                   :status="{
-                    summaryStatus: _.get(record, 'status.phase', '')
+                    summaryStatus: record.status?.phase,
+                    summaryStatusMessage: record.status?.message,
+                    transitioning: _.includes(
+                      [PHASES.Pending, PHASES.Running],
+                      record.status?.phase
+                    ),
+                    error: _.includes(
+                      [PHASES.Failed, PHASES.Error],
+                      record.status?.phase
+                    ),
+                    inactive: _.includes([PHASES.Omitted], record.status?.phase)
                   }"
                 ></StatusLabel>
               </span>
@@ -252,6 +261,7 @@
   import runConfig from '../../components/run-config.vue';
 
   import { moreActions, WorkflowStatusList } from '../../config';
+  import { PHASES } from '../config';
   import { PipelineRow } from '../../config/interface';
   import { queryWorkflows, deleteWorkflow } from '../api';
   import { applyPipeline } from '../../api';
@@ -311,7 +321,7 @@
 
   const handleCreate = () => {
     router.push({
-      name: WORKFLOW.Edit,
+      name: WORKFLOW.DagEditor,
       params: {
         projectId: route.params.projectId,
         action: PageAction.EDIT
@@ -320,11 +330,10 @@
   };
   const handleCreateDAG = () => {
     router.push({
-      name: 'WorkflowDag',
+      name: WORKFLOW.DagEditor,
       params: {
         projectId: route.params.projectId,
-        action: PageAction.EDIT,
-        name: 'argo'
+        action: PageAction.EDIT
       }
     });
   };
@@ -332,8 +341,11 @@
   const fetchData = async () => {
     try {
       loading.value = true;
+      const params = {
+        'listOptions.limit': 50
+      };
 
-      const { data } = await queryWorkflows();
+      const { data } = await queryWorkflows(params);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
       loading.value = false;
@@ -399,13 +411,13 @@
 
   const handleView = (row) => {
     router.push({
-      name: 'WorkflowDag',
+      name: WORKFLOW.DagEditor,
       params: {
         projectId: route.params.projectId,
-        action: PageAction.EDIT,
-        name: row.metadata.name
+        action: PageAction.VIEW
       },
       query: {
+        name: row.metadata.name,
         uid: row.metadata.uid
       }
     });

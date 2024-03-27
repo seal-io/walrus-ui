@@ -1,14 +1,19 @@
-import { Graph } from '@antv/x6';
+import { NodeShape, APPROVAL_NODE_SIZE as nodeSize } from '../../config';
+import Component from './component.vue';
+import ports from '../../core/custom-shape-ports';
 
-export default (nodeSize) => {
-  return {
+export default {
+  shape: NodeShape.Approval,
+  inherit: 'vue-shape',
+  component: Component,
+  ports: {
     groups: {
       top: {
         position: {
           name: 'absolute',
           args: {
             x: nodeSize.width / 2,
-            y: 4
+            y: 0
           }
         },
         attrs: {
@@ -28,7 +33,7 @@ export default (nodeSize) => {
         position: {
           name: 'absolute',
           args: {
-            x: nodeSize.width - 4,
+            x: 100,
             y: nodeSize.height / 2
           }
         },
@@ -50,7 +55,7 @@ export default (nodeSize) => {
           name: 'absolute',
           args: {
             x: nodeSize.width / 2,
-            y: nodeSize.height - 4
+            y: nodeSize.height
           }
         },
         attrs: {
@@ -70,7 +75,7 @@ export default (nodeSize) => {
         position: {
           name: 'absolute',
           args: {
-            x: 4,
+            x: -20,
             y: nodeSize.height / 2
           }
         },
@@ -106,5 +111,6 @@ export default (nodeSize) => {
         id: 'top'
       }
     ]
-  };
+  },
+  attrs: {}
 };

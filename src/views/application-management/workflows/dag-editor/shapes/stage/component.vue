@@ -1,5 +1,6 @@
 <script lang="tsx">
   import { defineComponent } from 'vue';
+  import { STAGE_NODE_SIZE } from '../../config';
 
   export default defineComponent({
     props: {
@@ -29,7 +30,6 @@
     border-right: 1px dashed rgba(var(--arcoblue-5), 0.5);
 
     .title {
-      width: 100px;
       font-weight: var(--font-weight-medium);
       font-size: var(--font-size-normal);
       text-align: center;

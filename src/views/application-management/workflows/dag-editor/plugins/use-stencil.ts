@@ -1,5 +1,6 @@
 import { Stencil } from '@antv/x6-plugin-stencil';
 import setStencilStyle from '../style/stencil';
+import { NodeShape } from '../config';
 
 export default function useStencil(graph) {
   setStencilStyle();
@@ -12,13 +13,13 @@ export default function useStencil(graph) {
     groups: [
       {
         name: 'Basic',
-        title: 'Group 1',
-        graphHeight: 180,
-        graphWidth: 200
+        title: 'Basic'
+        // graphHeight: 180,
+        // graphWidth: 200
       },
       {
         name: 'Advanced',
-        title: 'Group 2',
+        title: 'Advanced',
         graphHeight: 180,
         graphWidth: 200
       }
@@ -30,23 +31,28 @@ export default function useStencil(graph) {
     }
   });
 
-  const RectShape = graph.createNode({ shape: 'task-node', label: 'Task' });
-  const PolygonShape = graph.createNode({
-    shape: 'lane-polygon',
-    width: 80,
-    height: 80,
+  const TaskNode = graph.createNode({
+    shape: NodeShape.Task,
+    label: 'Task',
+    width: 100,
+    height: 80
+  });
+  const ApprovalNode = graph.createNode({
+    shape: NodeShape.Approval,
+    width: 60,
+    height: 60,
     label: 'Approval'
   });
 
   const StageShape = graph.createNode({
-    shape: 'lane',
+    shape: NodeShape.Stage,
     width: 30,
     height: 60,
     label: 'Stage'
   });
 
-  stencil.load([RectShape, StageShape], 'Basic');
-  stencil.load([PolygonShape], 'Advanced');
+  stencil.load([TaskNode], 'Basic');
+  stencil.load([ApprovalNode], 'Advanced');
 
   return stencil;
 }

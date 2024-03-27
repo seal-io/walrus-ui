@@ -1,4 +1,5 @@
 import { Graph, Path, Edge } from '@antv/x6';
+import { NodeShape } from '../../config';
 
 export const edgeConfig = {
   markup: [
@@ -90,7 +91,7 @@ export const defineConnector = (edgeName?: string) => {
     connector: { name: 'curveConnector' }
   });
 
-  Graph.registerEdge('lane-edge', Edge, true);
+  Graph.registerEdge(NodeShape.Edge, Edge, true);
 };
 
 export default {};

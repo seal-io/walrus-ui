@@ -3,7 +3,7 @@ import Component from './component.vue';
 import ports from '../../core/custom-shape-ports';
 
 export default {
-  shape: 'task-node',
+  shape: NodeShape.Task,
   inherit: 'vue-shape',
   component: Component,
   ports: ports(NODE_SIZE),
