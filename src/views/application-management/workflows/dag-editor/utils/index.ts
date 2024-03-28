@@ -99,6 +99,7 @@ const parseDagTasksData = (stageData, stage, result, json) => {
   const tasks = _.get(stageData, 'dag.tasks', []);
 
   _.each(tasks, (task: any) => {
+    console.log('task+++++++++++', task);
     result.nodes.push({
       id: task.name,
       label: task.name,
@@ -110,7 +111,9 @@ const parseDagTasksData = (stageData, stage, result, json) => {
       data: {
         group: stage[0].name,
         parent: false,
+        label: task.name,
         raw: task,
+        nodeAction: 'edit',
         nodesStatus: json.status?.nodes
       }
     });

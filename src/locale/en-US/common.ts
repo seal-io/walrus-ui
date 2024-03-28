@@ -37,6 +37,8 @@ export default {
   'common.button.enabled': 'Enabled',
   'common.button.disabled': 'Disabled',
   'common.button.upgrade': 'Upgrade',
+  'common.button.undo': 'Undo',
+  'common.button.redo': 'Redo',
   'common.input.holder': 'Please enter',
   'common.button.edit': 'Edit',
   'common.button.authorize': 'Role Authorization',

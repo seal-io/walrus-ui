@@ -10,7 +10,20 @@
                 resource: Resources.WorkflowExecutions,
                 projectID,
                 actions: [Actions.PUT]
-              })
+              }) && pageAction === PageAction.EDIT
+            "
+            type="primary"
+            @click="handleSubmit"
+          >
+            {{ $t('common.button.save') }}
+          </a-button>
+          <a-button
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.WorkflowExecutions,
+                projectID,
+                actions: [Actions.PUT]
+              }) && pageAction === PageAction.VIEW
             "
             type="primary"
             @click="handleRetryAction"
@@ -23,7 +36,7 @@
                 resource: Resources.WorkflowExecutions,
                 projectID,
                 actions: [Actions.PUT]
-              })
+              }) && pageAction === PageAction.VIEW
             "
             type="primary"
             status="warning"
@@ -34,10 +47,11 @@
         </a-space>
       </template>
     </BreadWrapper>
-    <ComCard>
+    <ComCard padding="0px var(--card-content-padding) 20px">
       <DagEditor
-        :action="pageAction"
-        style="height: calc(100vh - 110px)"
+        ref="dagViewer"
+        :action="!uid ? 'create' : pageAction"
+        :container-height="containerHeight"
         :dag-data="dagData"
       ></DagEditor>
     </ComCard>
@@ -47,18 +61,28 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import i18n from '@/locale';
+  import { PageAction } from '@/views/config';
   import { execSucceed, deleteModal } from '@/utils/monitor';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { ref, onMounted, provide } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DagEditor from '../index.vue';
-  import { queryWorkflowItem, retryWorkflow, stopWorkflow } from '../api';
+  import { Workflow } from '../config/interface';
+  import {
+    queryWorkflowItem,
+    retryWorkflow,
+    stopWorkflow,
+    createWorkflow
+  } from '../api';
 
-  const { route, t } = useCallCommon();
+  const containerHeight = 'calc(100vh - 110px)';
+  const { route, router, t } = useCallCommon();
   const userStore = useUserStore();
   const dagData = ref({});
   const nodesStatus = ref({});
+  const dagViewer = ref();
+  const uid = route.query.uid as string;
   const projectID = route.params.projectID as string;
   const flowName = route.query.name as string;
   const pageAction = route.params.action as string;
@@ -99,6 +123,7 @@
       };
       await stopWorkflow(data);
       execSucceed();
+      router.back();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
@@ -123,6 +148,18 @@
         action: _.toLower(t('common.button.retry'))
       })
     });
+  };
+
+  const handleSubmit = async () => {
+    const data: Workflow = await dagViewer.value?.getSubmitData();
+    if (!data) return;
+    try {
+      await createWorkflow(data);
+      execSucceed();
+    } catch (error) {
+      // error
+    }
+    console.log('handleSubmit================', data);
   };
 
   onMounted(() => {

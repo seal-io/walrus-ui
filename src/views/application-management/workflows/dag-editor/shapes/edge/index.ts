@@ -22,6 +22,12 @@ export const edgeConfig = {
       }
     }
   ],
+  // tools: [
+  //   {
+  //     name: 'button-remove',
+  //     args: { distance: -40 }
+  //   }
+  // ],
   attrs: {
     wrap: {
       connection: true,

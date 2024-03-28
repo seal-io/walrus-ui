@@ -1,33 +1,34 @@
 import { Stencil } from '@antv/x6-plugin-stencil';
 import setStencilStyle from '../style/stencil';
-import { NodeShape } from '../config';
+import { NodeShape, NODE_SIZE } from '../config';
 
 export default function useStencil(graph) {
   setStencilStyle();
   const stencil = new Stencil({
     target: graph,
+    title: 'Task Types',
     stencilGraphWidth: 200,
-    stencilGraphHeight: 180,
-    collapsable: true,
+    stencilGraphHeight: 500,
+    collapsable: false,
 
     groups: [
       {
         name: 'Basic',
         title: 'Basic'
-        // graphHeight: 180,
-        // graphWidth: 200
-      },
-      {
-        name: 'Advanced',
-        title: 'Advanced',
-        graphHeight: 180,
-        graphWidth: 200
       }
     ],
+    getDragNode: (node) => {
+      const item = node.clone();
+      if (node.shape === NodeShape.Task) {
+        item.size(NODE_SIZE.width, NODE_SIZE.height);
+        return item;
+      }
+      return item;
+    },
     layoutOptions: {
       columns: 1,
       marginX: 10,
-      marginY: 10
+      marginY: 40
     }
   });
 
@@ -51,8 +52,8 @@ export default function useStencil(graph) {
     label: 'Stage'
   });
 
-  stencil.load([TaskNode], 'Basic');
-  stencil.load([ApprovalNode], 'Advanced');
+  stencil.load([TaskNode, ApprovalNode], 'Basic');
+  // stencil.load([ApprovalNode]);
 
   return stencil;
 }

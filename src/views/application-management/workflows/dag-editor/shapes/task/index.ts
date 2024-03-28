@@ -7,6 +7,12 @@ export default {
   inherit: 'vue-shape',
   component: Component,
   ports: ports(NODE_SIZE),
+  // tools: {
+  //   name: 'button-remove',
+  //   args: {
+  //     offset: { x: 0, y: 0 }
+  //   }
+  // },
   // markup: [
   //   {
   //     tagName: 'rect',

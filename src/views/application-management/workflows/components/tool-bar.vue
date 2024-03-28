@@ -35,14 +35,15 @@
                 {item.compile ? (
                   h(compile(`<${item.icon} class="icon"/>`))
                 ) : (
-                  <span
+                  <a-link
+                    hoverable={false}
                     class={[
                       'iconfont icon',
                       item.icon,
                       { disabled: item.disabled }
                     ]}
                     onClick={() => handleClickItem(item)}
-                  ></span>
+                  ></a-link>
                 )}
               </a-tooltip>
             );

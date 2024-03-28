@@ -16,6 +16,8 @@
       }
     },
     setup(props, ctx) {
+      const nodeData = ref(props.node.store?.data);
+
       const status = computed(() => {
         const nodesStatus = props.node.store?.data?.data?.nodesStatus || {};
         const list = _.map(_.keys(nodesStatus), (key) => {
@@ -29,9 +31,18 @@
         return res;
       });
 
+      const initEvent = () => {
+        props.node?.on('change:data', ({ cell, current }) => {
+          nodeData.value = cell.getData();
+          console.log('change:data=======', cell, cell.getData());
+        });
+      };
+
+      initEvent();
+
       return () => (
         <div
-          class="task"
+          class="task task-node"
           style={{
             width: `${APPROVAL_NODE_SIZE.width}px`,
             height: `${APPROVAL_NODE_SIZE.height}px`
@@ -55,7 +66,10 @@
                 }}
               ></StatusLabel>
             </span>
-            <div class="title">{props.node.store?.data?.label}</div>
+            <div class="title">
+              {' '}
+              {nodeData.value?.label || nodeData.value?.name || 'taskName'}
+            </div>
           </div>
         </div>
       );

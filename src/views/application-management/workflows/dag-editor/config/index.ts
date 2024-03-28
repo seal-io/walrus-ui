@@ -34,4 +34,30 @@ export const PHASES = {
   Omitted: 'Omitted'
 };
 
+export const tools = [
+  {
+    label: 'applications.environment.graph.fitview',
+    value: 'fitCenter',
+    icon: 'icon-fit_screen-o'
+  },
+  {
+    label: 'common.button.refresh',
+    value: 'refresh',
+    compile: true,
+    icon: 'icon-sync'
+  },
+  {
+    label: 'common.button.undo',
+    value: 'undo',
+    disabled: false,
+    icon: 'icon-undo'
+  },
+  {
+    label: 'common.button.redo',
+    value: 'redo',
+    disabled: false,
+    icon: 'icon-redo'
+  }
+];
+
 export default {};

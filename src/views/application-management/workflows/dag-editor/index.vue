@@ -4,19 +4,29 @@
   import { Cell, Node, Point } from '@antv/x6';
   import dagre from 'dagre';
   import { PageAction } from '@/views/config';
-  import useCallCommon from '@/hooks/use-call-common';
-  import { defineComponent, onMounted, ref, nextTick, watch } from 'vue';
+  import {
+    defineComponent,
+    onMounted,
+    PropType,
+    ref,
+    nextTick,
+    watch,
+    computed
+  } from 'vue';
   import { useAppStore } from '@/store';
+  import { deleteModal } from '@/utils/monitor';
   import { useResizeObserver } from '@vueuse/core';
   import resigterNode from './shapes';
   import createGraph from './core/graph';
   import initEvents from './core/events';
-  import testData from './config/test-data';
   import { ArgoTestData } from '../config/argo-test';
   import dagData from '../config/dag-data';
   import { parseWorkflowSpec } from './utils';
-  import { NODE_SIZE, NODE_GAP, NodeShape } from './config';
-  import BasicInfo from '../components/basic-info.vue';
+  import { NODE_SIZE, NODE_GAP, NodeShape, tools } from './config';
+  import { Workflow } from './config/interface';
+  import ToolBar from '../components/tool-bar.vue';
+  import BasicInfo from './components/basic-info.vue';
+  import CreateFlowTask from '../components/create-flow-task.vue';
 
   export default defineComponent({
     props: {
@@ -35,20 +45,34 @@
         }
       },
       action: {
-        type: String,
+        type: String as PropType<'create' | 'edit' | 'view'>,
         default: PageAction.EDIT
       }
     },
-    setup(props, { emit }) {
+    setup(props, { emit, expose }) {
       let graphIns: any = null;
       const container = ref();
       const stencilContainer = ref();
       const graphWrapper = ref();
+      const basicForm = ref();
       const appStore = useAppStore();
       const width = ref(0);
       const height = ref(0);
-      const showStencil = ref(true);
       const showModal = ref(false);
+      const activeStep = ref({});
+      const activeNode = ref<any>({});
+      const nodeAction = ref<'create' | 'edit'>('create');
+      const basicInfo = ref({
+        name: '',
+        description: '',
+        parallelism: 10,
+        timeout: null
+      });
+
+      const historyState = ref({
+        canRedo: false,
+        canUndo: false
+      });
       const dir: any = 'LR';
 
       useResizeObserver(graphWrapper, (entries) => {
@@ -62,6 +86,108 @@
         if (!width.value || !height.value) return;
         graphIns?.resize(width.value, height.value);
       });
+
+      const toolList = computed(() => {
+        return tools
+          .map((item) => {
+            let disabled = false;
+            if (item.value === 'redo') {
+              disabled = !historyState.value.canRedo;
+            }
+            if (item.value === 'undo') {
+              disabled = !historyState.value.canUndo;
+            }
+            return {
+              ...item,
+              disabled
+            };
+          })
+          .filter((item) => {
+            if (props.action === PageAction.VIEW) {
+              return ['fitCenter', 'refresh'].includes(item.value);
+            }
+            return true;
+          });
+      });
+
+      const setBasicInfo = () => {
+        if (props.action === PageAction.CREATE) return;
+        const data = _.get(props.dagData, 'metadata', {});
+        basicInfo.value = {
+          name: data.name,
+          description: data.description,
+          parallelism: _.get(data, 'spec.parallelism', 10),
+          timeout: _.get(data, 'spec.activeDeadlineSeconds', null)
+        };
+      };
+      const updateNodeParameters = (data) => {
+        const params = _.map(_.keys(data), (key) => {
+          return {
+            name: key,
+            value: JSON.stringify(data[key])
+          };
+        });
+        const nodeData = activeNode.value.getData?.() || {};
+
+        const rawArgs = _.get(nodeData, 'raw.arguments', {});
+
+        activeNode.value.setData({
+          nodeAction: 'edit',
+          label: data.name,
+          raw: {
+            ...nodeData.raw,
+            arguments: {
+              ...rawArgs,
+              parameters: params
+            }
+          }
+        });
+      };
+
+      // is valida json
+      const isJson = (val) => {
+        try {
+          JSON.parse(val);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      };
+
+      const parseNodeParameters = (node) => {
+        const data = node.getData?.();
+        nodeAction.value = data?.nodeAction || 'create';
+        const params = _.get(data, 'raw.arguments.parameters', []);
+
+        const res = _.reduce(
+          params,
+          (obj, item) => {
+            obj[item.name] = isJson(item.value)
+              ? JSON.parse(item.value)
+              : item.value;
+            return obj;
+          },
+          {}
+        );
+        activeStep.value = res;
+        console.log('activestep===========', data, activeStep.value);
+      };
+
+      const handleSaveFlowTask = (data) => {
+        console.log('handleSaveFlowTask====', data);
+        updateNodeParameters(data);
+        setTimeout(() => {
+          showModal.value = false;
+          activeStep.value = {};
+        }, 100);
+      };
+      const handleDeleteTask = () => {
+        deleteModal({
+          onOk() {
+            showModal.value = false;
+          }
+        });
+      };
 
       const layoutStages = () => {
         const stages = _.filter(
@@ -98,7 +224,7 @@
 
         /* eslint-disable */
         g.setDefaultEdgeLabel(() => {
-          return { weigth: 1 };
+          return {};
         });
 
         const taskNodes = _.filter(
@@ -151,44 +277,91 @@
       };
       const setData = () => {
         const data = parseWorkflowSpec(props.dagData);
-
+        data.nodes = _.filter(
+          data.nodes,
+          (item) => item.shape !== NodeShape.Stage
+        );
         graphIns.fromJSON(data);
-        setChildNodes();
+        // setChildNodes();
         layout();
-        layoutStages();
-        graphIns.zoomToFit({ padding: 10, maxScale: 1 });
+        // layoutStages();
+        graphIns.zoomTo({ padding: 10, maxScale: 1 });
       };
       const resigterEvent = () => {
         graphIns.on('node:dblclick', ({ node }) => {
-          console.log('node click', node);
+          activeNode.value = node;
+          parseNodeParameters(node);
           showModal.value = true;
         });
+
+        graphIns.on('history:change', (data) => {
+          console.log('history change+++++++++', data);
+
+          historyState.value = {
+            canRedo: graphIns.canRedo(),
+            canUndo: graphIns.canUndo()
+          };
+        });
+
+        graphIns.on('history:undo', (data) => {
+          console.log('history undo+++++++++', data);
+        });
+
+        graphIns.on('history:redo', (data) => {
+          console.log('history redo+++++++++', data);
+        });
+      };
+      const handleUndo = () => {
+        console.log('undo+++++++');
+        graphIns.undo();
+      };
+      const handleRedo = () => {
+        console.log('redo+++++++');
+        graphIns.redo();
+      };
+      const handleSelectTool = (val) => {
+        if (val === 'fitCenter') {
+          fitPosition();
+        }
+        if (val === 'undo') {
+          handleUndo();
+        }
+        if (val === 'redo') {
+          handleRedo();
+        }
       };
 
+      const resetHistory = () => {
+        graphIns.enableHistory();
+        historyState.value = {
+          canRedo: false,
+          canUndo: false
+        };
+      };
       const init = () => {
         graphIns?.dispose?.();
-        // register custom node
         resigterNode();
-
-        console.log('size+++++++++', {
-          width: width.value,
-          height: height.value
-        });
         graphIns = createGraph({
           container,
-          width: null,
-          height: null,
+          width: 1400,
+          height: 600,
+          editable: props.action !== PageAction.VIEW,
           stencilContainer
         });
         if (!_.isEmpty(props.dagData)) {
           setData();
         }
-        initEvents(graphIns, graphWrapper.value);
+        initEvents({
+          graph: graphIns,
+          container: graphWrapper.value,
+          editable: props.action !== PageAction.VIEW
+        });
         resigterEvent();
+        resetHistory();
       };
 
       const renderStencil = () => {
-        if (!showStencil.value) return null;
+        if (props.action === PageAction.VIEW) return null;
         return (
           <div
             class="stencil"
@@ -199,15 +372,96 @@
         );
       };
       const fitPosition = () => {
-        // graphIns?.positionPoint({ x: 0, y: 0 }, 50, 50);
-        // graphIns?.zoomTo(1);
-        graphIns.zoomToFit();
+        graphIns?.positionPoint({ x: 0, y: 0 }, 50, 50);
+        graphIns?.zoomTo(1);
+      };
+
+      const getSubmitData = async (): Promise<Workflow | undefined> => {
+        if (await basicForm.value?.validate?.()) {
+          return;
+        }
+        const basicInfo = basicForm.value?.flowBasic;
+        const edges = graphIns.getEdges();
+        const dependsMap = {};
+        _.each(edges, (edge) => {
+          const source = edge.getSourceCell();
+          const target = edge.getTargetCell();
+          const sourceData = source.getData();
+          const targetData = target.getData();
+          if (!dependsMap[targetData.name]) {
+            dependsMap[targetData.name] = [];
+          }
+          dependsMap[targetData.name].push(sourceData.name);
+        });
+        const tasks = _.map(graphIns.getNodes(), (node) => {
+          const data = node.getData();
+          return {
+            ...data.raw,
+            template: 'echo',
+            dependencies: dependsMap[data.name] || []
+          };
+        });
+        return {
+          workflow: {
+            metadata: {
+              name: basicInfo.name,
+              description: basicInfo.description
+            },
+            spec: {
+              entrypoint: 'main',
+              activeDeadlineSeconds: basicInfo.timeout,
+              parallelism: basicInfo.parallelism,
+              templates: [
+                {
+                  name: 'main',
+                  steps: [
+                    [
+                      {
+                        name: 'stage-1',
+                        template: 'stage-1'
+                      }
+                    ]
+                  ]
+                },
+                {
+                  name: 'stage-1',
+                  dag: {
+                    tasks
+                  }
+                },
+                {
+                  name: 'echo',
+                  inputs: {
+                    parameters: [
+                      {
+                        name: 'message',
+                        value: 'hello world'
+                      }
+                    ]
+                  },
+                  outputs: {},
+                  metadata: {},
+                  container: {
+                    name: '',
+                    image: 'alpine:3.7',
+                    command: ['echo', '{{inputs.parameters.message}}'],
+                    resources: {}
+                  }
+                }
+              ]
+            }
+          }
+        };
       };
       onMounted(() => {
         init();
         nextTick(() => {
           fitPosition();
         });
+      });
+
+      expose({
+        getSubmitData
       });
 
       watch(
@@ -217,6 +471,7 @@
           nextTick(() => {
             fitPosition();
           });
+          setBasicInfo();
         },
         {
           immediate: false
@@ -225,33 +480,59 @@
       return () => (
         <>
           <div class={['wrapper', { dark: appStore.theme === 'dark' }]}>
+            <div class="side">
+              <BasicInfo
+                basicInfo={basicInfo.value}
+                ref={(el) => {
+                  basicForm.value = el;
+                }}
+              ></BasicInfo>
+            </div>
             <a-spin
-              style={{ width: '100%' }}
+              style={{
+                width: '100%',
+                height: `max(${props.containerHeight},600px)`
+              }}
               loading={props.loading}
-              class={['spin', { 'show-stencil': showStencil.value }]}
+              class={[
+                'spin',
+                { 'show-stencil': props.action !== PageAction.VIEW }
+              ]}
             >
               {renderStencil()}
-              <div
-                ref={(el) => {
-                  graphWrapper.value = el;
-                }}
-                class="graphWrapper"
-                style={{
-                  height: '100%',
-                  width: '100%'
-                }}
-              >
+              <div class="right-content">
+                <ToolBar
+                  tool-list={toolList.value}
+                  onSelect={(val) => handleSelectTool(val)}
+                ></ToolBar>
                 <div
                   ref={(el) => {
-                    container.value = el;
+                    graphWrapper.value = el;
                   }}
-                  style={{ width: '100%', height: '100%' }}
-                  class="content-container"
-                ></div>
+                  class="graphWrapper"
+                  style={{
+                    height: '100%',
+                    width: '100%'
+                  }}
+                >
+                  <div
+                    ref={(el) => {
+                      container.value = el;
+                    }}
+                    style={{ width: '100%', height: '100%' }}
+                    class="content-container"
+                  ></div>
+                </div>
               </div>
             </a-spin>
+            <CreateFlowTask
+              v-model:show={showModal.value}
+              v-model:dataInfo={activeStep.value}
+              onSave={handleSaveFlowTask}
+              onDelete={handleDeleteTask}
+              action={nodeAction.value}
+            ></CreateFlowTask>
           </div>
-          <BasicInfo v-model:show={showModal.value}></BasicInfo>
         </>
       );
     }
@@ -259,15 +540,37 @@
 </script>
 
 <style scoped lang="less">
+  .wrapper {
+    display: flex;
+  }
+
   .spin {
     position: relative;
     display: flex;
+    flex: 1;
     align-items: center;
     justify-content: center;
     height: 100%;
+    overflow: hidden;
+    border-radius: var(--border-radius-small);
+
+    .right-content {
+      position: relative;
+      flex: 1;
+      height: 100%;
+
+      .toolbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        padding: 10px;
+      }
+    }
 
     &.show-stencil {
       padding-left: 200px;
+      border-radius: 0;
     }
 
     .stencil {

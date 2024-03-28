@@ -16,6 +16,8 @@
       }
     },
     setup(props, ctx) {
+      const nodeData = ref(props.node.store?.data);
+
       const status = computed(() => {
         const nodesStatus = props.node.store?.data?.data?.nodesStatus || {};
         const list = _.map(_.keys(nodesStatus), (key) => {
@@ -29,9 +31,16 @@
         return res;
       });
 
+      const initEvent = () => {
+        props.node?.on('change:data', ({ cell, current }) => {
+          nodeData.value = cell.getData();
+          console.log('change:data=======', cell, cell.getData());
+        });
+      };
+      initEvent();
       return () => (
         <div
-          class="task"
+          class="task task-node"
           style={{
             width: `${NODE_SIZE.width}px`,
             height: `${NODE_SIZE.height}px`
@@ -54,7 +63,9 @@
               }}
             ></StatusLabel>
           </span>
-          <div class="title">{props.node.store?.data?.label}</div>
+          <div class="title">
+            {nodeData.value?.label || nodeData.value?.name || 'taskName'}
+          </div>
         </div>
       );
     }
@@ -69,9 +80,13 @@
     justify-content: center;
     padding: 10px;
     background-color: var(--color-white);
-    border-right: 1px solid var(--color-border-2);
+    border: 2px dashed transparent;
     border-radius: var(--border-radius-small);
     box-shadow: 0 2px 4px 0 rgba(var(--gray-5), 60%);
+
+    &:hover {
+      box-shadow: 0 6px 6px rgba(var(--gray-5), 80%);
+    }
 
     .status {
       position: absolute;

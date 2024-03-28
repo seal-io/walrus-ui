@@ -3,19 +3,23 @@ import useStencil from '../plugins/use-stencil';
 import useTransform from '../plugins/use-transform';
 import useSnapline from '../plugins/use-snapline';
 import useKeyboard from '../plugins/use-keyboard';
+import useHistory from '../plugins/use-history';
+import useSelection from '../plugins/use-selection';
 import connecting from './connecting';
 
 export default function createGraph({
   container,
   width,
   height,
-  stencilContainer
+  stencilContainer,
+  editable
 }) {
   const graph = new Graph({
     container: container.value,
     width: width || 1400,
     height: height || 600,
     connecting: connecting(),
+    autoResize: true,
     // connecting: {
     //   allowBlank: false,
     //   router: 'manhattan',
@@ -77,8 +81,9 @@ export default function createGraph({
       }
     },
     interacting: {
-      nodeMovable: true,
-      magnetConnectable: true
+      nodeMovable: editable,
+      edgeMovable: false,
+      magnetConnectable: editable
     },
     embedding: {
       enabled: true,
@@ -100,9 +105,11 @@ export default function createGraph({
   const stencil = useStencil(graph);
   stencilContainer.value?.appendChild?.(stencil.container);
 
-  // useTransform(graph);
   useSnapline(graph);
-  // useKeyboard(graph);
+  useHistory(graph);
+  useKeyboard(graph, editable);
+  useSelection(graph, editable);
+  // useTransform(graph);
 
   return graph;
 }

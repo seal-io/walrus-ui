@@ -17,7 +17,7 @@ export const queryWorkflowItem = (data: { name: string }) => {
 };
 
 export const retryWorkflow = (data: { name: string }) => {
-  return axios.put(`/api/v1/workflows/${namespace}/${data.name}/retry`);
+  return axios.put(`/api/v1/workflows/${namespace}/${data.name}/resubmit`);
 };
 
 export const stopWorkflow = (data: { name: string }) => {
@@ -26,6 +26,14 @@ export const stopWorkflow = (data: { name: string }) => {
 
 export const deleteWorkflow = (data: { name: string }) => {
   return axios.delete(`/api/v1/workflows/${namespace}/${data.name}`);
+};
+
+export const createWorkflow = (data) => {
+  return axios.post(`/api/v1/workflows/${namespace}`, data);
+};
+
+export const updateWorkflow = (data) => {
+  return axios.put(`/api/v1/workflows/${namespace}/resubmit`, data);
 };
 
 export default {};
