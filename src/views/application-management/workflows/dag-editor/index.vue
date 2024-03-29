@@ -29,6 +29,7 @@
   import CreateFlowTask from '../components/create-flow-task.vue';
 
   export default defineComponent({
+    emits: ['refresh'],
     props: {
       containerHeight: {
         type: String,
@@ -224,7 +225,7 @@
 
         /* eslint-disable */
         g.setDefaultEdgeLabel(() => {
-          return {};
+          return { weight: 1 };
         });
 
         const taskNodes = _.filter(
@@ -329,6 +330,9 @@
         if (val === 'redo') {
           handleRedo();
         }
+        if (val === 'refresh') {
+          emit('refresh');
+        }
       };
 
       const resetHistory = () => {
@@ -339,12 +343,15 @@
         };
       };
       const init = () => {
+        // init window hook
+        window.__x6_instances__ = [];
+
         graphIns?.dispose?.();
         resigterNode();
         graphIns = createGraph({
           container,
-          width: 1400,
-          height: 600,
+          width: null,
+          height: null,
           editable: props.action !== PageAction.VIEW,
           stencilContainer
         });
@@ -358,6 +365,7 @@
         });
         resigterEvent();
         resetHistory();
+        window.__x6_instances__.push(graphIns);
       };
 
       const renderStencil = () => {
@@ -373,7 +381,7 @@
       };
       const fitPosition = () => {
         graphIns?.positionPoint({ x: 0, y: 0 }, 50, 50);
-        graphIns?.zoomTo(1);
+        graphIns?.centerContent();
       };
 
       const getSubmitData = async (): Promise<Workflow | undefined> => {

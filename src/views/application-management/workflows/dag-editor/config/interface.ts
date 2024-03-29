@@ -2,6 +2,7 @@ interface Step {
   template: string;
   name: string;
   metadata?: object;
+  [key: string]: any;
   activeDeadlineSeconds?: number;
   retryStrategy?: {
     limit?: number;

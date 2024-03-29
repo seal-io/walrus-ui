@@ -60,9 +60,21 @@
         type: Boolean,
         default: true
       },
+      buttonPosition: {
+        type: String,
+        default() {
+          return 'bottom';
+        }
+      },
       widget: {
         type: String as PropType<'textarea' | 'editor'>,
         default: 'editor'
+      },
+      renderKey: {
+        type: [String, Number],
+        default() {
+          return 'a';
+        }
       }
     },
     setup(props, ctx) {
@@ -123,32 +135,10 @@
           </div>
         );
       };
-      const renderEditor = () => {
-        return (
-          <AceEditor
-            modelValue={props.modelValue}
-            ref={(el) => {
-              editor.value = el;
-            }}
-            required={props.required}
-            label={props.label}
-            editor-default-value={props.defaultValue}
-            lang={props.lang}
-            read-only={props.viewStatus}
-            style={{ width: '100%' }}
-            height={textareaHeight.value}
-            show-gutter={props.showGutter}
-            showLineNumbers={props.showLineNumbers}
-            onUpdate:modelValue={(val) => {
-              ctx.emit('update:modelValue', val);
-            }}
-          ></AceEditor>
-        );
-      };
       const renderButton = () => {
         if (props.viewStatus) return null;
         return (
-          <div class="m-t-10 btn">
+          <div class={['btn', { 'm-t-10': props.buttonPosition === 'bottom' }]}>
             <a-upload
               action="/"
               auto-upload={false}
@@ -172,6 +162,44 @@
           </div>
         );
       };
+      const renderLabel = () => {
+        if (props.buttonPosition === 'top') {
+          return (
+            <span class="flex">
+              {ctx.slots.label?.()}
+              {renderButton()}
+            </span>
+          );
+        }
+        return <>{ctx.slots.label?.()}</>;
+      };
+      const renderEditor = () => {
+        return (
+          <AceEditor
+            modelValue={props.modelValue}
+            ref={(el) => {
+              editor.value = el;
+            }}
+            key={props.renderKey}
+            required={props.required}
+            label={props.label}
+            editor-default-value={props.defaultValue}
+            lang={props.lang}
+            read-only={props.viewStatus}
+            style={{ width: '100%' }}
+            height={textareaHeight.value}
+            show-gutter={props.showGutter}
+            showLineNumbers={props.showLineNumbers}
+            onUpdate:modelValue={(val) => {
+              ctx.emit('update:modelValue', val);
+            }}
+            v-slots={{
+              label: ctx.slots.label ? renderLabel() : null
+            }}
+          ></AceEditor>
+        );
+      };
+
       return () => (
         <div
           class="auto-reader"
@@ -198,7 +226,7 @@
               {props.widget === 'editor' ? renderEditor() : renderTextarea()}
             </div>
           </ResizeableContainer>
-          {renderButton()}
+          {props.buttonPosition === 'bottom' && renderButton()}
         </div>
       );
     }

@@ -1,4 +1,5 @@
 import { Graph } from '@antv/x6';
+import { NodeShape } from '../config';
 
 const registerEditEvents = (graph: Graph, editable: boolean) => {
   if (!editable) return;
@@ -15,13 +16,23 @@ const registerEditEvents = (graph: Graph, editable: boolean) => {
   });
 
   graph.on('node:added', ({ node }) => {
-    console.log('node:added', node);
     setTimeout(() => {
       const counts = graph.getNodes().length;
+      let raw: any = {
+        name: `new-task-${counts}`
+      };
+      if (node.shape === NodeShape.Approval) {
+        raw = {
+          name: `new-task-${counts}`,
+          suspend: {}
+        };
+      }
       node.setData({
         label: `new-task-${counts}`,
         name: `new-task-${counts}`,
-        raw: { name: `new-task-${counts}` }
+        raw: {
+          ...raw
+        }
       });
     }, 100);
   });

@@ -25,6 +25,7 @@
 
 <style lang="less" scoped>
   .stage {
+    width: 1px;
     height: 1000px;
     background-color: rgba(122, 122, 122, 0.1);
     border-right: 1px dashed rgba(var(--arcoblue-5), 0.5);

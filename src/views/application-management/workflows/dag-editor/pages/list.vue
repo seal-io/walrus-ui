@@ -470,12 +470,14 @@
     }
     if (val === 'edit') {
       router.push({
-        name: WORKFLOW.Edit,
+        name: WORKFLOW.DagEditor,
         params: {
-          projctId: row.project?.id
+          projectId: route.params.projectId,
+          action: PageAction.EDIT
         },
         query: {
-          flowId: row.id
+          name: row.metadata.name,
+          uid: row.metadata.uid
         }
       });
       return;
