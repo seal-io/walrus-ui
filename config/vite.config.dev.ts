@@ -3,12 +3,13 @@ import path, { resolve } from 'path';
 import eslint from 'vite-plugin-eslint';
 import htmlTemplate from 'vite-plugin-html-template';
 import basicSsl from '@vitejs/plugin-basic-ssl';
-import baseConig from './vite.config.base';
+import baseConfig from './vite.config.base';
 import { getBranchInfo } from './utils';
 import createProxyTable from './proxy-table';
 
 const versions = getBranchInfo();
 
+// noinspection JSUnusedGlobalSymbols
 export default mergeConfig(
   {
     mode: 'development',
@@ -18,7 +19,7 @@ export default mergeConfig(
         strict: true
       },
       https: true,
-      port: 5050,
+      port: 400,
       proxy: createProxyTable()
     },
     plugins: [
@@ -48,5 +49,5 @@ export default mergeConfig(
       }
     }
   },
-  baseConig
+  baseConfig
 );
