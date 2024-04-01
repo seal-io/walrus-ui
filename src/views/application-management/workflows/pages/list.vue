@@ -25,6 +25,7 @@
           </a-space>
         </template>
         <template #button-group>
+          <a-button type="primary" @click="handleEditFlow">Editor</a-button>
           <a-button
             v-if="
               userStore.hasProjectResourceActions({
@@ -390,6 +391,15 @@
     return res;
   };
 
+  const handleEditFlow = () => {
+    router.push({
+      name: 'WorkflowEditor',
+      params: {
+        projectId: route.params.projectId,
+        action: PageAction.EDIT
+      }
+    });
+  };
   const handleCreate = () => {
     router.push({
       name: WORKFLOW.Edit,

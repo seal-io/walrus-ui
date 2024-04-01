@@ -1,7 +1,9 @@
 <script lang="tsx">
+  import '@antv/x6-vue-shape';
+  import { defineComponent, onMounted, ref } from 'vue';
   import { useAppStore } from '@/store';
-  import { defineComponent, ref } from 'vue';
   import { useResizeObserver } from '@vueuse/core';
+  import createGraph from './core/graph';
 
   export default defineComponent({
     props: {
@@ -15,8 +17,9 @@
       }
     },
     setup(props, { emit }) {
-      const graphIns: any = null;
+      let graphIns: any = null;
       const container = ref();
+      const stencilContainer = ref();
       const graphWrapper = ref();
       const appStore = useAppStore();
       const width = ref(0);
@@ -34,9 +37,37 @@
         graphIns?.resize(width.value, height.value);
       });
 
+      const init = () => {
+        // register custom node
+
+        // register custom edge
+
+        graphIns = createGraph({
+          container,
+          width: width.value,
+          height: height.value,
+          stencilContainer
+        });
+
+        // event
+      };
+
+      onMounted(() => {
+        init();
+      });
       return () => (
         <div class={['wrapper', { dark: appStore.theme === 'dark' }]}>
-          <a-spin style="width: 100%" loading={props.loading}>
+          <a-spin
+            style={{ width: '100%' }}
+            loading={props.loading}
+            class="spin"
+          >
+            <div
+              class="stencil"
+              ref={(el) => {
+                stencilContainer.value = el;
+              }}
+            ></div>
             <div
               ref={(el) => {
                 graphWrapper.value = el;
@@ -51,7 +82,7 @@
                 ref={(el) => {
                   container.value = el;
                 }}
-                style="width: 100%; height: 100%"
+                style={{ width: '100%', height: '100%' }}
                 class="content-container"
               ></div>
             </div>
@@ -62,4 +93,23 @@
   });
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+  .spin {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding-left: 220px;
+
+    .stencil {
+      position: absolute;
+      top: 0;
+      left: 20px;
+      width: 200px;
+      height: 100%;
+      overflow-y: auto;
+      background-color: var(--color-fill-2);
+    }
+  }
+</style>

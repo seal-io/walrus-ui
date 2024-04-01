@@ -5,6 +5,27 @@ import { PageAction } from '@/views/config';
 
 export default [
   {
+    path: 'project/:projectId/workflow/editor',
+    name: 'WorkflowEditor',
+    component: () =>
+      import('@/views/application-management/workflows/pages/flow-editor.vue'),
+    meta: {
+      hideInMenu: true,
+      hideMenu: false,
+      ignoreCache: false,
+      locale: 'applications.projects.menu',
+      requiresAuth: true,
+      selectedMenu: PROJECT.List,
+      permission: {
+        resource: Resources.Workflows,
+        type: permissionKey.projectRoles,
+        actions: ['POST']
+      },
+      cachePages: [],
+      icon: 'icon-apps'
+    }
+  },
+  {
     path: 'project/:projectId/workflow/edit',
     name: WORKFLOW.Edit,
     component: () =>

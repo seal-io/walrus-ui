@@ -45,7 +45,7 @@ export const defineConnector = (edgeName?: string) => {
         tagName: 'path',
         selector: 'wrap',
         attrs: {
-          fill: 'none',
+          fill: 'red',
           cursor: 'pointer',
           stroke: 'transparent',
           strokeLinecap: 'round'

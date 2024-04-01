@@ -439,6 +439,7 @@
       subjectList.value = [];
     }
   };
+
   const init = async () => {
     graphIns?.clearCells();
     defineCustomNode();
