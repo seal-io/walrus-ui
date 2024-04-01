@@ -243,6 +243,7 @@
   import _, { map, pickBy } from 'lodash';
   import { ordinalNumber } from '@/utils/func';
   import { PageAction } from '@/views/config';
+  import useEventSource from '@/hooks/use-event-source';
   import { PROJECT, WORKFLOW } from '@/router/config';
   import { useUserStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
@@ -263,7 +264,12 @@
   import { moreActions, WorkflowStatusList } from '../../config';
   import { PHASES } from '../config';
   import { PipelineRow } from '../../config/interface';
-  import { queryWorkflows, deleteWorkflow } from '../api';
+  import {
+    queryWorkflows,
+    deleteWorkflow,
+    queryWorkflowTemplates,
+    watchWorkflowListURL
+  } from '../api';
   import { applyPipeline } from '../../api';
 
   let timer: any = null;
@@ -345,7 +351,7 @@
         'listOptions.limit': 50
       };
 
-      const { data } = await queryWorkflows(params);
+      const { data } = await queryWorkflowTemplates(params);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
       loading.value = false;
@@ -492,6 +498,12 @@
     });
   };
   const createWorkflowsChunkRequest = () => {
+    const SSE = useEventSource({
+      url: watchWorkflowListURL,
+      onmessage(data) {
+        console.log('message===data', data);
+      }
+    });
     // const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}`;
     // try {
     //   setChunkRequest({

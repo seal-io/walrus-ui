@@ -3,6 +3,32 @@ import qs from 'query-string';
 
 const namespace = 'walrus-system';
 
+// workflows.argoproj.io/workflow-template=<workflow-template-name>
+interface ListOptions {
+  labelSelector?: string;
+  fieldSelector?: string;
+  limit?: number;
+  continue?: string;
+  fields?: string;
+}
+
+const generateListOptions = (options: ListOptions) => {
+  const {
+    labelSelector,
+    fieldSelector,
+    limit,
+    continue: continueToken,
+    fields
+  } = options;
+  return qs.stringify({
+    labelSelector,
+    fieldSelector,
+    limit,
+    continue: continueToken,
+    fields
+  });
+};
+
 export const queryWorkflows = (params) => {
   return axios.get(`/api/v1/workflows/${namespace}`, {
     params,
@@ -35,5 +61,16 @@ export const createWorkflow = (data) => {
 export const updateWorkflow = (data) => {
   return axios.put(`/api/v1/workflows/${namespace}/resubmit`, data);
 };
+export const queryWorkflowTemplates = (params) => {
+  return axios.get(`/api/v1/workflow-templates/${namespace}`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
+
+// watch workflow list
+export const watchWorkflowListURL = `/api/v1/workflow-events/${namespace}`;
 
 export default {};
