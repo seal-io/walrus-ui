@@ -200,7 +200,7 @@ export default {
     '在模板中配置ports，部署后会自动生成访问地址',
   'resource.outputs.result.title': '未发现输出',
   'resource.outputs.result.subTitle': '',
-  'resource.revisions.result.title': '未产执行记录',
+  'resource.revisions.result.title': '未产生执行记录',
   'resource.revisions.result.subTitle':
     '每次部署都将生成一条记录，最新的记录不能被删除',
   'resource.revisons.detail.components': '组件变更',

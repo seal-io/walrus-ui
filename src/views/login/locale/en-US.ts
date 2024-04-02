@@ -10,7 +10,7 @@ export default {
   'login.form.update.password': 'Set a strong password for the default user',
   'login.form.login.update.tips':
     'Please set the basic user configuration before use',
-  'login.form.login.success': 'welcome to use',
+  'login.form.login.success': 'welcome to Walrus',
   'login.form.userName.placeholder': 'Username',
   'login.form.password.placeholder': 'Password ',
   'login.form.rememberPassword': 'Remember password',
