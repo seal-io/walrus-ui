@@ -183,12 +183,11 @@
         </div>
       </a-spin>
       <div class="pagination">
-        <a-pagination
+        <Pagination
           size="small"
-          :total="total"
+          :total="100"
           :page-size="queryParams.perPage"
           :current="queryParams.page"
-          show-total
           show-page-size
           :hide-on-single-page="total <= 10"
           @change="handlePageChange"
@@ -275,6 +274,7 @@
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import Pagination from '@/components/pagination/index.vue';
   import { useUserStore, useAppStore } from '@/store';
   import { exportEnvironment } from '@/views/application-management/environments/api';
   import useDownload from '@/hooks/use-download';

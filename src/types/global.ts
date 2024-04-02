@@ -43,3 +43,12 @@ export interface GeneralChart {
   xAxis: string[];
   data: Array<{ name: string; value: number[] }>;
 }
+
+export interface ListQuery {
+  listOptions?: {
+    fieldSelector?: string;
+    labelSelector?: string;
+    limit?: number;
+  };
+  fields?: string[];
+}

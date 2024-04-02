@@ -15,7 +15,6 @@
       <Tooltip :popup-info="popupInfo" :doc="$attrs.doc"></Tooltip>
     </div>
     <div
-      v-show="isAce"
       class="ace-box"
       :class="{ dark: appStore.theme === 'dark' }"
       :style="{
@@ -36,17 +35,6 @@
         }"
       ></div>
     </div>
-    <a-input
-      v-show="!isAce"
-      v-model="inputVal"
-      :default-value="editorDefaultValue"
-      @input="handleInput"
-    ></a-input>
-    <icon-launch
-      v-if="showToggle"
-      class="icon-btn"
-      @click="handleToggleInput"
-    />
   </div>
 </template>
 
@@ -214,7 +202,6 @@
   // let timer:any = null
   let aceEditor: any = null;
   const darkTheme = 'one_dark';
-  const isAce = ref(true);
   const inputVal = ref('');
   const editorRef = ref();
   const isInitialValue = ref(true);
@@ -330,14 +317,6 @@
   };
   const setLanguageTools = () => {
     langTools.setCompleters();
-  };
-  const handleInput = (val) => {
-    emits('change', val);
-    emits('input', val);
-    emits('update:modelValue', val);
-  };
-  const handleToggleInput = () => {
-    isAce.value = !isAce.value;
   };
 
   const getAnnotations = () => {

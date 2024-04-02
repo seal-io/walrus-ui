@@ -1,5 +1,6 @@
 import { useI18n } from 'vue-i18n';
 import _, { includes, map } from 'lodash';
+import { ListQuery } from '@/types/global';
 
 export const getListLabel = (value, list, obj?) => {
   const l = obj?.label || 'label';
@@ -34,4 +35,26 @@ export const ordinalNumber = (number) => {
   }
   return n + (['st', 'nd', 'rd'][n < 20 ? n - 1 : (n % 10) - 1] || 'th');
 };
+
+export const generateListParams = (params: ListQuery) => {
+  const { listOptions } = params;
+  const result = _.reduce(
+    listOptions,
+    (obj, value, key) => {
+      if (listOptions && listOptions[key]) {
+        if (_.isArray(listOptions[key])) {
+          obj[`listOptions.${key}`] = listOptions[key].join(',');
+        }
+        obj[key] = value;
+      }
+      return obj;
+    },
+    {}
+  );
+  return {
+    ...result,
+    ..._.omit(params, ['listOptions'])
+  };
+};
+
 export default {};
