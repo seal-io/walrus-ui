@@ -46,9 +46,6 @@ export default defineConfig({
     ],
     extensions: ['.ts', '.js']
   },
-  optimizeDeps: {
-    exclude: ['@antv/x6-vue-shape']
-  },
   define: {
     'process.env': {
       dev_mode: mode,
