@@ -41,6 +41,9 @@ export default mergeConfig(
         }
       })
     ],
+    optimizeDeps: {
+      exclude: ['@antv/x6']
+    },
     build: {
       rollupOptions: {
         input: {
