@@ -146,7 +146,6 @@
   import { execSucceed, deleteModal } from '@/utils/monitor';
   import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import {
-    markRaw,
     ref,
     PropType,
     onMounted,
@@ -157,11 +156,9 @@
   } from 'vue';
   import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
-  import slTransition from '@/components/sl-transition/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { exportEnvironment } from '@/views/application-management/environments/api';
   import useDownload from '@/hooks/use-download';
@@ -169,16 +166,10 @@
   import tabEndpoint from './tab-endpoint.vue';
   import tabResource from './tab-resource.vue';
   import serviceRevisions from './service-revisions.vue';
-  import BasicInfo from '../basic-info.vue';
   import deleteServiceModal from '../delete-service-modal.vue';
   import {
-    instanceTabs,
-    serviceBasicInfo,
     serviceActions,
     serviceActionMap,
-    ServiceDataType,
-    StartableStatus,
-    ServiceStatus,
     ProvideServiceInfoKey
   } from '../../config';
   import { ServiceRowData } from '../../config/interface';
@@ -221,15 +212,7 @@
     useFetchResource();
   const projectID = route.params.projectId as string;
   const serviceID = route.query.id || '';
-  const isCollapsed = ref(false);
   const currentInfo = ref<ServiceRowData>({} as ServiceRowData);
-  const instanceTabMap = {
-    tabResource: markRaw(tabResource),
-    tabOutput: markRaw(tabOutput)
-  };
-  const instanceTabList = ref<any[]>([]);
-  const basicDataList = useBasicInfoData(serviceBasicInfo, currentInfo);
-
   const { activeKey, setPageTabActive } = useTabActive(
     TabPage.RESOURCEDETAILTAB,
     ResourceDetailTabs.OVERVIEW
@@ -371,16 +354,6 @@
     actionMap.set(serviceActionMap.export, handleExportYaml);
   };
 
-  const setInstanceTabList = () => {
-    instanceTabList.value = _.filter(instanceTabs, (item) => {
-      if (!item.requiredAuth) return true;
-      return userStore.hasProjectResourceActions({
-        projectID,
-        resource: Resources.ResourceComponents,
-        actions: ['GET']
-      });
-    });
-  };
   const getServiceItemInfo = async () => {
     if (!route.query.id) return;
     try {
@@ -475,10 +448,6 @@
     } catch (error) {
       // console.log('error===========', error);
     }
-  };
-
-  const handleOk = () => {
-    router.back();
   };
 
   onMounted(() => {

@@ -271,7 +271,6 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
   import _, { assignIn, find, get, map, isEqual, cloneDeep } from 'lodash';
-  import { urlReg } from '@/utils/validate';
   import { ref, reactive, onMounted, computed, markRaw } from 'vue';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useScrollToView from '@/hooks/use-scroll-to-view';

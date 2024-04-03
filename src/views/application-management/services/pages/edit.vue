@@ -308,12 +308,6 @@
         </a-space>
       </div>
     </ComCard>
-    <CommentModal
-      v-model:show="showCommentModal"
-      :title="$t('common.button.saveDeploy')"
-      @confirm="handleComfirmComment"
-      @cancel="() => (submitLoading = false)"
-    ></CommentModal>
   </div>
 </template>
 
@@ -351,7 +345,6 @@
   import { projectEnvCtxInjectionKey } from '@/components/dynamic-form/widgets/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import RunDetailModal from '../components/runs/detail-modal/index.vue';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
   import {
     createService,
@@ -415,7 +408,6 @@
   let copyFormData: any = null;
   const showPreviewModal = ref(false);
   const isFormChange = ref(false);
-  const showCommentModal = ref(false);
   const formref = ref();
   const groupForm = ref();
   const submitLoading = ref(false);
@@ -752,20 +744,6 @@
     } else {
       scrollToView();
     }
-  };
-
-  const handleOkCallback = () => {
-    setTimeout(() => {
-      handleOk();
-    }, 100);
-  };
-  const handleComfirmComment = (val) => {
-    formData.value.changeComment = val;
-    saveCallback();
-  };
-
-  const handlePreview = () => {
-    showPreviewModal.value = true;
   };
 
   const handleActionSelect = (value) => {

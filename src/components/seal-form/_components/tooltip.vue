@@ -2,8 +2,18 @@
   import i18n from '@/locale';
   import { defineComponent } from 'vue';
 
+  interface Attrs {
+    doc?: {
+      description: string;
+      url: string;
+    };
+    popupInfo?: string;
+    [key: string]: any;
+  }
+
   export default defineComponent({
-    setup(props, { attrs }) {
+    setup(props, ctx) {
+      const attrs = ctx.attrs as Attrs;
       const popupInfo = attrs.popupInfo || attrs['popup-info'];
       return () => (
         <>
