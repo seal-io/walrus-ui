@@ -198,7 +198,6 @@
   const { route, router, t } = useCallCommon();
   const userStore = useUserStore();
   const resourceTable = ref();
-  const serviceSelectKeys = ref<string[]>([]);
   const resourceSelectKeys = ref<string[]>([]);
   const projectID = route.params.projectId as string;
   const environmentID = route.params.environmentId as string;
@@ -213,7 +212,7 @@
   });
 
   const selectedKeys = computed(() => {
-    return [...serviceSelectKeys.value, ...resourceSelectKeys.value];
+    return [...resourceSelectKeys.value];
   });
 
   const batchActions = computed(() => {
@@ -242,7 +241,6 @@
       });
       loading.value = false;
       execSucceed();
-      serviceSelectKeys.value = [];
       resourceSelectKeys.value = [];
       // serviceTable.value.clearStatus();
       resourceTable.value.clearStatus();
@@ -259,7 +257,6 @@
     router.push({
       name: PROJECT.ServiceClone,
       query: {
-        services: serviceSelectKeys.value,
         resources: resourceSelectKeys.value
       }
     });
@@ -378,22 +375,9 @@
       console.log(error);
     }
   };
-  const handleServiceSelectChange = (keys: string[]) => {
-    serviceSelectKeys.value = keys;
-  };
 
   const handleResourceSelectChange = (keys: string[]) => {
     resourceSelectKeys.value = keys;
-  };
-  const handleDeleted = (ids) => {
-    serviceSelectKeys.value = _.difference(
-      serviceSelectKeys.value,
-      ids as string[]
-    );
-    resourceSelectKeys.value = _.difference(
-      resourceSelectKeys.value,
-      ids as string[]
-    );
   };
 
   const handleImportFile = () => {
