@@ -124,13 +124,13 @@
         @page-size-change="handlePageSizeChange"
       />
     </div>
-    <addCatalog
+    <CatalogModal
       v-model:show="showModal"
       v-model:data-info="dataInfo"
       :action="action"
       :title="modalTitle"
       @save="handleSave"
-    ></addCatalog>
+    ></CatalogModal>
   </ComCard>
 </template>
 
@@ -155,6 +155,7 @@
     PROJECT_API_PREFIX
   } from '../api';
   import addCatalog from './add-catalog.vue';
+  import CatalogModal from './catalog-modal.vue';
 
   const props = defineProps({
     currentView: {
