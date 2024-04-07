@@ -169,6 +169,13 @@
           </a-tab-pane>
         </a-tabs>
       </a-spin>
+      <TemplateModal
+        v-model:show="showModal"
+        v-model:data-info="dataInfo"
+        :action="action"
+        :title="modalTitle"
+        @save="handleSave"
+      ></TemplateModal>
     </div>
   </ComCard>
 </template>
@@ -192,11 +199,10 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { deleteModal, execSucceed } from '@/utils/monitor';
-  import { PageAction } from '@/views/config';
+  import { PageAction, ModalAction } from '@/views/config';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import { queryCatalogs, CatalogAPI } from '../../catalogs/api';
   import ThumbView from './thumb-view.vue';
-  import ListView from './list-view.vue';
   import { TemplateRowData } from '../config/interface';
   import {
     queryTemplates,
@@ -222,6 +228,10 @@
     }
   });
   let timer: any = null;
+  const showModal = ref(false);
+  const dataInfo = ref({});
+  const modalTitle = ref('');
+  const action = ref(ModalAction.CREATE);
   const appStore = useAppStore();
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
@@ -434,6 +444,11 @@
       queryParams.page = 1;
       handleFilter();
     }
+  };
+
+  const handleSave = () => {
+    showModal.value = false;
+    fetchData();
   };
 
   const createTemplateChunkRequest = () => {
