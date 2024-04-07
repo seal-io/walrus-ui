@@ -63,6 +63,7 @@
     "github-markdown-css": "5.5.1",
     "has-ansi": "^5.0.1",
     "highlight.js": "^11.5.1",
+    "hotkeys-js": "^3.13.7",
     "insert-css": "^2.0.0",
     "interactjs": "^1.10.17",
     "js-cookie": "^3.0.1",

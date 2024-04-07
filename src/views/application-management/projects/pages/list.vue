@@ -48,6 +48,7 @@
           </template>
           <template #button-group>
             <a-button
+              ref="createBtn"
               v-permission="{
                 resource: `roles.${Resources.Projects}`,
                 actions: ['POST']
@@ -253,6 +254,7 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
+  import useHotKeys, { HotKeys } from '@/hooks/use-hot-keys';
   import CreateProjectModal from '../components/create-project.vue';
   import { ProjectRowData } from '../config/interface';
   import { queryProjects, deleteProjects } from '../api';
@@ -270,6 +272,7 @@
       defaultOrder: 'descend'
     }
   );
+  const createBtn = ref();
   const loading = ref(false);
   const modalTitle = ref('');
   const showProjectModal = ref(false);
@@ -442,6 +445,33 @@
       handleDelete([row.id]);
     }
   };
+
+  useHotKeys([
+    {
+      key: HotKeys.Delete,
+      callback: () => {
+        if (selectedKeys.value.length) {
+          handleDelete();
+        }
+      }
+    },
+    {
+      key: HotKeys.Refresh,
+      callback: () => {
+        handleFilter();
+      }
+    },
+    {
+      key: HotKeys.Create,
+      options: {
+        element: createBtn.value
+      },
+      callback: () => {
+        handleCreate();
+      }
+    }
+  ]);
+
   onMounted(() => {
     setEnterProjectDefault();
   });
