@@ -23,7 +23,6 @@ export default function useEnterPage() {
   };
 
   const enterUserPage = async () => {
-    // const firstRouteName = getFirstRouteName();
     userStore.info();
     // await initDefaultProject();
     // gotoEnvironmentDetail();

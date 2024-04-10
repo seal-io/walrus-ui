@@ -1,105 +1,127 @@
-<template>
-  <div class="mo-wrap" :class="{ disabled }">
-    <div v-if="showTitle" class="title" :class="{ 'no-del-btn': !showDelete }">
-      <div class="text-wrap" @click.stop="handleCollapse">
-        <a-space>
-          <span v-if="showArrow" class="text">
-            <icon-right v-if="!isCollapse" />
-            <icon-down v-else />
-          </span>
-          <slot name="title"
-            ><span>{{ title }}</span></slot
-          >
-        </a-space>
-      </div>
-      <slot name="right">
-        <a-button
-          v-if="showDelete"
-          status="danger"
-          type="text"
-          @click.stop="handleDelete"
-        >
-          <template #icon>
-            <icon-delete style="font-size: 16px" />
-          </template>
-        </a-button>
-      </slot>
-    </div>
-    <slTransition>
-      <div v-show="isCollapse">
-        <div class="content" :class="{ inner: innerWrap }">
-          <slot></slot>
-        </div>
-      </div>
-    </slTransition>
-  </div>
-</template>
-
-<script lang="ts" setup>
-  import { ref, watchEffect } from 'vue';
-  import slTransition from '@/components/sl-transition/index.vue';
+<script lang="tsx">
+  import { defineComponent, ref, watchEffect, withModifiers } from 'vue';
+  import SlTransition from '@/components/sl-transition/index.vue';
   import { deleteModal } from '@/utils/monitor';
 
-  const props = defineProps({
-    title: {
-      type: String,
-      default() {
-        return '';
+  export default defineComponent({
+    props: {
+      title: {
+        type: String,
+        default() {
+          return '';
+        }
+      },
+      showTitle: {
+        type: Boolean,
+        default() {
+          return true;
+        }
+      },
+      innerWrap: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      status: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      disabled: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      showArrow: {
+        type: Boolean,
+        default() {
+          return true;
+        }
+      },
+      showDelete: {
+        type: Boolean,
+        default() {
+          return true;
+        }
       }
     },
-    showTitle: {
-      type: Boolean,
-      default() {
-        return true;
-      }
-    },
-    innerWrap: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
-    status: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
-    disabled: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
-    showArrow: {
-      type: Boolean,
-      default() {
-        return true;
-      }
-    },
-    showDelete: {
-      type: Boolean,
-      default() {
-        return true;
-      }
+    emits: ['delete', 'update:status', 'collapse'],
+    setup(props, { emit, slots }) {
+      const isCollapse = ref(props.status);
+      const handleCollapse = () => {
+        if (props.disabled) return;
+        isCollapse.value = !isCollapse.value;
+        emit('update:status', isCollapse.value);
+        emit('collapse', isCollapse.value);
+      };
+      const handleDeleteConfirm = () => {
+        emit('delete');
+      };
+      const handleDelete = () => {
+        deleteModal({ onOk: handleDeleteConfirm });
+      };
+
+      watchEffect(() => {
+        isCollapse.value = props.status;
+      });
+
+      const renderArrow = () => {
+        if (!props.showArrow) return null;
+        return (
+          <span class="text">
+            {!isCollapse.value ? <icon-right /> : <icon-down />}
+          </span>
+        );
+      };
+
+      const renderDefaultRight = () => {
+        if (!props.showDelete) return null;
+        return (
+          <a-button
+            status="danger"
+            type="text"
+            onClick={withModifiers(() => handleDelete(), ['stop'])}
+            v-slots={{
+              icon: () => <icon-delete style="font-size: 16px" />
+            }}
+          ></a-button>
+        );
+      };
+
+      const renderTitle = () => {
+        if (!props.showTitle) return null;
+        return (
+          <div class={['title', { 'no-del-btn': !props.showDelete }]}>
+            <div
+              class="text-wrap"
+              onClick={withModifiers(() => handleCollapse(), ['stop'])}
+            >
+              <a-space>
+                {renderArrow()}
+                {slots.title ? slots.title() : <span>{props.title}</span>}
+              </a-space>
+            </div>
+            {slots.right ? slots.right() : renderDefaultRight()}
+          </div>
+        );
+      };
+
+      return () => (
+        <div class={['mo-wrap', { disabled: props.disabled }]}>
+          {renderTitle()}
+          <SlTransition>
+            <div v-show={isCollapse.value}>
+              <div class={['content', { inner: props.innerWrap }]}>
+                {slots.default?.()}
+              </div>
+            </div>
+          </SlTransition>
+        </div>
+      );
     }
-  });
-  const emits = defineEmits(['delete', 'update:status', 'collapse']);
-  const isCollapse = ref(props.status);
-  const handleCollapse = () => {
-    if (props.disabled) return;
-    isCollapse.value = !isCollapse.value;
-    emits('update:status', isCollapse.value);
-    emits('collapse', isCollapse.value);
-  };
-  const handleDeleteConfirm = () => {
-    emits('delete');
-  };
-  const handleDelete = () => {
-    deleteModal({ onOk: handleDeleteConfirm });
-  };
-  watchEffect(() => {
-    isCollapse.value = props.status;
   });
 </script>
 

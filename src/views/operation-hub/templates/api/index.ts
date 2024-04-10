@@ -1,11 +1,16 @@
 import axios from 'axios';
-import { pick } from 'lodash';
+import _, { pick } from 'lodash';
 import qs from 'query-string';
-import { Pagination } from '@/types/global';
+import { Pagination, ListQuery } from '@/types/global';
 import router from '@/router';
+import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
 import { TemplateRowData, TemplateFormData } from '../config/interface';
 
-export const TEMPLATE_API = '/templates';
+export const TEMPLATE_API = 'templates';
+
+export const SCHEMA_API = 'schemas';
+
+export { GlobalNamespace, NAMESPACES };
 
 export const PROJECT_API_PREFIX = () => {
   return `/projects/${router.currentRoute.value.params.projectId}`;
@@ -15,7 +20,7 @@ export const isProjectContext = () => {
   return !!router.currentRoute.value.params.projectId;
 };
 
-export interface QueryType extends Pagination {
+export interface QueryType extends ListQuery {
   extract?: string[];
   sort?: string[];
   _group?: string[];
@@ -34,56 +39,45 @@ export interface FormDataPR {
   path: string;
   content: string;
 }
-export function queryTemplates(
-  params: QueryType & { withGlobal?: boolean },
-  token?: any
-) {
-  let url = TEMPLATE_API;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}`;
-  }
+export function queryTemplates(params: ListQuery, token?: any) {
+  const url = `/${NAMESPACES}/${params.namespace}/${TEMPLATE_API}`;
+
   return axios.get<ResultType>(url, {
-    params,
+    params: _.omit(params, ['namespace']),
     cancelToken: token,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
   });
 }
-export function queryItemTemplate(params: { id: string }) {
-  let url = `${TEMPLATE_API}/${params.id}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${params.id}`;
-  }
+export function queryItemTemplate(params: { name: string; namespace: string }) {
+  const url = `/${NAMESPACES}/${params.namespace}/${TEMPLATE_API}/${params.name}`;
+
   return axios.get(url);
 }
 export function createTemplate(data: TemplateFormData) {
-  let url = TEMPLATE_API;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}`;
-  }
+  const url = `/${NAMESPACES}/${data.metadata.namespace}/${TEMPLATE_API}`;
+
   return axios.post(url, data);
 }
-export function deleteTemplates(data: { items: { id: string }[] }) {
-  let url = TEMPLATE_API;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}`;
-  }
+export function deleteTemplates(data: ListQuery) {
+  const url = `/${NAMESPACES}/${data.namespace}/${TEMPLATE_API}/${data.name}`;
+
   return axios.delete(url, { data });
 }
 export function updateTemplate(data: TemplateFormData) {
-  let url = `${TEMPLATE_API}/${data.id}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${data.id}`;
-  }
+  const url = `/${NAMESPACES}/${data.metadata.namespace}/${TEMPLATE_API}/${data.metadata.name}`;
+
   return axios.put(url, data);
 }
-export function refreshTemplate(data: { id: string }) {
-  let url = `${TEMPLATE_API}/${data.id}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${data.id}`;
-  }
-  return axios.post(`${url}/refresh`);
+
+export function refreshTemplate(data: {
+  name: string;
+  namespace: string;
+  item: object;
+}) {
+  const url = `/${NAMESPACES}/${data.namespace}/${TEMPLATE_API}/${data.name}`;
+  return axios.put(`${url}`, data.item);
 }
 
 export function queryTemplatesVersions(params: { templateID: string }) {
@@ -114,13 +108,10 @@ export function queryTemplatesVersionSchema(params: { templateID: string }) {
 }
 
 export function queryTemplateSchemaByVersionId(
-  params: { templateVersionID: string; isProjectContext: boolean },
+  params: { name: string; namespace: string },
   token?: any
 ) {
-  let url = `/template-versions/${params.templateVersionID}`;
-  if (params.isProjectContext) {
-    url = `${PROJECT_API_PREFIX()}${url}`;
-  }
+  const url = `/${NAMESPACES}/${params.namespace}/${SCHEMA_API}/${params.name}`;
   return axios.get(url, {
     cancelToken: token
   });

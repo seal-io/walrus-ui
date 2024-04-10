@@ -19,23 +19,49 @@ export interface ModuleAction {
   requiredAuth: boolean;
   permission?: string[];
 }
-export interface TemplateRowData {
-  id: string;
-  source: string;
-  schema: Schema;
-  name: string;
-  project?: { id: string };
-  templateName: string;
-  description: string;
-  status: string;
-  createTime: string;
-  version: string;
-  disabled?: boolean;
-  updateTime: string;
-  edges: object;
-  icon?: string;
-  template?: { id: string; name: string; version: string };
+
+export interface TemplateFormData {
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name: string;
+    namespace: string;
+  };
+  spec: {
+    templateFormat: string;
+    description: string;
+    vcsRepository: {
+      platform: string;
+      url: string;
+      token?: string;
+    };
+  };
 }
+
+export interface TemplateVersion {
+  originalUISchemaRef: {
+    name: string;
+  };
+  schemaRef: {
+    name: string;
+  };
+  uiSchemaRef: {
+    name: string;
+  };
+  url: string;
+  version: string;
+}
+export interface TemplateRowData extends TemplateFormData {
+  status: {
+    conditions: object[];
+    phase: string;
+    icon: string;
+    url: string;
+    lastSyncTime: string;
+    versions: TemplateVersion[];
+  };
+}
+
 export interface TemplateVersionData extends TemplateRowData {
   template: {
     id: string;
@@ -43,10 +69,4 @@ export interface TemplateVersionData extends TemplateRowData {
     version: string;
     template: { id: string }; // template not template version
   };
-}
-export interface TemplateFormData {
-  id?: string;
-  description: string;
-  source: string;
-  version?: string;
 }

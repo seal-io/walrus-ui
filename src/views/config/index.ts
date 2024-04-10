@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import { MoreAction } from '@/views/config/interface';
+import ResourceKinds, { apiVersion } from './resource-kinds';
+
+export { ResourceKinds, apiVersion };
 
 export const dateFormatMap = {
   day: 'YYYY.MM.DD',
@@ -41,9 +44,9 @@ export const setEndTimeAddDay = (time, mode) => {
 };
 
 export const websocketEventType = {
-  CREATE: 'create',
-  UPDATE: 'update',
-  DELETE: 'delete'
+  CREATE: 'ADDED',
+  UPDATE: 'MODIFIED',
+  DELETE: 'DELETED'
 };
 // can contain up to 30 characters
 // Contains only lowercase alphanumeric characters or "-"

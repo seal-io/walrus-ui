@@ -145,5 +145,13 @@ export default {
   'operation.templates.button.useInservice': 'Enable for Service',
   'operation.templates.button.cancelUseInService': 'Disable for Service',
   'operation.templates.source.description':
-    'URL of a git repository. Use the ref query parameter if you want to use a specific version. For example:'
+    'URL of a git repository. Use the ref query parameter if you want to use a specific version. For example:',
+  'operation.templates.form.StorageType': 'Storage Type',
+  'operation.templates.form.authentication': 'Authentication',
+  'operation.templates.form.excludeFilter': 'Exclude Regular Expression',
+  'operation.templates.form.excludeFilter.desc':
+    'Exclude templates name match the given regular expression',
+  'operation.templates.form.includeFilter': 'Include Regular Expression',
+  'operation.templates.form.includeFilter.desc':
+    'Include templates name match the given regular expression'
 };

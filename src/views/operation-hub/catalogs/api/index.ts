@@ -1,10 +1,19 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { Pagination } from '@/types/global';
+import { Pagination, ListQuery } from '@/types/global';
+import _ from 'lodash';
 import router from '@/router';
 import { CatalogRowData, CatalogFormData } from '../config/interface';
 
-export const CatalogAPI = '/catalogs';
+export const CatalogAPI = 'catalogs';
+
+export const GlobalNamespace = 'walrus-system';
+
+const NAMESPACES = 'namespaces';
+
+export const generateListAPI = (namespace: string) => {
+  return `/${NAMESPACES}/${namespace}/${CatalogAPI}`;
+};
 
 export const PROJECT_API_PREFIX = () => {
   return `/projects/${router.currentRoute.value.params.projectId}`;
@@ -14,7 +23,7 @@ export const isProjectContext = () => {
   return !!router.currentRoute.value.params.projectId;
 };
 
-export interface QueryType extends Pagination {
+export interface QueryType extends ListQuery {
   extract?: string[];
   sort?: string[];
   _group?: string[];
@@ -33,23 +42,18 @@ export interface FormDataPR {
   path: string;
   content: string;
 }
+
 export function queryCatalogs(params: QueryType) {
-  let url = CatalogAPI;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CatalogAPI}`;
-  }
+  const url = `/${NAMESPACES}/${params.namespace}/${CatalogAPI}`;
   return axios.get<ResultType>(url, {
-    params,
+    params: _.omit(params, ['namespace']),
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
   });
 }
-export function queryItemCatalog(params: { id: string }) {
-  let url = `${CatalogAPI}/${params.id}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CatalogAPI}/${params.id}`;
-  }
+export function queryItemCatalog(params: { name: string; namespace: string }) {
+  const url = `/${NAMESPACES}/${params.namespace}/${CatalogAPI}/${params.name}`;
   return axios.get(url, {
     params,
     paramsSerializer: (obj) => {
@@ -58,32 +62,25 @@ export function queryItemCatalog(params: { id: string }) {
   });
 }
 export function createCatalog(data: CatalogFormData) {
-  let url = CatalogAPI;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CatalogAPI}`;
-  }
+  const url = `/${NAMESPACES}/${data.metadata.namespace}/${CatalogAPI}`;
   return axios.post(url, data);
 }
-export function deleteCatalogs(data: { items: Record<string, any>[] }) {
-  let url = CatalogAPI;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CatalogAPI}`;
-  }
+
+export function deleteCatalogs(data: ListQuery) {
+  const url = `/${NAMESPACES}/${data.namespace}/${CatalogAPI}/${data.name}`;
   return axios.delete(url, { data });
 }
 export function updateCatalog(data: CatalogFormData) {
-  let url = `${CatalogAPI}/${data.id}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CatalogAPI}/${data.id}`;
-  }
+  const url = `/${NAMESPACES}/${data.metadata.namespace}/${CatalogAPI}/${data.metadata.name}`;
   return axios.put(url, data);
 }
-export function refreshCatalog(data: { id: string }) {
-  let url = `${CatalogAPI}/${data.id}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CatalogAPI}/${data.id}`;
-  }
-  return axios.post(`${url}/refresh`);
+export function refreshCatalog(data: {
+  namespace: string;
+  name: string;
+  item: object;
+}) {
+  const url = `/${NAMESPACES}/${data.namespace}/${CatalogAPI}/${data.name}`;
+  return axios.put(`${url}`, data.item);
 }
 
 export default {};

@@ -3,7 +3,7 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="700"
+    :width="660"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
@@ -16,12 +16,7 @@
     @before-close="handleBeforeClose"
   >
     <a-spin :loading="loading" style="width: 100%; text-align: center">
-      <a-form
-        ref="formref"
-        :model="formData"
-        auto-label-width
-        label-align="left"
-      >
+      <a-form ref="formref" :model="formData" auto-label-width>
         <catalogBasic
           v-model:form-data="formData"
           :action="action"
@@ -58,13 +53,15 @@
 
 <script lang="ts" setup>
   import { ref, reactive, PropType, computed } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import _, { toLower, get } from 'lodash';
   import { ModalActionType } from '@/views/config/interface';
-  import { ModalAction } from '@/views/config';
+  import { ModalAction, ResourceKinds, apiVersion } from '@/views/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
+  import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import { CatalogFormData } from '../config/interface';
-  import { createCatalog, updateCatalog } from '../api';
+  import { createCatalog, updateCatalog, GlobalNamespace } from '../api';
   import catalogAdvance from './catalog-advance.vue';
   import catalogBasic from './catalog-basic.vue';
 
@@ -94,31 +91,33 @@
       }
     }
   });
-  const providers = [
-    {
-      label: 'GitHub',
-      value: 'Github'
-    },
-    {
-      label: 'GitLab',
-      value: 'Gitlab'
-    },
-    {
-      label: 'Gitee',
-      value: 'Gitee'
-    }
-  ];
-  const sealCatalog = 'https://github.com/walrus-catalog';
+
+  const { route } = useCallCommon();
   const emit = defineEmits(['save', 'update:show', 'update:dataInfo']);
+  const projectName = route.params.projectName as string;
   const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
-  const formData: CatalogFormData = reactive({
-    description: '',
-    filterPattern: '',
-    name: '',
-    source: '',
-    type: 'Github'
+  const formData = ref<CatalogFormData>({
+    apiVersion,
+    kind: ResourceKinds.Catalog,
+    metadata: {
+      name: '',
+      namespace: projectName || GlobalNamespace
+    },
+    spec: {
+      templateFormat: 'terraform',
+      description: '',
+      vcsSource: {
+        platform: 'Github',
+        url: '',
+        token: ''
+      },
+      filtering: {
+        excludeFilter: '',
+        includeFilter: ''
+      }
+    }
   });
 
   const handleCancel = () => {
@@ -131,9 +130,9 @@
       try {
         submitLoading.value = true;
         if (props.action === ModalAction.EDIT) {
-          await updateCatalog(formData);
+          await updateCatalog(formData.value);
         } else {
-          await createCatalog(formData);
+          await createCatalog(formData.value);
         }
         setTimeout(() => {
           emit('save');
@@ -146,15 +145,31 @@
     }
   };
   const resetForm = () => {
-    formData.description = '';
-    formData.name = '';
-    formData.source = '';
-    formData.filterPattern = '';
-    formData.type = 'Github';
+    formData.value = {
+      apiVersion,
+      kind: ResourceKinds.Catalog,
+      metadata: {
+        name: '',
+        namespace: ''
+      },
+      spec: {
+        templateFormat: 'terraform',
+        description: '',
+        vcsSource: {
+          platform: 'Github',
+          url: '',
+          token: ''
+        },
+        filtering: {
+          excludeFilter: '',
+          includeFilter: ''
+        }
+      }
+    };
     emit('update:dataInfo', {});
   };
   const init = async () => {
-    _.assignIn(formData, props.dataInfo);
+    _.assignIn(formData.value, props.dataInfo);
   };
   const handleBeforeOpen = () => {
     init();

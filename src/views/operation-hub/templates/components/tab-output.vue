@@ -31,7 +31,6 @@
 <script lang="ts" setup>
   import _, { get } from 'lodash';
   import { PropType, computed } from 'vue';
-  import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import { Schema } from '../config/interface';
 
   const props = defineProps({

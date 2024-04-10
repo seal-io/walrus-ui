@@ -6,7 +6,7 @@
       :loading="loading"
       :data="list"
       :pagination="false"
-      row-key="id"
+      row-key="metadataName"
       :row-selection="rowSelectionRef"
       @cell-click="handleCellClick"
       @sorter-change="handleSortChange"
@@ -29,7 +29,7 @@
           }"
         >
           <template #cell="{ record }">
-            <a-link :hoverable="false">{{ record.name }}</a-link>
+            <a-link :hoverable="false">{{ record.metadata.name }}</a-link>
           </template>
         </a-table-column>
 
@@ -38,7 +38,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="left"
-          data-index="sync.total"
+          data-index="status.templateCount"
           :title="$t('catalogs.list.total')"
         >
         </a-table-column>
@@ -47,7 +47,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="left"
-          data-index="description"
+          data-index="spec.description"
           :title="$t('common.table.description')"
         >
         </a-table-column>
@@ -91,13 +91,15 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="left"
-          data-index="sync.time"
+          data-index="status.lastSyncTime"
           :title="$t('catalogs.list.sync.time')"
         >
           <template #cell="{ record }">
             <span>{{
               record.sync?.time
-                ? dayjs(record.sync?.time).format('YYYY-MM-DD HH:mm:ss')
+                ? dayjs(record.status?.lastSyncTime).format(
+                    'YYYY-MM-DD HH:mm:ss'
+                  )
                 : '-'
             }}</span>
           </template>
@@ -142,7 +144,7 @@
   import _, { map, get } from 'lodash';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
-  import { PageAction } from '@/views/config';
+  import { PageAction, apiVersion } from '@/views/config';
   import dayjs from 'dayjs';
   import { useUserStore } from '@/store';
   import { reactive, ref, onMounted, PropType, computed } from 'vue';
@@ -243,7 +245,12 @@
         ...queryParams,
         sort: [sort.value]
       });
-      dataList.value = data?.items || [];
+      dataList.value = _.map(data?.items || [], (item) => {
+        return {
+          ...item,
+          metadataName: item.metadata?.name
+        };
+      });
       total.value = data?.pagination?.total || 0;
     } catch (error) {
       loading.value = false;
@@ -277,6 +284,7 @@
     handleFilter();
   };
   const handleSelectChange = (list: BaseType[]) => {
+    console.log('handleSelectChange', list);
     rowSelection.selectedRowKeys = [...list];
     setTimeout(() => {
       emits('update:selectedList', list);
@@ -323,7 +331,24 @@
   };
   const handlRefresh = async (row) => {
     try {
-      await refreshCatalog({ id: row.id });
+      await refreshCatalog({
+        name: row.metadata.name,
+        namespace: row.metadata.namespace,
+        item: {
+          ..._.omit(row, ['disabled']),
+          status: {
+            ...row.status,
+            lastSyncTime: new Date().toISOString(),
+            conditions: [
+              ...row.status?.conditions,
+              {
+                type: 'Refresh',
+                status: 'Unknown'
+              }
+            ]
+          }
+        }
+      });
       execSucceed();
     } catch (error) {
       // ignore

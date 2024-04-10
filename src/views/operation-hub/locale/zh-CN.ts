@@ -133,5 +133,13 @@ export default {
   'operation.templates.button.useInservice': '为服务启用',
   'operation.templates.button.cancelUseInService': '为服务停用',
   'operation.templates.source.description':
-    '来源是git仓库地址，如果您想使用指定版本，请使用 ref 查询参数。例如：'
+    '来源是git仓库地址，如果您想使用指定版本，请使用 ref 查询参数。例如：',
+  'operation.templates.form.StorageType': '存储类型',
+  'operation.templates.form.authentication': '认证',
+  'operation.templates.form.excludeFilter': '排除正则',
+  'operation.templates.form.excludeFilter.desc':
+    '排除与给定正则表达式匹配的模板名称',
+  'operation.templates.form.includeFilter': '包含正则',
+  'operation.templates.form.includeFilter.desc':
+    '包含与给定正则表达式匹配的模板名称'
 };

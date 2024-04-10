@@ -3,14 +3,21 @@
     <a-grid v-if="list.length" :cols="24" :col-gap="20" :row-gap="20" wrap>
       <a-grid-item
         v-for="item in list"
-        :key="item.id"
+        :key="`${item.metadata.namespace}/${item.metadata.name}`"
         :span="{ lg: 6, md: 12, sm: 24, xs: 24 }"
       >
         <templateItem
           :action-list="setModuleActions(item)"
           :data-info="item"
-          :provider="item.icon"
-          :checked="includes(checkedList, item.id)"
+          :provider="item.status.icon"
+          :checked="
+            _.some(
+              checkedList,
+              (sItem) =>
+                sItem.name === item.metadata.name &&
+                sItem.namespace === item.metadata.namespace
+            )
+          "
           :show-checkbox="showCheckbox"
           @view="handleView(item)"
           @edit="handleEdit(item)"
@@ -42,7 +49,7 @@
       }
     },
     checkedList: {
-      type: Array as PropType<Array<string | number>>,
+      type: Array as PropType<Array<{ name: string; namespace: string }>>,
       default() {
         return [];
       }
@@ -75,7 +82,7 @@
     emits('change', checked, id);
   };
   const handleDelete = (item) => {
-    emits('delete', item.id);
+    emits('delete', item);
   };
   const setModuleActions = (info) => {
     const result = filter(actionList, (item) => {
@@ -98,14 +105,15 @@
       routeName = PROJECT.TemplateDetail;
       params = {
         action: PageAction.VIEW,
-        projectId: route.params.projectId as string
+        projectName: route.params.projectName as string
       };
     }
     router.push({
       name: routeName,
       params,
       query: {
-        id: item.id,
+        name: item.metadata.name,
+        namespace: item.metadata.namespace,
         catalog: getCatalogName(item.catalog?.id)
       }
     });
@@ -117,14 +125,15 @@
       routeName = PROJECT.TemplateDetail;
       params = {
         action: PageAction.EDIT,
-        projectId: route.params.projectId as string
+        projectName: route.params.projectName as string
       };
     }
     router.push({
       name: routeName,
       params,
       query: {
-        id: item.id,
+        name: item.metadata.name,
+        namespace: item.metadata.namespace,
         catalog: getCatalogName(item.catalogId)
       }
     });

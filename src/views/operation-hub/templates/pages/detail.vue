@@ -50,12 +50,16 @@
             auto-label-width
             label-align="left"
           >
-            <a-form-item
+            <TemplateBasic
+              v-model:formData="formData"
+              :action="pageAction"
+            ></TemplateBasic>
+            <!-- <a-form-item
               :label="$t('operation.connectors.table.name')"
               field="name"
               hide-asterisk
               hide-label
-              :disabled="!!id"
+              :disabled="!!templateName"
               :validate-trigger="['change', 'input']"
               :style="{ maxWidth: `${InputWidth.LARGE}px` }"
               :rules="[
@@ -99,7 +103,7 @@
             <a-form-item
               field="source"
               :label="$t('operation.templates.detail.source')"
-              :disabled="!!id"
+              :disabled="!!templateName"
               hide-asterisk
               :hide-label="true"
               :validate-trigger="['change']"
@@ -137,7 +141,7 @@
             </a-form-item>
             <a-form-item
               v-if="
-                id &&
+                templateName &&
                 pageAction === PageAction.VIEW &&
                 _.get(formData, 'catalog.id')
               "
@@ -151,7 +155,7 @@
               ></seal-input>
             </a-form-item>
             <a-form-item
-              v-if="id && pageAction === PageAction.VIEW"
+              v-if="templateName && pageAction === PageAction.VIEW"
               hide-label
               :style="{ width: `${InputWidth.LARGE}px` }"
             >
@@ -167,7 +171,7 @@
                   ></StatusLabel>
                 </div>
               </SealFormItemWrap>
-            </a-form-item>
+            </a-form-item> -->
           </a-form>
           <QuestionPopup
             v-if="pageAction === PageAction.VIEW"
@@ -182,7 +186,7 @@
       </div>
       <a-tabs
         v-if="
-          id &&
+          templateName &&
           pageAction === PageAction.VIEW &&
           userStore.hasRolesActionsPermission({
             resource: Resources.Templates,
@@ -213,6 +217,7 @@
             :wrap-size="height"
             :version-id="version"
             :schema="templateSchema"
+            :ui-schema="templateUISchema"
             :template-info="formData"
             @update="handleUpdateSchema"
           ></component>
@@ -264,6 +269,8 @@
     validateLabelNameRegxFor63,
     validateInputLength,
     InputWidth,
+    apiVersion,
+    ResourceKinds,
     QAlinkMap
   } from '@/views/config';
   import QuestionPopup from '@/components/question-popup/index.vue';
@@ -284,6 +291,7 @@
   import semverGt from 'semver/functions/gt';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { tabList } from '../config';
+  import { TemplateFormData } from '../config/interface';
   import { operationRootBread } from '../../connectors/config';
   import tabReadme from '../components/tab-readme.vue';
   import tabInput from '../components/tab-input.vue';
@@ -292,13 +300,15 @@
   import tabEditSchema from '../components/tab-edit-schema.vue';
   import useConnectorBread from '../../connectors/hooks/use-connector-bread';
   import { schemaHelps } from '../../resource-definitions/config';
+  import TemplateBasic from '../components/template-basic.vue';
 
   import {
     queryItemTemplate,
     createTemplate,
     updateTemplate,
     queryTemplatesVersions,
-    queryTemplateSchemaByVersionId
+    queryTemplateSchemaByVersionId,
+    GlobalNamespace
   } from '../api';
 
   const tabMap = {
@@ -323,17 +333,30 @@
   const activeKey = ref('tabReadme');
   const { router, route, t } = useCallCommon();
   const formref = ref();
-  const id = route.query.id as string;
+  const templateName = route.query.name as string;
+  const projectName = route.params.projectName as string;
+  const templateNameSpace = route.query.namespace as string;
   const submitLoading = ref(false);
   const loaded = ref(false);
   const templateSchema = ref({});
+  const templateUISchema = ref({});
   let copyFormData: any = {};
-  const formData = reactive<any>({
-    name: '',
-    description: '',
-    source: ''
-    // version: '',
-    // icon: ''
+  const formData = ref<TemplateFormData>({
+    apiVersion,
+    kind: ResourceKinds.Template,
+    metadata: {
+      name: '',
+      namespace: projectName || GlobalNamespace
+    },
+    spec: {
+      templateFormat: 'terraform',
+      description: '',
+      vcsRepository: {
+        platform: 'Github',
+        url: '',
+        token: ''
+      }
+    }
   });
 
   const { height } = useElementSize(extraWrapper);
@@ -342,39 +365,70 @@
     return `calc(100vh - ${height.value + 150}px)`;
   });
   const title = computed(() => {
-    if (!id) {
+    if (!templateName) {
       return 'operation.templates.detail.add';
     }
-    if (id && pageAction.value === PageAction.VIEW) {
+    if (templateName && pageAction.value === PageAction.VIEW) {
       return 'operation.templates.detail.view';
     }
     return 'operation.templates.detail.edit';
   });
 
+  const getTemplateSchema = async (versionData) => {
+    if (!versionData) {
+      templateSchema.value = {};
+      return;
+    }
+    try {
+      const { data } = await queryTemplateSchemaByVersionId({
+        name: versionData.schemaRef?.name,
+        namespace: templateNameSpace
+      });
+      templateSchema.value = JSON.parse(atob(data.status?.value));
+      console.log('templateSchema++', templateSchema.value);
+    } catch (error) {
+      templateSchema.value = {};
+    }
+  };
+
+  const getTemplateUISchema = async (versionData) => {
+    if (!versionData) {
+      templateUISchema.value = {};
+      return;
+    }
+    try {
+      const { data } = await queryTemplateSchemaByVersionId({
+        name: versionData.uiSchemaRef?.name,
+        namespace: templateNameSpace
+      });
+      templateUISchema.value = JSON.parse(atob(data.status?.value));
+      console.log('templateSchema++++++', templateUISchema.value);
+    } catch (error) {
+      templateUISchema.value = {};
+    }
+  };
+
   const getTemplateSchemaByVersionId = async () => {
     if (!version.value) return;
     try {
-      const params = {
-        templateVersionID: version.value,
-        isProjectContext: !!formData.project?.id
-      };
-      // const { data } = await queryTemplatesVersions(params);
-      // return data.items?.[0];
-      const { data } = await queryTemplateSchemaByVersionId(params);
-      templateSchema.value = data;
+      const versionData = _.find(versionList.value, { value: version.value });
+      Promise.all([
+        getTemplateSchema(versionData),
+        getTemplateUISchema(versionData)
+      ]);
     } catch (error) {
       // ingore
     }
   };
 
-  const setVersion = (list) => {
+  const getTemplateVersions = async () => {
+    if (!templateName) return;
+    const list = _.get(formData, 'status.versions', []);
     versionList.value = map(list, (item) => {
       return {
-        schema: item.schema,
-        label: item.version,
-        value: item.id,
-        version: item.version,
-        template: item.template
+        ...item,
+        value: item.version,
+        label: item.version
       };
     }).sort((v1, v2) => {
       if (semverEq(v1.label, v2.label)) {
@@ -385,31 +439,18 @@
       }
       return 1;
     });
-  };
-
-  const getTemplateVersions = async () => {
-    if (!id) return;
-    try {
-      const params = {
-        templateID: id,
-        page: -1,
-        extract: ['-uiSchema', '-schema']
-      };
-      const { data } = await queryTemplatesVersions(params);
-      const list = data.items || [];
-      setVersion(list);
-      version.value = get(versionList.value, '0.value', '');
-    } catch (error) {
-      versionList.value = [];
+    if (versionList.value.length) {
+      version.value = versionList.value[0].value;
     }
   };
   const getItemTemplate = async () => {
     copyFormData = cloneDeep(formData);
-    if (!id) return;
+    if (!templateName) return;
     try {
       loaded.value = false;
       const params = {
-        id
+        name: templateName,
+        namespace: templateNameSpace
       };
       const { data } = await queryItemTemplate(params);
       assignIn(formData, data);
@@ -432,7 +473,7 @@
       try {
         submitLoading.value = true;
         copyFormData = cloneDeep(formData);
-        if (id) {
+        if (templateName) {
           await updateTemplate(formData);
         } else {
           await createTemplate(formData);

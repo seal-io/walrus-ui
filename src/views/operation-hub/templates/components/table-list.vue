@@ -16,7 +16,7 @@
           >
           </a-select>
           <a-input
-            v-model.trim="queryParams.query"
+            v-model.trim="queryParams.labelSelector"
             allow-clear
             style="width: 240px"
             :placeholder="$t('common.search.name.placeholder')"
@@ -100,7 +100,7 @@
             <i class="iconfont icon-Field-time size-16"></i>
           </a-button>
         </a-space>
-        <a-pagination
+        <!-- <a-pagination
           size="small"
           :total="total"
           :page-size="queryParams.perPage"
@@ -110,7 +110,7 @@
           :hide-on-single-page="total <= 10"
           @change="handlePageChange"
           @page-size-change="handlePageSizeChange"
-        />
+        /> -->
       </div>
       <a-spin :loading="loading" class="fill-width">
         <a-tabs
@@ -198,17 +198,20 @@
   import { UseSortDirection } from '@/utils/common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
-  import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { deleteModal, execSucceed, batchDelete } from '@/utils/monitor';
   import { PageAction, ModalAction } from '@/views/config';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import { queryCatalogs, CatalogAPI } from '../../catalogs/api';
   import ThumbView from './thumb-view.vue';
+  import TemplateModal from './template-modal.vue';
   import { TemplateRowData } from '../config/interface';
   import {
     queryTemplates,
     deleteTemplates,
     TEMPLATE_API,
-    PROJECT_API_PREFIX
+    PROJECT_API_PREFIX,
+    GlobalNamespace,
+    NAMESPACES
   } from '../api';
   import {
     listenFilterTemplateAction,
@@ -230,7 +233,7 @@
   let timer: any = null;
   const showModal = ref(false);
   const dataInfo = ref({});
-  const modalTitle = ref('');
+  const modalTitle = ref('Add Template');
   const action = ref(ModalAction.CREATE);
   const appStore = useAppStore();
   const userStore = useUserStore();
@@ -243,8 +246,9 @@
       defaultOrder: 'descend'
     }
   );
+  const projectName = route.params.projectName as string;
   const loading = ref(false);
-  const selectedKeys = ref<string[]>([]);
+  const selectedKeys = ref<{ name: string; namespace: string }[]>([]);
   // const sort = ref<string[]>(['-createTime']);
   const dataList = ref<TemplateRowData[]>([]);
   const catalogs = ref<
@@ -254,11 +258,13 @@
   const total = ref(0);
   const projectID = route.params.projectId as string;
   const queryParams = reactive({
+    labelSelector: '',
+    fieldSelector: '',
     query: '',
     catalogID: '',
     nonCatalog: false,
-    page: 1,
-    perPage: appStore.perPage || 20
+    page: '',
+    perPage: ''
   });
 
   const hasPutPermission = computed(() => {
@@ -324,11 +330,13 @@
   );
 
   const handleCreate = () => {
+    // showModal.value = true;
+    // action.value = ModalAction.CREATE;
     if (props.scope === 'project') {
       router.push({
         name: PROJECT.TemplateDetail,
         params: {
-          projectId: route.params.projectId,
+          projectName: route.params.projectName,
           action: PageAction.EDIT
         }
       });
@@ -351,10 +359,15 @@
       loading.value = true;
       const params: any = {
         ...pickBy(query.value, (val) => !!val),
-        sort: [sort.value]
+        sort: [sort.value],
+        namespace: props.scope === 'project' ? projectName : GlobalNamespace
       };
       const { data } = await queryTemplates(params);
-      dataList.value = data?.items || [];
+      dataList.value = _.map(data?.items || [], (item) => {
+        return {
+          ...item
+        };
+      });
       total.value = data?.pagination?.total || 0;
     } catch (error) {
       loading.value = false;
@@ -370,7 +383,7 @@
   };
   const handleSelectAll = (checked) => {
     const list = _.map(dataList.value, (item) => {
-      return item.id;
+      return item.metadata.name;
     });
     if (checked) {
       selectedKeys.value = list;
@@ -392,11 +405,19 @@
     );
     fetchData();
   };
-  const handleCheckChange = (checked, id) => {
+  const handleCheckChange = (checked, item) => {
     if (checked) {
-      selectedKeys.value.push(id);
+      selectedKeys.value.push({
+        name: item.metadata.name,
+        namespace: item.metadata.namespace
+      });
     } else {
-      remove(selectedKeys.value, (val) => val === id);
+      remove(selectedKeys.value, (val) => {
+        return (
+          val.name === item.metadata.name &&
+          val.namespace === item.metadata.namespace
+        );
+      });
     }
   };
 
@@ -410,15 +431,14 @@
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
-  const handleDeleteConfirm = async (idList?: string[]) => {
+  const handleDeleteConfirm = async (
+    nameList?: { name: string; namespace: string }[]
+  ) => {
     try {
       loading.value = true;
-      const ids = map(idList || selectedKeys.value, (val) => {
-        return {
-          id: val as string
-        };
-      });
-      await deleteTemplates({ items: ids });
+      const nsList = nameList || selectedKeys.value;
+
+      await batchDelete(nsList, deleteTemplates);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
@@ -429,12 +449,17 @@
       loading.value = false;
     }
   };
-  const handleDelete = async (ids?) => {
-    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
+  const handleDelete = async (nameList?) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(nameList) });
   };
 
-  const handleCallDelete = (id) => {
-    handleDelete([id]);
+  const handleCallDelete = (item) => {
+    handleDelete([
+      {
+        name: item.metadata.name,
+        namespace: item.metadata.namespace
+      }
+    ]);
   };
   const updateHandler = (list) => {
     _.each(list, (data) => {
@@ -551,10 +576,10 @@
   onMounted(() => {
     fetchData();
     getCatalogList();
-    nextTick(() => {
-      createTemplateChunkRequest();
-      createCatalogChunkRequest();
-    });
+    // nextTick(() => {
+    //   createTemplateChunkRequest();
+    //   createCatalogChunkRequest();
+    // });
   });
   onBeforeUnmount(() => {
     removeFilterTemplateActionListener();

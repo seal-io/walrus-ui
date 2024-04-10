@@ -22,12 +22,13 @@
               show-loading
               :size="12"
               :status-detail="{
-                status: get(dataInfo, 'status.summaryStatus') || '',
+                status: get(dataInfo, 'status.phase') || '',
                 text: '',
                 message: '',
-                transitioning: get(dataInfo, 'status.transitioning'),
-                warning: get(dataInfo, 'status.warning'),
-                error: get(dataInfo, 'status.error')
+                transitioning: get(dataInfo, 'status.phaseIsTransitioning'),
+                warning: get(dataInfo, 'status.phaseIsWarning'),
+                error: get(dataInfo, 'status.phaseIsError'),
+                inactive: get(dataInfo, 'status.phaseIsInactive')
               }"
             ></StatusLabel>
             <AutoTip>
@@ -35,7 +36,7 @@
                 class="title-text"
                 size="small"
                 @click.stop="handleView"
-                >{{ dataInfo.name }}</a-link
+                >{{ dataInfo.metadata?.name }}</a-link
               >
             </AutoTip>
           </div>
@@ -49,7 +50,7 @@
           </span>
         </div>
         <div class="text">
-          {{ dataInfo.description }}
+          {{ dataInfo.spec.description }}
         </div>
       </div>
     </div>
@@ -57,7 +58,7 @@
     <a-checkbox
       v-if="showCheckbox"
       class="check-box"
-      :value="dataInfo.id"
+      :value="`${dataInfo.metadata?.namespace}/${dataInfo.metadata?.name}`"
       :model-value="checked"
       @click.stop="() => {}"
       @change="handleCheckedChange"
@@ -144,7 +145,24 @@
   };
   const handleRefresh = async () => {
     try {
-      await refreshTemplate({ id: props.dataInfo.id });
+      await refreshTemplate({
+        name: props.dataInfo.metadata?.name,
+        namespace: props.dataInfo.metadata?.namespace,
+        item: {
+          ...props.dataInfo,
+          status: {
+            ...props.dataInfo.status,
+            lastSyncTime: new Date().toISOString(),
+            conditions: [
+              ...props.dataInfo.status?.conditions,
+              {
+                type: 'Refresh',
+                status: 'Unknown'
+              }
+            ]
+          }
+        }
+      });
       execSucceed();
     } catch (error) {
       // ignore
@@ -183,7 +201,7 @@
     }
   };
   const handleCheckedChange = (val) => {
-    emits('change', val, props.dataInfo.id);
+    emits('change', val, props.dataInfo);
   };
 </script>
 
