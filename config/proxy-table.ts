@@ -1,5 +1,7 @@
 const proxyTableList = [
   'apis/walrus.seal.io/v1',
+  'loopback',
+  'identify',
   'account',
   'proxy',
   'cli',

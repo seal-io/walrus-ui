@@ -30,7 +30,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/detail',
+    path: 'project/:projectName/detail',
     name: PROJECT.Detail,
     component: () =>
       import('@/views/application-management/projects/pages/detail.vue'),
@@ -63,7 +63,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment/:environmentId/detail/:action',
+    path: 'project/:projectName/environment/:environmentName/detail/:action',
     name: PROJECT.EnvDetail,
     component: () =>
       import('@/views/application-management/environments/pages/detail.vue'),
@@ -88,7 +88,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment/:action',
+    path: 'project/:projectName/environment/:action',
     name: PROJECT.EnvEdit,
     component: () =>
       import('@/views/application-management/environments/pages/edit.vue'),
@@ -111,7 +111,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment/:environmentId/:clone',
+    path: 'project/:projectName/environment/:environmentName/:clone',
     name: PROJECT.EnvClone,
     component: () =>
       import('@/views/application-management/environments/pages/edit.vue'),
@@ -131,7 +131,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment/:environmentId/page/:dataType/detail',
+    path: 'project/:projectName/environment/:environmentName/page/:dataType/detail',
     name: PROJECT.ServiceDetail,
     component: () =>
       import('@/views/application-management/services/pages/detail.vue'),
@@ -151,7 +151,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment/:environmentId/page/:dataType/:action',
+    path: 'project/:projectName/environment/:environmentName/page/:dataType/:action',
     name: PROJECT.ServiceEdit,
     component: () => import('../../services/pages/edit.vue'),
     meta: {
@@ -170,7 +170,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment/:environmentId/data/clone',
+    path: 'project/:projectName/environment/:environmentName/data/clone',
     name: PROJECT.ServiceClone,
     component: () => import('../../services/pages/clone.vue'),
     meta: {

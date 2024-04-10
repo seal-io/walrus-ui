@@ -3,6 +3,11 @@ import { useUserStore } from '@/store';
 import _, { get } from 'lodash';
 
 const checkPermission = (permission, userStore, to?) => {
+  // just for refactor test
+  // TODO
+  if (userStore.name) {
+    return true;
+  }
   const currentVisitProject = to?.params?.projectId || userStore.currentProject;
   const routePageAction = to?.params?.action;
   // type always set in the detail page that projects relate to

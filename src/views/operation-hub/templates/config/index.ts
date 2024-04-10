@@ -1,6 +1,7 @@
 import { useUserStore } from '@/store';
 import { Resources, Actions } from '@/permissions/config';
 import _ from 'lodash';
+import ResourceKinds from '@/views/config/resource-kinds';
 import { MoreAction } from '@/views/config/interface';
 
 const userStore = useUserStore();
@@ -73,7 +74,13 @@ export const actionList: MoreAction[] = [
     icon: 'icon-edit',
     status: 'normal',
     filterFun({ itemInfo, projectID }) {
-      if (_.get(itemInfo, 'catalog.id')) return false;
+      if (
+        _.some(
+          _.get(itemInfo, 'metadata.ownerReferences'),
+          (o) => o.kind === ResourceKinds.Catalog
+        )
+      )
+        return false;
       return projectID
         ? userStore.hasProjectResourceActions({
             resource: Resources.Templates,

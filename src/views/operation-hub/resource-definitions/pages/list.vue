@@ -190,7 +190,8 @@
   import {
     queryResourceDefinitions,
     deleteResourceDefinitions,
-    RESOURCE_DEFINITION_API
+    RESOURCE_DEFINITION_API,
+    GlobalNamespace
   } from '../api';
   import { actionList } from '../config';
 
@@ -210,10 +211,13 @@
   const total = ref(0);
 
   const queryParams = reactive({
+    labelSelector: '',
+    fieldSelector: '',
+    namespace: GlobalNamespace,
     query: '',
-    page: 1,
-    perPage: appStore.perPage || 10,
-    extract: ['-uiSchema', '-schema']
+    page: '',
+    perPage: '',
+    extract: ''
   });
   const dataList = ref<ResourceDefinitionRowData[]>([]);
 

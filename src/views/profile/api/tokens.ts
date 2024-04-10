@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ListResult } from '@/types/global';
 import qs from 'query-string';
 
-export const TOKEN_API = '/account/tokens';
+export const TOKEN_API = '/identify/tokens';
 export interface FormDataType {
   name: string;
   expirationSeconds: any;

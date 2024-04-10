@@ -1,15 +1,32 @@
 import axios from 'axios';
 import { omit } from 'lodash';
 import qs from 'query-string';
-import { Pagination } from '@/types/global';
+import { Pagination, ListQuery } from '@/types/global';
+import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
 import { ResourceDefinitionFormData } from '../config/interface';
 
-export const RESOURCE_DEFINITION_API = '/resource-definitions';
+export { GlobalNamespace, NAMESPACES };
 
-export interface QueryType extends Pagination {
+export const RESOURCE_DEFINITION_API = 'resourcedefinitions';
+
+const generateDefinitionAPI = (params: {
+  name?: string;
+  namespace: string;
+}) => {
+  const { name, namespace } = params;
+
+  if (name) {
+    return `/${NAMESPACES}/${namespace}/${RESOURCE_DEFINITION_API}/${name}`;
+  }
+  return `/${NAMESPACES}/${namespace}/${RESOURCE_DEFINITION_API}`;
+};
+
+export interface QueryType extends ListQuery {
   extract?: string[];
   sort?: string[];
   _group?: string[];
+  name: string;
+  namespace: string;
 }
 
 export interface ResultType {
@@ -22,8 +39,12 @@ export function queryResourceDefinitions(
   params: QueryType & { withGlobal?: boolean },
   token?: any
 ) {
-  return axios.get<ResultType>(RESOURCE_DEFINITION_API, {
-    params,
+  const url = generateDefinitionAPI({
+    namespace: params.namespace
+  });
+
+  return axios.get<ResultType>(url, {
+    params: omit(params, ['namespace']),
     cancelToken: token,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

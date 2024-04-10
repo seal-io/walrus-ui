@@ -18,19 +18,19 @@ export interface LoginRes {
   token: string;
 }
 export function login(data: LoginData) {
-  return axios.post<LoginRes>('/account/login', data);
+  return axios.post<LoginRes>('/identify/login', data);
 }
 
 export function logout() {
-  return axios.delete<LoginRes>('/account/logout');
+  return axios.delete<LoginRes>('/identify/logout');
 }
 
 export function modifyPassword(data: SetPassword) {
-  return axios.put(`/account/info`, data);
+  return axios.put(`/identify/profile`, data);
 }
 
 export function getUserInfo(params?) {
-  return axios.get('/account/info', {
+  return axios.get('/identify/profile', {
     params,
     headers: {
       _action: SILENCEAPI

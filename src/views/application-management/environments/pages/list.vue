@@ -28,7 +28,7 @@
           <a-button
             v-if="
               userStore.hasProjectResourceActions({
-                projectID,
+                projectID: projectName,
                 resource: Resources.Environments,
                 actions: [Actions.POST]
               })
@@ -68,7 +68,7 @@
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
-            data-index="name"
+            data-index="metadata.name"
             :title="
               $t('common.table.name.list', {
                 type: $t('operation.environments.table.env')
@@ -93,14 +93,14 @@
                 size="small"
                 :hoverable="false"
               >
-                {{ record.name }}
+                {{ record.metadata?.name }}
               </a-link>
               <span
                 v-else
                 style="display: flex; align-items: center"
                 class="mleft-5"
               >
-                <span>{{ record.name }}</span>
+                <span>{{ record.metadata?.name }}</span>
                 <a-tooltip :content="$t('applications.instance.env.tips')">
                   <icon-exclamation-circle-fill
                     class="mleft-5"
@@ -128,11 +128,11 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             align="left"
-            data-index="type"
+            data-index="spec.type"
             :title="$t('applications.environment.type')"
           >
             <template #cell="{ record }">
-              <span>{{ $t(EnvironmentTypeMap[record.type] || '') }}</span>
+              <span>{{ $t(EnvironmentTypeMap[record.spec?.type] || '') }}</span>
             </template>
           </a-table-column>
           <a-table-column
@@ -140,7 +140,7 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             align="left"
-            data-index="description"
+            data-index="spec.description"
             :title="$t('common.table.description')"
           >
           </a-table-column>
@@ -203,7 +203,7 @@
               <a-button
                 v-if="
                   userStore.hasProjectResourceActions({
-                    projectID,
+                    projectID: projectName,
                     resource: Resources.Environments,
                     actions: [Actions.POST]
                   }) && !queryParams.query
@@ -266,7 +266,9 @@
     stopEnvironment,
     startEnvironment,
     ENVIRONMENT_API,
-    PROJECT_API_PREFIX
+    PROJECT_API_PREFIX,
+    GlobalNamespace,
+    NAMESPACES
   } from '../api';
   import CreateEnvironment from '../components/create-environment.vue';
   import serviceSummary from '../components/service-summary.vue';
@@ -300,18 +302,19 @@
   const currentInfo = ref({});
   const actionHandlerMap = new Map();
   const action = ref(PageAction.EDIT);
-  const projectID = route.params.projectId as string;
+  const projectName = route.params.projectName as string;
   const queryParams = reactive({
+    projectName,
     query: '',
-    page: 1,
-    perPage: appStore.perPage || 10
+    page: '',
+    perPage: ''
   });
 
   const { updateChunkedList } = useUpdateChunkedList(dataList);
 
   const hasDeletePermission = computed(() => {
     return userStore.hasProjectResourceActions({
-      projectID,
+      projectID: projectName,
       resource: Resources.Environments,
       actions: [Actions.DELETE]
     });
@@ -342,12 +345,14 @@
 
   const setActionList = (row) => {
     const list = _.filter(EnvironmentActions, (item) => {
-      return item.filterFun ? item.filterFun({ row, projectID }) : true;
+      return item.filterFun
+        ? item.filterFun({ row, projectID: projectName })
+        : true;
     });
     const res = _.map(list, (o) => {
       const item = _.cloneDeep(o);
       item.disabled = _.isFunction(item.disabled)
-        ? item.disabled?.({ row, projectID })
+        ? item.disabled?.({ row, projectID: projectName })
         : item.disabled;
       return item;
     });
@@ -365,8 +370,8 @@
         return {
           ...item,
           disabled: !userStore.hasProjectResourceActions({
-            projectID,
-            environmentID: item.id,
+            projectID: projectName,
+            environmentID: item.metadata?.name,
             resource: Resources.Environments,
             actions: [Actions.DELETE]
           })
@@ -441,7 +446,7 @@
     });
   };
   const handleCellClick = (row, col) => {
-    if (col.dataIndex === 'name' && row.connectors?.length) {
+    if (col.dataIndex === 'metadata.name' && row.connectors?.length) {
       handleView(row);
     }
   };
@@ -535,7 +540,7 @@
     });
   };
   const createEnvironmentChunkRequest = () => {
-    const url = `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}`;
+    const url = `/${NAMESPACES}/${projectName}/${ENVIRONMENT_API}`;
     try {
       setChunkRequest({
         url,

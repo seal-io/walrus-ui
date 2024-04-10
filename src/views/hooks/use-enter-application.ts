@@ -7,16 +7,19 @@ import { useProjectStore, useUserStore } from '@/store';
 import { Resources, Actions } from '@/permissions/config';
 import { PROJECT, DASHBOARD } from '@/router/config';
 import { PageAction } from '@/views/config';
+import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
 import project from '@/directive/project';
 
 export default function useEnterApplication() {
   const projectStore = useProjectStore();
   const userStore = useUserStore();
   const router = useRouter();
-  const ENVIRONMENT_API = '/environments';
+  const ENVIRONMENT_API = 'environments';
+  const PROJECT_API = 'projects';
 
   const queryProjects = (params) => {
-    return axios.get('/projects', {
+    const url = `${NAMESPACES}/${GlobalNamespace}/${PROJECT_API}`;
+    return axios.get(url, {
       params,
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
@@ -25,15 +28,19 @@ export default function useEnterApplication() {
   };
 
   const queryEnvironmentList = (params) => {
-    return axios.get(`/projects/${params.projectID}${ENVIRONMENT_API}`, {
-      params: {
-        ..._.omit(params, ['projectID'])
-      },
-      paramsSerializer: (obj) => {
-        return qs.stringify(obj);
+    return axios.get(
+      `/${NAMESPACES}/${params.projectName}/${ENVIRONMENT_API}`,
+      {
+        params: {
+          ..._.omit(params, ['projectName'])
+        },
+        paramsSerializer: (obj) => {
+          return qs.stringify(obj);
+        }
       }
-    });
+    );
   };
+
   const setDefaultProject = (list) => {
     if (!list.length) {
       projectStore.setInfo({
@@ -43,19 +50,19 @@ export default function useEnterApplication() {
     }
     const defaultProject = projectStore.defaultActiveProject;
     const exsitProject = _.find(list, (item) => {
-      return item.value === defaultProject?.id;
+      return item.value === defaultProject?.name;
     });
     const defaultValue = exsitProject
-      ? defaultProject?.id
+      ? defaultProject?.name
       : _.get(list, '0.value');
 
     const defaultName = _.find(list, (item) => item.value === defaultValue)
-      ?.label as string;
+      ?.metadata?.namespace as string;
 
     projectStore.setInfo({
       defaultActiveProject: {
-        id: defaultValue,
-        name: defaultName
+        name: defaultValue,
+        namespace: defaultName
       }
     });
   };
@@ -69,33 +76,32 @@ export default function useEnterApplication() {
     }
     const defaultEnvironment = projectStore.defaultActiveEnvironment;
     const exsitEnvironment = _.find(list, (item) => {
-      return item.value === defaultEnvironment?.id;
+      return item.value === defaultEnvironment?.name;
     });
     const defaultValue = exsitEnvironment
-      ? defaultEnvironment?.id
+      ? defaultEnvironment?.name
       : _.get(list, '0.value');
 
     const defaultName = _.find(list, (item) => item.value === defaultValue)
-      ?.label as string;
+      ?.metadata?.namespace as string;
 
     projectStore.setInfo({
       defaultActiveEnvironment: {
-        id: defaultValue,
-        name: defaultName
+        name: defaultValue,
+        namespace: defaultName
       }
     });
   };
 
   const getProjectList = async () => {
     try {
-      const params = {
-        page: -1
-      };
+      const params = {};
       const { data } = await queryProjects(params);
       const list = _.map(data.items, (item) => {
         return {
-          label: item.name,
-          value: item.id
+          ..._.cloneDeep(item),
+          label: item.metadata?.name,
+          value: item.metadata?.name
         };
       });
 
@@ -113,18 +119,17 @@ export default function useEnterApplication() {
 
   const getEnvironmentList = async () => {
     const defaultProject = projectStore.defaultActiveProject;
-    if (!defaultProject?.id) return;
+    if (!defaultProject?.name) return;
     try {
       const params = {
-        page: -1,
-        projectID: defaultProject?.id
+        projectName: defaultProject?.name
       };
       const { data } = await queryEnvironmentList(params);
       const list = _.map(data.items, (item) => {
         return {
           ..._.cloneDeep(item),
-          label: item.name,
-          value: item.id
+          label: item.metadata?.name,
+          value: item.metadata?.name
         };
       });
       projectStore.setInfo({
@@ -148,11 +153,11 @@ export default function useEnterApplication() {
 
     const pro = _.find(
       projectStore.projectList,
-      (s) => s.value === defaultProject?.id
+      (s) => s.value === defaultProject?.name
     );
 
-    const projectID = pro
-      ? defaultProject?.id
+    const projectName = pro
+      ? defaultProject?.name
       : _.get(projectStore.projectList, '0.value');
 
     // no permission access to default project
@@ -160,7 +165,7 @@ export default function useEnterApplication() {
       !userStore.hasProjectResourceActions({
         resource: Resources.Projects,
         actions: [Actions.GET],
-        projectID
+        projectID: projectName
       })
     ) {
       router.push({
@@ -173,7 +178,7 @@ export default function useEnterApplication() {
     router.push({
       name: PROJECT.Detail,
       params: {
-        projectId: projectID
+        projectName
       }
     });
   };
@@ -182,19 +187,19 @@ export default function useEnterApplication() {
     const defaultProject = projectStore.defaultActiveProject;
     const defaultEnvironment = projectStore.defaultActiveEnvironment;
     const enterProjectDefaultInfo = projectStore.enterProjectDefault;
-    if (!defaultEnvironment?.id) {
+    if (!defaultEnvironment?.name) {
       goToProject({ name: PROJECT.List });
       return;
     }
     router.push({
       name: PROJECT.EnvDetail,
       params: {
-        projectId: defaultProject?.id,
-        environmentId: defaultEnvironment?.id,
+        projectName: defaultProject?.name,
+        environmentName: defaultEnvironment?.name,
         action: PageAction.VIEW
       },
       query: {
-        id: defaultEnvironment?.id
+        name: defaultEnvironment?.name
       }
     });
   };
@@ -214,7 +219,7 @@ export default function useEnterApplication() {
 
     const existProject = _.find(
       projectStore.projectList,
-      (item) => item.value === enterProjectDefaultInfo?.projectId
+      (item) => item.value === enterProjectDefaultInfo?.projectName
     );
 
     // to project detail
@@ -223,14 +228,14 @@ export default function useEnterApplication() {
         router.push({
           name: PROJECT.Detail,
           params: {
-            projectId: enterProjectDefaultInfo?.projectId
+            projectName: enterProjectDefaultInfo?.projectName
           }
         });
       } else {
         router.push({
           name: PROJECT.Detail,
           params: {
-            projectId: _.get(projectStore.projectList, '0.value')
+            projectName: _.get(projectStore.projectList, '0.value')
           }
         });
       }
