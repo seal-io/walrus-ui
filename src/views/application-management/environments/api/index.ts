@@ -1,13 +1,27 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { Pagination } from '@/types/global';
+import { Pagination, ListQuery } from '@/types/global';
 import router from '@/router';
 import _ from 'lodash';
+import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
 import { EnvironmentRow, EnvironFormData } from '../config/interface';
 
-export const ENVIRONMENT_API = '/environments';
+export const ENVIRONMENT_API = 'environments';
 
 export const PROJECT_API = '/projects';
+
+export { GlobalNamespace, NAMESPACES };
+
+const generateEnvironmentAPI = (params: {
+  namespace: string;
+  name?: string;
+}) => {
+  const { name, namespace } = params;
+  if (name) {
+    return `${NAMESPACES}/${namespace}/${ENVIRONMENT_API}/${name}`;
+  }
+  return `${NAMESPACES}/${namespace}/${ENVIRONMENT_API}`;
+};
 
 export const PROJECT_API_PREFIX = () => {
   return `/projects/${router.currentRoute.value.params.projectId}`;
@@ -18,9 +32,9 @@ export const getPermissionRouteParams = () => {
   return { projectID: params?.projectId };
 };
 
-export interface QueryType extends Pagination {
+export interface QueryType extends ListQuery {
   extract?: string[];
-  projectID?: string;
+  projectName: string;
   sort?: string[];
 }
 
@@ -29,21 +43,22 @@ export interface ResultType {
   pagination: Pagination;
 }
 export function queryEnvironmentsList(params: QueryType, token?) {
-  return axios.get<ResultType>(
-    `${PROJECT_API}/${params.projectID}${ENVIRONMENT_API}`,
-    {
-      params,
-      cancelToken: token,
-      paramsSerializer: (obj) => {
-        return qs.stringify(obj);
-      }
+  const url = generateEnvironmentAPI({ namespace: params.projectName });
+
+  return axios.get<ResultType>(url, {
+    params: _.omit(params, ['projectName']),
+    cancelToken: token,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
     }
-  );
+  });
 }
 
 export function queryEnvironments(params: QueryType, token?) {
-  return axios.get<ResultType>(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}`, {
-    params,
+  const url = generateEnvironmentAPI({ namespace: params.projectName });
+
+  return axios.get<ResultType>(url, {
+    params: _.omit(params, ['projectName']),
     cancelToken: token,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -51,33 +66,47 @@ export function queryEnvironments(params: QueryType, token?) {
   });
 }
 export function queryEnvironmentList(params: QueryType, token?) {
-  return axios.get<ResultType>(
-    `/projects/${params.projectID}${ENVIRONMENT_API}`,
-    {
-      params: {
-        ..._.omit(params, ['projectID'])
-      },
-      cancelToken: token,
-      paramsSerializer: (obj) => {
-        return qs.stringify(obj);
-      }
+  const url = generateEnvironmentAPI({ namespace: params.projectName });
+
+  return axios.get<ResultType>(url, {
+    params: {
+      ..._.omit(params, ['projectName'])
+    },
+    cancelToken: token,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
     }
-  );
+  });
 }
 
-export function queryItemEnvironments(params: { id: string }) {
-  return axios.get(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${params.id}`);
+export function queryItemEnvironments(params: {
+  environmentName: string;
+  projectName: string;
+}) {
+  const url = generateEnvironmentAPI({
+    namespace: params.projectName,
+    name: params.environmentName
+  });
+
+  return axios.get(url);
 }
 
-export function createEnvironment(data: EnvironFormData) {
-  return axios.post(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}`, data);
+export function createEnvironment(params: {
+  data: EnvironFormData;
+  projectName: string;
+}) {
+  const url = generateEnvironmentAPI({ namespace: params.projectName });
+
+  return axios.post(url, params.data);
 }
+
 export function cloneEnvironment(data: EnvironFormData, environmentID: string) {
   return axios.post(
     `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${environmentID}/clone`,
     data
   );
 }
+
 export function deleteEnvironment(data: { items: Record<string, any>[] }) {
   return axios.delete(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}`, { data });
 }
@@ -88,11 +117,13 @@ export function updateEnvironment(data: EnvironFormData) {
     data
   );
 }
+
 export function stopEnvironment(data: { id: string }) {
   return axios.post(
     `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${data.id}/stop`
   );
 }
+
 export function startEnvironment(data: { id: string }) {
   return axios.post(
     `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${data.id}/start`

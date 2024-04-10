@@ -26,6 +26,10 @@ export interface TemplateFormData {
   metadata: {
     name: string;
     namespace: string;
+    ownerReferences?: Array<{
+      kind: string;
+      name: string;
+    }>;
   };
   spec: {
     templateFormat: string;

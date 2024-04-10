@@ -38,20 +38,6 @@
         </template>
         <template #button-group>
           <a-button
-            v-if="scope === 'global'"
-            v-permission="{
-              resource: `roles.${Resources.TemplateCompletions}`,
-              actions: [Actions.POST]
-            }"
-            type="primary"
-            @click="handleDraftModule"
-          >
-            <template #icon>
-              <i class="iconfont icon-ChatGPT"></i>
-            </template>
-            <span>{{ $t('operation.templates.button.gpt') }}</span>
-          </a-button>
-          <a-button
             v-if="hasPutPermission"
             type="primary"
             @click="handleCreate"
@@ -260,6 +246,7 @@
   const queryParams = reactive({
     labelSelector: '',
     fieldSelector: '',
+    limit: 20,
     query: '',
     catalogID: '',
     nonCatalog: false,

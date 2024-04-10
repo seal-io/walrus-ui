@@ -33,6 +33,9 @@ export interface Pagination {
 
 export interface ListResult<T> {
   items: T[];
+  apiVersion: string;
+  kind: string;
+  metadata: object;
   pagination: Pagination;
 }
 

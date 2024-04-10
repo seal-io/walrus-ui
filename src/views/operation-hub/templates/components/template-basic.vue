@@ -3,7 +3,7 @@
   import _ from 'lodash';
   import { defineComponent, PropType, ref } from 'vue';
   import {
-    validateLabelNameRegx,
+    validateLabelNameRegxFor63,
     InputWidth,
     validateInputLength,
     ModalAction
@@ -28,7 +28,6 @@
     emits: ['update:formData'],
     setup(props, ctx) {
       const { t } = i18n.global;
-      const sealCatalog = 'https://github.com/walrus-catalog';
       const authentication = ref('none');
 
       const providers = [
@@ -120,7 +119,7 @@
             field="metadata.name"
             hide-asterisk
             hide-label={true}
-            disabled={props.action === ModalAction.EDIT}
+            disabled={props.action === ModalAction.VIEW}
             validate-trigger={['change', 'input']}
             rules={[
               {
@@ -129,7 +128,7 @@
               },
               {
                 required: true,
-                match: validateLabelNameRegx,
+                match: validateLabelNameRegxFor63,
                 message: t('common.validate.labelName')
               }
             ]}
@@ -148,7 +147,7 @@
               label={t('operation.connectors.table.name')}
               required={true}
               style={{ width: `${InputWidth.LARGE}px` }}
-              max-length={validateInputLength.NAME}
+              max-length={validateInputLength.TemplateName}
               show-word-limit
             ></seal-input>
           </a-form-item>
@@ -157,7 +156,7 @@
             field="spec.templateFormat"
             hide-asterisk
             hide-label={true}
-            disabled={props.action === ModalAction.EDIT}
+            disabled={props.action === ModalAction.VIEW}
           >
             <seal-select
               modelValue={props.formData.spec.templateFormat}
@@ -211,7 +210,7 @@
             field="spec.vcsRepository.platform"
             hide-asterisk
             hide-label={true}
-            disabled={props.action === ModalAction.EDIT}
+            disabled={props.action === ModalAction.VIEW}
           >
             <seal-select
               modelValue={props.formData.spec.vcsRepository.platform}
@@ -253,7 +252,7 @@
             field="spec.vcsRepository.url"
             hide-asterisk
             hide-label={true}
-            disabled={props.action === ModalAction.EDIT}
+            disabled={props.action === ModalAction.VIEW}
             validate-trigger={['change', 'input']}
             v-slots={{
               extra: renderProviderExtra
@@ -283,7 +282,7 @@
             field="spec.vcsRepository.secretRef"
             hide-asterisk
             hide-label={true}
-            disabled={props.action === ModalAction.EDIT}
+            disabled={props.action === ModalAction.VIEW}
           >
             <seal-select
               v-model={authentication.value}
@@ -302,7 +301,7 @@
               field="spec.vcsRepository.token"
               hide-asterisk
               hide-label={true}
-              disabled={props.action === ModalAction.EDIT}
+              disabled={props.action === ModalAction.VIEW}
               validate-trigger={['change', 'input']}
             >
               <seal-input

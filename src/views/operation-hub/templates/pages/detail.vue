@@ -2,9 +2,9 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :menu="route.params.projectId ? { icon: 'icon-apps' } : null"
+        :menu="route.params.projectName ? { icon: 'icon-apps' } : null"
         :items="
-          route.params.projectId
+          route.params.projectName
             ? [
                 ...breadCrumbList,
                 {
@@ -34,7 +34,7 @@
           :show-edit="
             pageAction === PageAction.VIEW &&
             loaded &&
-            !_.get(formData, 'catalog.id') &&
+            !isCatalogTemplate &&
             userStore.hasRolesActionsPermission({
               resource: Resources.Templates,
               actions: [Actions.PUT]
@@ -54,102 +54,22 @@
               v-model:formData="formData"
               :action="pageAction"
             ></TemplateBasic>
-            <!-- <a-form-item
-              :label="$t('operation.connectors.table.name')"
-              field="name"
-              hide-asterisk
-              hide-label
-              :disabled="!!templateName"
-              :validate-trigger="['change', 'input']"
-              :style="{ maxWidth: `${InputWidth.LARGE}px` }"
-              :rules="[
-                {
-                  required: true,
-                  message: $t('common.rule.name')
-                },
-                {
-                  required: true,
-                  match: validateLabelNameRegxFor63,
-                  message: $t('common.validate.labelName')
-                }
-              ]"
-            >
-              <seal-input
-                v-model.trim="formData.name"
-                :view-status="pageAction === PageAction.VIEW"
-                :label="$t('operation.connectors.table.name')"
-                :required="true"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-                :max-length="validateInputLength.TemplateName"
-                show-word-limit
-              ></seal-input>
-            </a-form-item>
-            <a-form-item
-              :label="$t('operation.environments.table.description')"
-              hide-asterisk
-              hide-label
-              field="description"
-            >
-              <seal-textarea
-                v-model="formData.description"
-                :view-status="pageAction === PageAction.VIEW"
-                :label="$t('operation.environments.table.description')"
-                :style="{ width: `${InputWidth.LARGE}px`, height: '100px' }"
-                :auto-size="{ minRows: 4, maxRows: 6 }"
-                :max-length="200"
-                show-word-limit
-              ></seal-textarea>
-            </a-form-item>
-            <a-form-item
-              field="source"
-              :label="$t('operation.templates.detail.source')"
-              :disabled="!!templateName"
-              hide-asterisk
-              :hide-label="true"
-              :validate-trigger="['change']"
-              :rules="[
-                {
-                  required: true,
-                  message: $t('operation.templates.rules.source')
-                }
-              ]"
-            >
-              <seal-input
-                v-model.trim="formData.source"
-                :view-status="pageAction === PageAction.VIEW"
-                :label="$t('operation.templates.detail.source')"
-                :required="true"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-              ></seal-input>
-
-              <template v-if="pageAction === PageAction.EDIT" #extra>
-                <div
-                  :style="{
-                    'line-height': '20px',
-                    'width': `${InputWidth.LARGE}px`
-                  }"
-                >
-                  <div>{{ $t('operation.templates.source.description') }}</div>
-                  <div
-                    >https://github.com/terraform-aws-modules/terraform-aws-vpc</div
-                  >
-                </div>
-                <div
-                  >https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=master</div
-                >
-              </template>
-            </a-form-item>
             <a-form-item
               v-if="
                 templateName &&
                 pageAction === PageAction.VIEW &&
-                _.get(formData, 'catalog.id')
+                isCatalogTemplate
               "
               hide-label
             >
               <seal-input
                 :view-status="true"
-                :model-value="route.query.catalog"
+                :model-value="
+                  _.find(
+                    _.get(formData, 'metadata.ownerReferences', []),
+                    (item) => item.kind === ResourceKinds.Catalog
+                  )?.name
+                "
                 :label="$t('operation.templates.table.catalog')"
                 :style="{ width: `${InputWidth.LARGE}px` }"
               ></seal-input>
@@ -171,7 +91,7 @@
                   ></StatusLabel>
                 </div>
               </SealFormItemWrap>
-            </a-form-item> -->
+            </a-form-item>
           </a-form>
           <QuestionPopup
             v-if="pageAction === PageAction.VIEW"
@@ -218,6 +138,7 @@
             :version-id="version"
             :schema="templateSchema"
             :ui-schema="templateUISchema"
+            :schema-data="schemaData"
             :template-info="formData"
             @update="handleUpdateSchema"
           ></component>
@@ -307,7 +228,7 @@
     createTemplate,
     updateTemplate,
     queryTemplatesVersions,
-    queryTemplateSchemaByVersionId,
+    queryTemplateSchema,
     GlobalNamespace
   } from '../api';
 
@@ -340,6 +261,7 @@
   const loaded = ref(false);
   const templateSchema = ref({});
   const templateUISchema = ref({});
+  const schemaData = ref({});
   let copyFormData: any = {};
   const formData = ref<TemplateFormData>({
     apiVersion,
@@ -361,6 +283,13 @@
 
   const { height } = useElementSize(extraWrapper);
 
+  const isCatalogTemplate = computed(() => {
+    return _.some(
+      _.get(formData.value, 'metadata.ownerReferences', []),
+      (item) => item.kind === ResourceKinds.Catalog
+    );
+  });
+
   const tabContentHeight = computed(() => {
     return `calc(100vh - ${height.value + 150}px)`;
   });
@@ -380,7 +309,7 @@
       return;
     }
     try {
-      const { data } = await queryTemplateSchemaByVersionId({
+      const { data } = await queryTemplateSchema({
         name: versionData.schemaRef?.name,
         namespace: templateNameSpace
       });
@@ -397,18 +326,20 @@
       return;
     }
     try {
-      const { data } = await queryTemplateSchemaByVersionId({
+      const { data } = await queryTemplateSchema({
         name: versionData.uiSchemaRef?.name,
         namespace: templateNameSpace
       });
       templateUISchema.value = JSON.parse(atob(data.status?.value));
-      console.log('templateSchema++++++', templateUISchema.value);
+      schemaData.value = data;
+      console.log('templateSchema+++value+++', templateUISchema.value);
     } catch (error) {
       templateUISchema.value = {};
+      schemaData.value = {};
     }
   };
 
-  const getTemplateSchemaByVersionId = async () => {
+  const getTemplateSchemaByName = async () => {
     if (!version.value) return;
     try {
       const versionData = _.find(versionList.value, { value: version.value });
@@ -423,7 +354,7 @@
 
   const getTemplateVersions = async () => {
     if (!templateName) return;
-    const list = _.get(formData, 'status.versions', []);
+    const list: any[] = _.get(formData.value, 'status.versions', []);
     versionList.value = map(list, (item) => {
       return {
         ...item,
@@ -444,7 +375,7 @@
     }
   };
   const getItemTemplate = async () => {
-    copyFormData = cloneDeep(formData);
+    copyFormData = cloneDeep(formData.value);
     if (!templateName) return;
     try {
       loaded.value = false;
@@ -453,8 +384,8 @@
         namespace: templateNameSpace
       };
       const { data } = await queryItemTemplate(params);
-      assignIn(formData, data);
-      copyFormData = cloneDeep(formData);
+      assignIn(formData.value, data);
+      copyFormData = cloneDeep(formData.value);
     } catch (error) {
       formref.value.resetFields();
     } finally {
@@ -462,21 +393,28 @@
     }
   };
   const handleVersonChange = () => {
-    getTemplateSchemaByVersionId();
+    getTemplateSchemaByName();
   };
   const handleUpdateSchema = () => {
-    getTemplateSchemaByVersionId();
+    const versionData = _.find(versionList.value, { value: version.value });
+    if (!versionData) return;
+
+    try {
+      getTemplateUISchema(versionData);
+    } catch (error) {
+      // error
+    }
   };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
     if (!res) {
       try {
         submitLoading.value = true;
-        copyFormData = cloneDeep(formData);
+        copyFormData = cloneDeep(formData.value);
         if (templateName) {
-          await updateTemplate(formData);
+          await updateTemplate(formData.value);
         } else {
-          await createTemplate(formData);
+          await createTemplate(formData.value);
         }
         tabBarStore.deleteTag(0, {
           title: '',
@@ -504,11 +442,11 @@
     router.back();
   };
   const handleCancel = () => {
-    if (!isEqual(copyFormData, formData)) {
+    if (!isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
         isCancel: true,
         onOk: () => {
-          copyFormData = cloneDeep(formData);
+          copyFormData = cloneDeep(formData.value);
           cancelCallback();
         }
       });
@@ -520,12 +458,12 @@
     activeKey.value = val;
   };
   onBeforeRouteLeave(async (to, from) => {
-    if (!isEqual(copyFormData, formData)) {
+    if (!isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
         to,
         from,
         onOk: () => {
-          copyFormData = cloneDeep(formData);
+          copyFormData = cloneDeep(formData.value);
           router.push({
             name: to.name as string
           });
@@ -538,7 +476,7 @@
   const initData = async () => {
     await getItemTemplate();
     await getTemplateVersions();
-    await getTemplateSchemaByVersionId();
+    await getTemplateSchemaByName();
     setBreadCrumbList();
   };
   initData();

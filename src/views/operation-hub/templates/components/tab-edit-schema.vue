@@ -128,8 +128,9 @@
   import { execSucceed, deleteModal } from '@/utils/monitor';
   import MoreButtonActions from '@/components/drop-button-group/more-button-actions.vue';
   import {
-    putTemplateSchemaByVersionId,
-    resetTemplateSchemaByVersionId
+    putTemplateSchema,
+    resetTemplateSchema,
+    GlobalNamespace
   } from '../api';
   import { schemaActionList } from '../config/index';
 
@@ -138,6 +139,12 @@
       type: Object as PropType<any>,
       default() {
         return null;
+      }
+    },
+    schemaData: {
+      type: Object,
+      default() {
+        return {};
       }
     },
     height: {
@@ -188,6 +195,7 @@
   const originFormData = ref({});
   const schemaVariables = ref<any>({});
   const projectID = route.params.projectId || '';
+  const projectName = route.params.projectName as string;
   const formKey = ref(Date.now());
   const fullscreen = ref(false);
   const loading = ref(true);
@@ -235,19 +243,50 @@
     };
   };
 
-  const updateTemplateSchema = async () => {
+  const updateTemplateSchema = async (reset?: boolean) => {
     if (!props.versionId && props.page === 'template') return;
 
     const codeData = yaml2Json(code.value);
-    await putTemplateSchemaByVersionId({
-      templateVersionID: props.versionId,
-      data: {
-        uiSchema: {
-          openAPISchema: codeData
+    const JsonStr = JSON.stringify({
+      openAPISchema: codeData
+    });
+
+    const versionData = _.find(
+      _.get(props.templateInfo, 'status.versions', []),
+      (item) => item.version === props.versionId
+    );
+
+    let data = {};
+
+    if (reset) {
+      data = {
+        ..._.omit(props.schemaData, ['status']),
+        status: {
+          conditions: [
+            {
+              type: 'Reset',
+              status: 'True',
+              lastUpdateTime: new Date().toISOString()
+            }
+          ]
         }
-      }
+      };
+    } else {
+      data = {
+        ..._.omit(props.schemaData, ['status']),
+        status: {
+          value: btoa(JsonStr)
+        }
+      };
+    }
+
+    await putTemplateSchema({
+      name: versionData?.uiSchemaRef?.name,
+      namespace: projectName || GlobalNamespace,
+      data
     });
   };
+
   const updateDefinitionSchema = async () => {
     const codeData = yaml2Json(code.value);
 
@@ -273,13 +312,12 @@
       // eslint-disable-next-line no-console
     }
   };
+
   const handleResetTemplateSchema = async () => {
     if (!props.versionId && props.page === 'template') return;
     try {
       if (props.page === 'template') {
-        await resetTemplateSchemaByVersionId({
-          templateVersionID: props.versionId
-        });
+        await updateTemplateSchema(true);
         execSucceed();
         emits('update');
       } else {
@@ -289,6 +327,7 @@
       // eslint-disable-next-line no-console
     }
   };
+
   const handleClickAction = (val) => {
     if (val === 'reset') {
       deleteModal({
@@ -306,9 +345,7 @@
     }
   };
   const initData = () => {
-    const copyCustomSchema = _.cloneDeep(
-      props.uiSchema?.uiSchema?.openAPISchema
-    );
+    const copyCustomSchema = _.cloneDeep(props.uiSchema?.openAPISchema);
     const info = _.get(copyCustomSchema, 'info');
     const openapi = _.get(copyCustomSchema, 'openapi');
     const originData = _.omit(copyCustomSchema, ['paths']);

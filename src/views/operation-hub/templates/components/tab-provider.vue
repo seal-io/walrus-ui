@@ -51,7 +51,7 @@
     }
   });
   const dataList = computed(() => {
-    const list = get(props.schema, 'schema.requiredProviders', []);
+    const list = get(props.schema, 'data.terraform.requiredProviders', []);
     return list || [];
   });
 </script>

@@ -15,11 +15,11 @@ const useProjectStore = defineStore('project', {
     enterProjectDefault: {
       detail: false,
       list: false,
-      projectId: ''
+      projectName: ''
     },
     isSetDefaultActiveEnvironment: false,
-    defaultActiveProject: {}, // {id: '', name: ''}
-    defaultActiveEnvironment: {} // {id: '', name: ''}
+    defaultActiveProject: {}, // {namespace: '', name: ''}
+    defaultActiveEnvironment: {} // {namespace: '', name: ''}
   }),
   getters: {
     filterInfo(state: any): any {

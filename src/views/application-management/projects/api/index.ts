@@ -1,20 +1,32 @@
 import axios from 'axios';
 import qs from 'query-string';
 import router from '@/router';
-import { Pagination, ListResult } from '@/types/global';
+import _ from 'lodash';
+import { Pagination, ListResult, ListQuery } from '@/types/global';
+import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
 import {
   ProjectRowData,
   ProjectFormData,
   ProjectRolesRowData
 } from '../config/interface';
 
-export const PROJECT_API = '/projects';
+export const PROJECT_API = 'projects';
+
+export { GlobalNamespace, NAMESPACES };
+
+const generateProjectAPI = (params: { namespace?: string; name?: string }) => {
+  const { namespace, name } = params;
+  if (name) {
+    return `/${NAMESPACES}/${GlobalNamespace}/${PROJECT_API}/${name}`;
+  }
+  return `/${NAMESPACES}/${GlobalNamespace}/${PROJECT_API}`;
+};
 
 export const PROJECT_API_PREFIX = () => {
   const { projectId } = router.currentRoute.value.params;
   return `/projects/${projectId}`;
 };
-export interface QueryType extends Pagination {
+export interface QueryType extends ListQuery {
   sort?: string[];
 }
 
@@ -24,7 +36,8 @@ export interface ResultType {
 }
 
 export const queryProjects = (params: QueryType, token?) => {
-  return axios.get<ResultType>('/projects', {
+  const url = generateProjectAPI({});
+  return axios.get<ResultType>(url, {
     params,
     cancelToken: token,
     paramsSerializer: (obj) => {
@@ -34,7 +47,8 @@ export const queryProjects = (params: QueryType, token?) => {
 };
 
 export const createProject = (data: ProjectFormData) => {
-  return axios.post(`/projects`, data);
+  const url = generateProjectAPI({});
+  return axios.post(url, data);
 };
 export const deleteProjects = (data: { items: Record<string, any>[] }) => {
   return axios.delete(`/projects`, { data });

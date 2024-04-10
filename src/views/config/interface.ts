@@ -64,4 +64,14 @@ export interface HintKey {
   workflow: any;
 }
 
+export interface DataListItem {
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name: string;
+    namespace: string;
+  };
+  spec: object;
+}
+
 export default {};

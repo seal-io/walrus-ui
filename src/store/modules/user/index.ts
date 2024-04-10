@@ -81,7 +81,8 @@ const useUserStore = defineStore('user', {
       const { data } = await getUserInfo();
       const permissions: AnyObject = getUserResourcePermission(data);
       this.permissions = {};
-      this.setInfo({ ...data, permissions });
+      this.setInfo({ ...data, name: data.displayName, permissions });
+      this.cancelVerificationManually();
     },
     getProjectUserActions(id, resource) {
       const path = `${this.permissionsKey.projectRoles}.${id}.policies.${resource}`;
@@ -103,6 +104,9 @@ const useUserStore = defineStore('user', {
       return hasPermission;
     },
     hasRolesActionsPermission(config: { resource: string; actions: string[] }) {
+      if (this.isSystemAdmin()) {
+        return true;
+      }
       const { resource, actions } = config;
       const permissionActions = (_.get(
         this.permissions,

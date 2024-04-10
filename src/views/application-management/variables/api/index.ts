@@ -1,11 +1,22 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { Pagination } from '@/types/global';
+import { Pagination, ListQuery } from '@/types/global';
 import router from '@/router';
 import _ from 'lodash';
+import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
 import { VariableRow, VariableFormData } from '../config/interface';
 
-export const VARIABLE_API = '/variables';
+export { GlobalNamespace, NAMESPACES };
+
+export const VARIABLE_API = 'variables';
+
+const generateVariableAPI = (params: { namespace: string; name?: string }) => {
+  const { name, namespace } = params;
+  if (name) {
+    return `/${NAMESPACES}/${namespace}/${VARIABLE_API}/${name}`;
+  }
+  return `/${NAMESPACES}/${namespace}/${VARIABLE_API}`;
+};
 
 export const PROJECT_API_PREFIX = () => {
   const { projectId } = router.currentRoute.value.params;
@@ -27,8 +38,10 @@ const isProjectContext = () => {
   return !!router.currentRoute.value.params.projectId && !isEnviromentContext();
 };
 
-export interface QueryType extends Pagination {
+export interface QueryType extends ListQuery {
   projectID?: string;
+  name?: string;
+  namespace: string;
 }
 export interface ResultType {
   items: VariableRow[];
@@ -36,38 +49,36 @@ export interface ResultType {
 }
 
 export const queryProjectVairables = (params: QueryType) => {
-  let url = VARIABLE_API;
-  url = `${PROJECT_API_PREFIX()}${VARIABLE_API}`;
-  return axios.get<ResultType>(`${url}`, {
-    params,
+  const url = generateVariableAPI({
+    namespace: params.namespace
+  });
+  return axios.get<ResultType>(url, {
+    params: _.omit(params, ['namespace']),
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
   });
 };
 export const queryVariables = (params: QueryType) => {
-  let url = VARIABLE_API;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${VARIABLE_API}`;
-  }
-  if (isEnviromentContext()) {
-    url = `${ENVIRONMENT_API_PREFIX()}${VARIABLE_API}`;
-  }
-  return axios.get<ResultType>(`${url}`, {
-    params,
+  const url = generateVariableAPI({
+    namespace: params.namespace
+  });
+  return axios.get<ResultType>(url, {
+    params: _.omit(params, ['namespace']),
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
   });
 };
 
-export const queryEnvironmentVariables = (
-  params: QueryType & { projectID: string; environmentID: string }
-) => {
-  const url = `/projects/${params.projectID}/environments/${params.environmentID}${VARIABLE_API}`;
-  return axios.get<ResultType>(`${url}`, {
+export const queryEnvironmentVariables = (params: QueryType) => {
+  const url = generateVariableAPI({
+    namespace: params.namespace
+  });
+
+  return axios.get<ResultType>(url, {
     params: {
-      ..._.omit(params, ['projectID', 'environmentID'])
+      ..._.omit(params, ['namespace'])
     },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -75,50 +86,35 @@ export const queryEnvironmentVariables = (
   });
 };
 
-export const queryItemVariable = (params: { id: string }) => {
-  let url = `${VARIABLE_API}/${params.id}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${VARIABLE_API}/${params.id}`;
-  }
-  if (isEnviromentContext()) {
-    url = `${ENVIRONMENT_API_PREFIX()}${VARIABLE_API}/${params.id}`;
-  }
-  return axios.get(`${url}`, {
+export const queryItemVariable = (params: {
+  name: string;
+  namespace: string;
+}) => {
+  const url = generateVariableAPI(params);
+  return axios.get(url, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
   });
 };
-export const createVariable = ({ data }) => {
-  let url = `${VARIABLE_API}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${VARIABLE_API}`;
-  }
-  if (isEnviromentContext()) {
-    url = `${ENVIRONMENT_API_PREFIX()}${VARIABLE_API}`;
-  }
-  return axios.post(`${url}`, data);
+
+export const createVariable = (params: { data: object; namespace: string }) => {
+  const url = generateVariableAPI({
+    namespace: params.namespace
+  });
+  return axios.post(`${url}`, params.data);
 };
 
-export const updateVariable = ({ data }) => {
-  let url = `${VARIABLE_API}/${data.id}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${VARIABLE_API}/${data.id}`;
-  }
-  if (isEnviromentContext()) {
-    url = `${ENVIRONMENT_API_PREFIX()}${VARIABLE_API}/${data.id}`;
-  }
-  return axios.put(`${url}`, data);
+export const updateVariable = (params: { data: object; namespace: string }) => {
+  const url = generateVariableAPI({
+    namespace: params.namespace
+  });
+
+  return axios.put(`${url}`, params.data);
 };
 
-export const deleteVariable = ({ data }) => {
-  let url = `${VARIABLE_API}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${VARIABLE_API}`;
-  }
-  if (isEnviromentContext()) {
-    url = `${ENVIRONMENT_API_PREFIX()}${VARIABLE_API}`;
-  }
-  return axios.delete(`${url}`, { data });
+export const deleteVariable = (params: { name: string; namespace: string }) => {
+  const url = generateVariableAPI(params);
+  return axios.delete(url);
 };

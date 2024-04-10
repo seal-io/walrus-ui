@@ -12,6 +12,22 @@ export const SCHEMA_API = 'schemas';
 
 export { GlobalNamespace, NAMESPACES };
 
+const generateSchemaAPI = (params: { namespace: string; name?: string }) => {
+  const { name, namespace } = params;
+  if (name) {
+    return `/${NAMESPACES}/${namespace}/${SCHEMA_API}/${name}`;
+  }
+  return `/${NAMESPACES}/${namespace}/${SCHEMA_API}`;
+};
+
+const generateTemplateAPI = (params: { namespace: string; name?: string }) => {
+  const { name, namespace } = params;
+  if (name) {
+    return `/${NAMESPACES}/${namespace}/${TEMPLATE_API}/${name}`;
+  }
+  return `/${NAMESPACES}/${namespace}/${TEMPLATE_API}`;
+};
+
 export const PROJECT_API_PREFIX = () => {
   return `/projects/${router.currentRoute.value.params.projectId}`;
 };
@@ -39,6 +55,7 @@ export interface FormDataPR {
   path: string;
   content: string;
 }
+
 export function queryTemplates(params: ListQuery, token?: any) {
   const url = `/${NAMESPACES}/${params.namespace}/${TEMPLATE_API}`;
 
@@ -50,23 +67,32 @@ export function queryTemplates(params: ListQuery, token?: any) {
     }
   });
 }
+
 export function queryItemTemplate(params: { name: string; namespace: string }) {
-  const url = `/${NAMESPACES}/${params.namespace}/${TEMPLATE_API}/${params.name}`;
+  const url = generateTemplateAPI(params);
 
   return axios.get(url);
 }
+
 export function createTemplate(data: TemplateFormData) {
-  const url = `/${NAMESPACES}/${data.metadata.namespace}/${TEMPLATE_API}`;
+  const url = generateTemplateAPI({
+    namespace: data.metadata?.namespace
+  });
 
   return axios.post(url, data);
 }
-export function deleteTemplates(data: ListQuery) {
-  const url = `/${NAMESPACES}/${data.namespace}/${TEMPLATE_API}/${data.name}`;
+
+export function deleteTemplates(data: { name: string; namespace: string }) {
+  const url = generateTemplateAPI(data);
 
   return axios.delete(url, { data });
 }
+
 export function updateTemplate(data: TemplateFormData) {
-  const url = `/${NAMESPACES}/${data.metadata.namespace}/${TEMPLATE_API}/${data.metadata.name}`;
+  const url = generateTemplateAPI({
+    name: data.metadata?.name,
+    namespace: data.metadata?.namespace
+  });
 
   return axios.put(url, data);
 }
@@ -76,7 +102,7 @@ export function refreshTemplate(data: {
   namespace: string;
   item: object;
 }) {
-  const url = `/${NAMESPACES}/${data.namespace}/${TEMPLATE_API}/${data.name}`;
+  const url = generateTemplateAPI(data);
   return axios.put(`${url}`, data.item);
 }
 
@@ -107,30 +133,28 @@ export function queryTemplatesVersionSchema(params: { templateID: string }) {
   return axios.get(url);
 }
 
-export function queryTemplateSchemaByVersionId(
+export function queryTemplateSchema(
   params: { name: string; namespace: string },
   token?: any
 ) {
-  const url = `/${NAMESPACES}/${params.namespace}/${SCHEMA_API}/${params.name}`;
+  const url = generateSchemaAPI(params);
+
   return axios.get(url, {
     cancelToken: token
   });
 }
 
-export function putTemplateSchemaByVersionId(params: {
-  templateVersionID: string;
+export function putTemplateSchema(params: {
+  name: string;
+  namespace: string;
   data;
 }) {
-  let url = `/template-versions/${params.templateVersionID}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${url}`;
-  }
+  const url = generateSchemaAPI(params);
+
   return axios.put(url, params.data);
 }
 
-export function resetTemplateSchemaByVersionId(params: {
-  templateVersionID: string;
-}) {
+export function resetTemplateSchema(params: { templateVersionID: string }) {
   let url = `/template-versions/${params.templateVersionID}/reset`;
   if (isProjectContext()) {
     url = `${PROJECT_API_PREFIX()}${url}`;

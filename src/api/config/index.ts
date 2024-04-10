@@ -15,6 +15,7 @@ export const localeMap = {
 
 // those apis has not version prefix. /v1
 export const NoBaseURLApiList: string[] = [
+  '/identify',
   '/account',
   '/openapi',
   '/debug/version',
