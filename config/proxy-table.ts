@@ -1,5 +1,5 @@
 const proxyTableList = [
-  'v1',
+  'apis/walrus.seal.io/v1',
   'account',
   'proxy',
   'cli',
@@ -13,14 +13,15 @@ const proxyTableList = [
 
 export default function createProxyTable(target?) {
   const proxyTable = proxyTableList.reduce((obj, api) => {
+    const newTarget = target || 'https://localhost';
     obj[`^/${api}`] = {
-      target: target ? `${target}` : 'https://localhost',
+      target: newTarget,
       changeOrigin: true,
       secure: false,
       ws: true,
       rewrite: (pth) => pth.replace(`/^/${api}/`, `/${api}`),
       headers: {
-        origin: target ? `${target}` : 'https://localhost'
+        origin: newTarget
       }
     };
     return obj;

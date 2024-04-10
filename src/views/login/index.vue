@@ -118,6 +118,8 @@
     userStore.resetInfo();
     // appStore.resetInfo();
     await getUserLoginStatus();
+    // cancel verification manually only for development
+    // userStore.cancelVerificationManually();
     enterPageForFree();
   };
   onMounted(() => {

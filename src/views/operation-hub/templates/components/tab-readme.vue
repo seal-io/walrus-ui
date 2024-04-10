@@ -24,7 +24,7 @@
       }
     }
   });
-  const mdStr = computed(() => get(props.schema, 'schema.readme') || '');
+  const mdStr = computed(() => get(props.schema, 'data.readme') || '');
 </script>
 
 <style lang="less" scoped>

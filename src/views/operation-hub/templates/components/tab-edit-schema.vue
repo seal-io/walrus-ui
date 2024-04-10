@@ -134,7 +134,7 @@
   import { schemaActionList } from '../config/index';
 
   const props = defineProps({
-    schema: {
+    uiSchema: {
       type: Object as PropType<any>,
       default() {
         return null;
@@ -306,7 +306,9 @@
     }
   };
   const initData = () => {
-    const copyCustomSchema = _.cloneDeep(props.schema?.uiSchema?.openAPISchema);
+    const copyCustomSchema = _.cloneDeep(
+      props.uiSchema?.uiSchema?.openAPISchema
+    );
     const info = _.get(copyCustomSchema, 'info');
     const openapi = _.get(copyCustomSchema, 'openapi');
     const originData = _.omit(copyCustomSchema, ['paths']);
@@ -320,7 +322,7 @@
   };
 
   watch(
-    () => props.schema,
+    () => props.uiSchema,
     (val) => {
       if (val) {
         initData();

@@ -9,7 +9,7 @@ interface ChunkedCollection {
 }
 // Only used to update lists without nested state
 export function useUpdateChunkedList(
-  dataList: Ref<{ id: string }[]>,
+  dataList: Ref<{ metadata: { name: string; namespace: string } }[]>,
   options?: {
     callback?: (args: any) => void;
     filterFun?: (args: any) => boolean;
@@ -37,7 +37,9 @@ export function useUpdateChunkedList(
       _.each(collections, (item) => {
         const updateIndex = _.findIndex(
           dataList.value,
-          (sItem) => sItem.id === item.id
+          (sItem) =>
+            `${sItem.metadata?.namespace}/${sItem.metadata.name}` ===
+            `${item.metadata.namespace}/${item.metadata.name}`
         );
         if (updateIndex === -1) {
           const updateItem = _.cloneDeep(item);

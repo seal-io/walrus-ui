@@ -45,10 +45,10 @@ export interface GeneralChart {
 }
 
 export interface ListQuery {
-  listOptions?: {
-    fieldSelector?: string;
-    labelSelector?: string;
-    limit?: number;
-  };
+  name?: string;
+  namespace?: string;
+  fieldSelector?: string;
+  labelSelector?: string;
+  limit?: number;
   fields?: string[];
 }

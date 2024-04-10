@@ -63,12 +63,12 @@
     inactive?: boolean;
   }
   interface SummaryStatus {
-    summaryStatus: string;
-    summaryStatusMessage: string;
-    error?: boolean;
-    transitioning?: boolean;
-    warning?: boolean;
-    inactive?: boolean;
+    phase: string;
+    phaseMessage: string;
+    phaseIsError?: boolean;
+    phaseIsWarning?: boolean;
+    phaseIsTransitioning?: boolean;
+    phaseIsInactive?: boolean;
   }
 
   const props = defineProps({
@@ -122,13 +122,13 @@
     }
 
     return {
-      status: props.status.summaryStatus,
-      text: props.status.summaryStatus,
-      message: props.status.summaryStatusMessage,
-      error: props.status.error,
-      transitioning: props.status.transitioning,
-      warning: props.status.warning,
-      inactive: props.status.inactive
+      status: props.status.phase,
+      text: props.status.phase,
+      message: props.status.phaseMessage,
+      error: props.status.phaseIsError,
+      transitioning: props.status.phaseIsTransitioning,
+      warning: props.status.phaseIsWarning,
+      inactive: props.status.phaseIsInactive
     };
   });
 

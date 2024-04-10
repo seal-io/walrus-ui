@@ -10,17 +10,19 @@
   } from '@/views/config';
   import GroupTitle from '@/components/group-title/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
-  import { CatalogFormData } from '../config/interface';
+  import { TemplateFormData } from '../config/interface';
 
   export default defineComponent({
     props: {
       formData: {
-        type: Object as PropType<CatalogFormData>,
+        type: Object as PropType<TemplateFormData>,
         default: () => ({})
       },
       action: {
         type: String,
-        default: ''
+        default() {
+          return ModalAction.CREATE;
+        }
       }
     },
     emits: ['update:formData'],
@@ -35,12 +37,12 @@
           value: 'Github'
         },
         {
-          label: 'GitLab',
-          value: 'Gitlab'
+          label: 'OCI',
+          value: 'OCI'
         },
         {
-          label: 'Gitee',
-          value: 'Gitee'
+          label: 'Download URL',
+          value: 'DownloadURL'
         }
       ];
 
@@ -60,22 +62,59 @@
           ...props.formData,
           spec: {
             ...props.formData.spec,
-            vcsSource: {
-              ...props.formData.spec.vcsSource,
+            vcsRepository: {
+              ...props.formData.spec.vcsRepository,
               token: ''
             }
           }
         });
       };
 
+      const renderProviderExtra = () => {
+        if (props.formData.spec.vcsRepository.platform === 'DownloadURL') {
+          return (
+            <div>
+              URL of helm chart tgz file,
+              e.g.:https://stefanprodan.github.io/podinfo/podinfo-6.6.0.tgz
+            </div>
+          );
+        }
+        if (props.formData.spec.vcsRepository.platform === 'OCI') {
+          return (
+            <div>
+              OCI image of helm chart, e.g.:oci://podinfo/podinfo?version=6.6.0
+            </div>
+          );
+        }
+
+        return (
+          <>
+            <div
+              style={{
+                'line-height': '20px',
+                'width': `${InputWidth.LARGE}px`
+              }}
+            >
+              <div>{t('operation.templates.source.description')}</div>
+              <div>
+                https://github.com/terraform-aws-modules/terraform-aws-vpc
+              </div>
+            </div>
+            <div>
+              https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=master
+            </div>
+          </>
+        );
+      };
+
       return () => (
         <>
-          <GroupTitle
+          {/* <GroupTitle
             style={{ marginBottom: 0 }}
             title={t('common.title.basicInfo')}
             bordered={false}
             flexStart
-          ></GroupTitle>
+          ></GroupTitle> */}
           <a-form-item
             label={t('operation.connectors.table.name')}
             field="metadata.name"
@@ -169,20 +208,20 @@
           ></GroupTitle>
           <a-form-item
             label={t('operation.templates.form.StorageType')}
-            field="spec.vcsSource.platform"
+            field="spec.vcsRepository.platform"
             hide-asterisk
             hide-label={true}
             disabled={props.action === ModalAction.EDIT}
           >
             <seal-select
-              modelValue={props.formData.spec.vcsSource.platform}
+              modelValue={props.formData.spec.vcsRepository.platform}
               onChange={(val) => {
                 ctx.emit('update:formData', {
                   ...props.formData,
                   spec: {
                     ...props.formData.spec,
-                    vcsSource: {
-                      ...props.formData.spec.vcsSource,
+                    vcsRepository: {
+                      ...props.formData.spec.vcsRepository,
                       platform: val
                     }
                   }
@@ -195,7 +234,7 @@
                 prefix: () => (
                   <ProviderIcon
                     provider={_.toLower(
-                      props.formData.spec.vcsSource.platform || ''
+                      props.formData.spec.vcsRepository.platform || ''
                     )}
                   ></ProviderIcon>
                 )
@@ -211,32 +250,24 @@
           </a-form-item>
           <a-form-item
             label="URL"
-            field="spec.vcsSource.url"
+            field="spec.vcsRepository.url"
             hide-asterisk
             hide-label={true}
             disabled={props.action === ModalAction.EDIT}
             validate-trigger={['change', 'input']}
             v-slots={{
-              extra: () => {
-                return (
-                  <span>
-                    {t('catalogs.form.source.desc', {
-                      url: sealCatalog
-                    })}
-                  </span>
-                );
-              }
+              extra: renderProviderExtra
             }}
           >
             <seal-input
-              modelValue={props.formData.spec.vcsSource.url}
+              modelValue={props.formData.spec.vcsRepository.url}
               onUpdate:modelValue={(val) => {
                 ctx.emit('update:formData', {
                   ...props.formData,
                   spec: {
                     ...props.formData.spec,
-                    vcsSource: {
-                      ...props.formData.spec.vcsSource,
+                    vcsRepository: {
+                      ...props.formData.spec.vcsRepository,
                       url: val
                     }
                   }
@@ -249,7 +280,7 @@
           </a-form-item>
           <a-form-item
             label={t('operation.templates.form.authentication')}
-            field="spec.vcsSource.secretRef"
+            field="spec.vcsRepository.secretRef"
             hide-asterisk
             hide-label={true}
             disabled={props.action === ModalAction.EDIT}
@@ -268,21 +299,21 @@
           {authentication.value === 'bearer' && (
             <a-form-item
               label="Token"
-              field="spec.vcsSource.token"
+              field="spec.vcsRepository.token"
               hide-asterisk
               hide-label={true}
               disabled={props.action === ModalAction.EDIT}
               validate-trigger={['change', 'input']}
             >
               <seal-input
-                modelValue={props.formData.spec.vcsSource.token}
+                modelValue={props.formData.spec.vcsRepository.token}
                 onUpdate:modelValue={(val) => {
                   ctx.emit('update:formData', {
                     ...props.formData,
                     spec: {
                       ...props.formData.spec,
-                      vcsSource: {
-                        ...props.formData.spec.vcsSource,
+                      vcsRepository: {
+                        ...props.formData.spec.vcsRepository,
                         token: val
                       }
                     }

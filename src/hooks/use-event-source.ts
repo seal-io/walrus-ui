@@ -1,4 +1,5 @@
 import { onBeforeUnmount } from 'vue';
+import qs from 'query-string';
 
 export const createEventSourceURL = (url) => {
   const { host, protocol } = window.location;
@@ -11,13 +12,22 @@ export const createEventSourceURL = (url) => {
 2: closed
 */
 
-export default function useEventSource({ url }) {
+export default function useEventSource() {
   let SSE: any = null;
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const createEventSourceConnection = ({ url, onmessage }) => {
+  const createEventSourceConnection = ({ url, params, onmessage }) => {
     SSE?.close?.();
 
-    SSE = new EventSource(url, { withCredentials: true });
+    SSE = new EventSource(
+      `${BASE_URL}${url}?${qs.stringify({
+        ...params,
+        watch: true
+      })}`,
+      {
+        withCredentials: true
+      }
+    );
 
     SSE.onmessage = (res) => {
       try {

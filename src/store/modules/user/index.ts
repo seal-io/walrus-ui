@@ -206,6 +206,19 @@ const useUserStore = defineStore('user', {
         this.userSetting?.FirstLogin?.value !==
           FirstGetPasswordCommand.Invalid && this.isSystemAdmin()
       );
+    },
+
+    // cancel login verification manually
+    cancelVerificationManually() {
+      this.$patch({
+        name: 'freeUser',
+        roles: [{ id: RoleType.Admin }],
+        userSetting: {
+          FirstLogin: {
+            value: FirstGetPasswordCommand.Invalid
+          }
+        }
+      });
     }
   }
 });

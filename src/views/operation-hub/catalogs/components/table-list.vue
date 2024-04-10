@@ -4,7 +4,7 @@
       <FilterBox style="margin-bottom: var(--filter-box-margin)">
         <template #params>
           <a-input
-            v-model.trim="queryParams.query"
+            v-model.trim="queryParams.fieldSelector"
             allow-clear
             style="width: 240px"
             :placeholder="$t('common.search.name.placeholder')"
@@ -75,7 +75,7 @@
                 <result-view
                   :loading="loading"
                   :title="
-                    queryParams.query
+                    queryParams.fieldSelector
                       ? $t('common.result.nodata.title', {
                           type: $t('catalogs.list.name')
                         })
@@ -84,11 +84,13 @@
                         })
                   "
                   :subtitle="
-                    queryParams.query ? $t('common.result.nodata.subtitle') : ''
+                    queryParams.fieldSelector
+                      ? $t('common.result.nodata.subtitle')
+                      : ''
                   "
                 >
                   <template #icon>
-                    <icon-find-replace v-if="queryParams.query" />
+                    <icon-find-replace v-if="queryParams.fieldSelector" />
                     <i
                       v-else
                       class="iconfont icon-layers-2"
@@ -97,7 +99,7 @@
                   </template>
                   <template #extra>
                     <a-button
-                      v-if="hasPutPermission && !queryParams.query"
+                      v-if="hasPutPermission && !queryParams.fieldSelector"
                       type="outline"
                       @click="handleCreate"
                       ><icon-plus class="m-r-4" />{{
@@ -111,7 +113,7 @@
           </a-tab-pane>
         </a-tabs>
       </a-spin>
-      <a-pagination
+      <!-- <a-pagination
         style="margin-top: 20px"
         size="small"
         :total="total"
@@ -122,7 +124,7 @@
         :hide-on-single-page="total <= 10"
         @change="handlePageChange"
         @page-size-change="handlePageSizeChange"
-      />
+      /> -->
     </div>
     <CatalogModal
       v-model:show="showModal"
@@ -142,6 +144,7 @@
   import { ref, reactive, onMounted, nextTick, computed, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
+  import useEventSource from '@/hooks/use-event-source';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { PageAction, ModalAction } from '@/views/config';
@@ -152,7 +155,9 @@
     queryCatalogs,
     deleteCatalogs,
     CatalogAPI,
-    PROJECT_API_PREFIX
+    PROJECT_API_PREFIX,
+    GlobalNamespace,
+    generateListAPI
   } from '../api';
   import addCatalog from './add-catalog.vue';
   import CatalogModal from './catalog-modal.vue';
@@ -173,6 +178,7 @@
   const appStore = useAppStore();
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
+  const { createEventSourceConnection } = useEventSource();
   const { router, route, t } = useCallCommon();
   const loading = ref(false);
   const selectedKeys = ref<string[]>([]);
@@ -184,10 +190,11 @@
   const action = ref(ModalAction.CREATE);
   const dataInfo = ref<any>({});
   const projectID = route.params.projectId as string;
+  const projectName = route.params.projectName as string;
   const queryParams = reactive({
-    query: '',
-    page: 1,
-    perPage: appStore.perPage || 10
+    labelSelector: '',
+    fieldSelector: '',
+    limit: 20
   });
   const { updateChunkedList } = useUpdateChunkedList(dataList, {
     mapFun(item) {
@@ -230,15 +237,16 @@
       loading.value = true;
       const params: any = {
         ...pickBy(queryParams, (val) => !!val),
-        sort: [sort.value]
+        namespace: projectName || GlobalNamespace
       };
       const { data } = await queryCatalogs(params);
+      console.log('data+++++++++++++++++++', data);
 
       dataList.value = _.map(data?.items || [], (sItem) => {
+        sItem.metadataName = sItem.metadata.name;
         sItem.disabled =
           userStore.userSetting?.EnableBuiltinCatalog?.value === 'true' &&
-          sItem.source === builtinCatalog &&
-          sItem.name === builtinCatalogName;
+          sItem.spec.builtin;
         return sItem;
       });
       total.value = data?.pagination?.total || 0;
@@ -264,29 +272,33 @@
   };
 
   const handleReset = () => {
-    queryParams.query = '';
-    queryParams.page = 1;
     handleFilter();
   };
   const handlePageChange = (page: number) => {
-    queryParams.page = page;
     handleFilter();
   };
   const handlePageSizeChange = (pageSize: number) => {
-    queryParams.page = 1;
-    queryParams.perPage = pageSize;
-    appStore.updateSettings({ perPage: pageSize });
+    // queryParams.page = 1;
+    // queryParams.perPage = pageSize;
+    // appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const handleDeleteConfirm = async () => {
     try {
       loading.value = true;
       const ids = map(selectedKeys.value, (val) => {
+        const item = _.find(
+          dataList.value,
+          (sItem) => sItem.metadataName === val
+        );
         return {
-          id: val
+          name: item?.metadata.name,
+          namespace: item?.metadata.namespace
         };
       });
-      await deleteCatalogs({ items: ids });
+      for (let i = 0; i < ids.length; i += 1) {
+        await deleteCatalogs(ids[i]);
+      }
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
@@ -307,9 +319,10 @@
     });
   };
   const createCatalogChunkRequest = () => {
-    let url = CatalogAPI;
+    let url = generateListAPI(GlobalNamespace);
+
     if (props.scope === 'project') {
-      url = `${PROJECT_API_PREFIX()}${CatalogAPI}`;
+      url = generateListAPI(projectName);
     }
     try {
       setChunkRequest({
@@ -332,7 +345,6 @@
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      queryParams.page = 1;
       handleFilter();
     }, 100);
     nextTick(() => {

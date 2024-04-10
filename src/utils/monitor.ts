@@ -104,6 +104,13 @@ export const deleteModal = async ({
 export const execSucceed = (message?: string) => {
   Message.success(i18n.global.t(message || 'common.message.success'));
 };
+
 export const execError = (message?: string) => {
   Message.error(i18n.global.t(message || 'common.message.error'));
+};
+
+export const batchDelete = async (list, callback) => {
+  for (let i = 0; i < list.length; i += 1) {
+    await callback(list[i]);
+  }
 };
