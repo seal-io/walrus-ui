@@ -10,11 +10,11 @@ export const FirstLoginGetPassword = {
 };
 
 export const FirstGetPasswordCommand = {
-  Specified: 'Specified',
-  Docker: 'Docker',
-  Kubernetes: 'Kubernetes',
-  Process: 'Process',
-  Invalid: 'Invalid'
+  Specified: 'specified',
+  Docker: 'docker',
+  Kubernetes: 'kubernetes',
+  Process: 'process',
+  Invalid: 'invalid'
 };
 
 export default {};

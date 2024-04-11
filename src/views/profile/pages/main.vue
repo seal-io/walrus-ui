@@ -37,12 +37,6 @@
           >
             <ModifyPassword></ModifyPassword>
           </a-tab-pane>
-          <a-tab-pane
-            :key="UserTabs.TOKENS"
-            :title="$t('account.settings.apikeys')"
-          >
-            <Tokens></Tokens>
-          </a-tab-pane>
         </a-tabs>
       </ComCard>
     </ComCard>

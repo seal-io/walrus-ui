@@ -117,7 +117,7 @@
   import { useI18n } from 'vue-i18n';
   import { modifyPassword } from '@/api/user';
   import { useUserStore } from '@/store';
-  import { updateUserSettingBatch } from '@/views/system/api/setting';
+  import { updateUserSetting } from '@/views/system/api/setting';
   import { urlReg } from '@/utils/validate';
 
   const cllectionLink = 'https://seal-io.github.io/docs/improvement-plan';
@@ -187,7 +187,7 @@
         if (userStore.isSystemAdmin()) {
           await Promise.all([
             modifyPassword(data),
-            updateUserSettingBatch({ items: settings })
+            updateUserSetting({ items: settings })
           ]);
         } else {
           await modifyPassword(data);

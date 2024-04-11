@@ -1,8 +1,14 @@
 import axios from 'axios';
 import { SILENCEAPI } from '@/api/config';
+import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
+import {
+  RequestCallbackArgs,
+  AxiosRequestPayload,
+  DataListItem
+} from '@/types/global';
 
 interface ResList {
-  items: { id: string; value: string; name: string }[];
+  items: DataListItem[];
 }
 export interface LoginData {
   username: string;
@@ -14,6 +20,18 @@ interface SetPassword {
   password: string;
   name?: string;
 }
+
+export { GlobalNamespace, NAMESPACES };
+
+const SETTINGS_API = 'settings';
+
+const generateSettingAPI = (params: { namespace: string; name?: string }) => {
+  const { name, namespace } = params;
+  if (name) {
+    return `/${NAMESPACES}/${namespace}/${SETTINGS_API}/${name}`;
+  }
+  return `/${NAMESPACES}/${namespace}/${SETTINGS_API}`;
+};
 export interface LoginRes {
   token: string;
 }
@@ -38,17 +56,30 @@ export function getUserInfo(params?) {
   });
 }
 
-export function updateUserSetting(data: { id: string; value: string }) {
-  return axios.put(`/settings/${data.id}`, data);
+export function updateUserSetting(params: {
+  name: string;
+  namespace: string;
+  data: AxiosRequestPayload;
+}) {
+  const url = generateSettingAPI({
+    namespace: params.namespace,
+    name: params.name
+  });
+  return axios.put(url, params.data);
 }
 
 export function getUserSetting() {
-  return axios.get<ResList>(`/settings`);
+  const url = generateSettingAPI({
+    namespace: GlobalNamespace
+  });
+  return axios.get<ResList>(url);
 }
 export function getFirstLoginStatus() {
-  return axios.get<{ id: string; value: string }>(
-    `/settings/BootPwdGainSource`
-  );
+  const url = generateSettingAPI({
+    namespace: GlobalNamespace,
+    name: 'BootPwdGainSource'
+  });
+  return axios.get<{ id: string; value: string }>(url);
 }
 
 export function getWalrusFileHub() {

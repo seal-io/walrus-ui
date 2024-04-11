@@ -120,11 +120,14 @@
       const data = await userStore.getUserSetting();
       const items = data.items || [];
       settingFormData.value = items.reduce((obj, item) => {
-        obj[item.name] = {
-          ...item
+        const name = item.metadata?.name;
+        obj[name] = {
+          data: item,
+          ...item.status
         };
         return obj;
       }, {});
+      console.log('settingFormData++++++++++=', settingFormData.value);
     } catch (error) {
       sourceList.value = [];
     }

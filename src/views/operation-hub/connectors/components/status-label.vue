@@ -7,24 +7,25 @@
             class="arco-icon-loading progress"
             size="mini"
             status="normal"
-            :color="StatusColor.transitioning.text"
+            :color="color.text"
             :width="16"
             :stroke-width="3"
             :percent="0.6"
           />
-          <span
-            class="text"
-            :style="{ color: StatusColor.transitioning.text }"
-            >{{ statusInfo.text }}</span
-          >
+          <span class="text" :style="{ color: color.text }">{{
+            statusInfo.text
+          }}</span>
         </span>
         <span v-else-if="statusInfo.error">
-          <i class="size-16 icon-warning-filling-copy iconfont"></i>
+          <i
+            class="size-16 icon-warning-filling-copy iconfont"
+            :style="{ color: color.text }"
+          ></i>
         </span>
         <span v-else>
           <icon-check-circle-fill
             class="size-16"
-            style="color: var(--seal-color-success)"
+            :style="{ color: color.text }"
         /></span>
       </span>
       <span

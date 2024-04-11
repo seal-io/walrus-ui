@@ -247,9 +247,6 @@
     if (!props.versionId && props.page === 'template') return;
 
     const codeData = yaml2Json(code.value);
-    const JsonStr = JSON.stringify({
-      openAPISchema: codeData
-    });
 
     const versionData = _.find(
       _.get(props.templateInfo, 'status.versions', []),
@@ -275,7 +272,9 @@
       data = {
         ..._.omit(props.schemaData, ['status']),
         status: {
-          value: btoa(JsonStr)
+          value: {
+            schema: codeData
+          }
         }
       };
     }
@@ -291,7 +290,7 @@
     const codeData = yaml2Json(code.value);
 
     emits('reset', {
-      openAPISchema: codeData
+      schema: codeData
     });
   };
   const handlePutTemplateSchema = async () => {
@@ -345,7 +344,7 @@
     }
   };
   const initData = () => {
-    const copyCustomSchema = _.cloneDeep(props.uiSchema?.openAPISchema);
+    const copyCustomSchema = _.cloneDeep(props.uiSchema?.schema);
     const info = _.get(copyCustomSchema, 'info');
     const openapi = _.get(copyCustomSchema, 'openapi');
     const originData = _.omit(copyCustomSchema, ['paths']);

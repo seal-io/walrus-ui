@@ -55,3 +55,33 @@ export interface ListQuery {
   limit?: number;
   fields?: string[];
 }
+
+export interface AxiosRequestPayload {
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name: string;
+    namespace: string;
+    [key: string]: any;
+  };
+  spec: object;
+  status: object;
+}
+
+export interface RequestCallbackArgs {
+  data: AxiosRequestPayload;
+  namespace: string;
+  name: string;
+}
+
+export interface DataListItem {
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name: string;
+    namespace: string;
+    [key: string]: any;
+  };
+  spec: object;
+  status: object;
+}

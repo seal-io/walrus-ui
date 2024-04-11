@@ -1,9 +1,22 @@
 import axios from 'axios';
 import qs from 'query-string';
+import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
+import { AxiosRequestPayload } from '@/types/global';
 
 type ValueType = string | number | boolean;
 
-export const SETTINGS_API = '/settings';
+export { GlobalNamespace, NAMESPACES };
+
+export const SETTINGS_API = 'settings';
+
+const generateSettingAPI = (params: { namespace: string; name?: string }) => {
+  const { name, namespace } = params;
+  if (name) {
+    return `/${NAMESPACES}/${namespace}/${SETTINGS_API}/${name}`;
+  }
+  return `/${NAMESPACES}/${namespace}/${SETTINGS_API}`;
+};
+
 export interface SettingsItem {
   id: string;
   value: ValueType;
@@ -20,19 +33,31 @@ export interface BatchItem {
   name?: string;
   value: ValueType;
 }
-export function updateUserSetting(data: { id: string; value: string }) {
-  return axios.put(`/settings/${data.id}`, data);
-}
-export function updateUserSettingBatch(data: { items: BatchItem[] }) {
-  return axios.put(`/settings`, data);
+
+export function updateUserSetting(params: {
+  name: string;
+  namespace: string;
+  data: AxiosRequestPayload;
+}) {
+  const url = generateSettingAPI({
+    namespace: params.namespace,
+    name: params.name
+  });
+  return axios.put(url, params.data);
 }
 
 export function getUserSetting() {
-  return axios.get<ResList>(`/settings`);
+  const url = generateSettingAPI({
+    namespace: GlobalNamespace
+  });
+  return axios.get<ResList>(url);
 }
 
 export function queryUserPartialSetting(params) {
-  return axios.get<ResList>(`/settings`, {
+  const url = generateSettingAPI({
+    namespace: GlobalNamespace
+  });
+  return axios.get<ResList>(url, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

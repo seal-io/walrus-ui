@@ -82,6 +82,8 @@ const useUserStore = defineStore('user', {
       const permissions: AnyObject = getUserResourcePermission(data);
       this.permissions = {};
       this.setInfo({ ...data, name: data.displayName, permissions });
+
+      // TODO: remove this code after the first login verification is completed
       this.cancelVerificationManually();
     },
     getProjectUserActions(id, resource) {
