@@ -127,7 +127,10 @@
   import { useUserStore, useAppStore } from '@/store';
   import useLoading from '@/hooks/loading';
   import useEnterPage from '@/hooks/use-enter-page';
-  import { queryUserPartialSetting } from '@/views/system/api/setting';
+  import {
+    queryUserPartialSetting,
+    updateUserSetting
+  } from '@/views/system/api/setting';
   import CryptoJS from 'crypto-js';
   import {
     rememberPasswordFn,

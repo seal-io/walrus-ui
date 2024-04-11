@@ -25,10 +25,12 @@
       </template>
       <template #button-group>
         <a-button
-          v-permission="{
-            resource: `roles.${Resources.Subjects}`,
-            actions: [Actions.POST]
-          }"
+          v-if="
+            userStore.hasRolesActionsPermission({
+              resource: Resources.Subjects,
+              actions: [Actions.POST]
+            })
+          "
           type="primary"
           @click="handleCreate"
           >{{ $t('profile.account.create') }}</a-button

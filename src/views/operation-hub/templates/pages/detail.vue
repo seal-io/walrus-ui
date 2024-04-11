@@ -313,7 +313,7 @@
         name: versionData.schemaRef?.name,
         namespace: templateNameSpace
       });
-      templateSchema.value = JSON.parse(atob(data.status?.value));
+      templateSchema.value = data.status?.value;
       console.log('templateSchema++', templateSchema.value);
     } catch (error) {
       templateSchema.value = {};
@@ -330,7 +330,7 @@
         name: versionData.uiSchemaRef?.name,
         namespace: templateNameSpace
       });
-      templateUISchema.value = JSON.parse(atob(data.status?.value));
+      templateUISchema.value = data.status?.value;
       schemaData.value = data;
       console.log('templateSchema+++value+++', templateUISchema.value);
     } catch (error) {

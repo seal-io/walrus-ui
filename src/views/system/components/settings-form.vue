@@ -230,7 +230,7 @@
   import { useI18n } from 'vue-i18n';
   import validate from '@/utils/validate';
   import { SettingsItem, ValueType } from '../config';
-  import { updateUserSettingBatch, BatchItem } from '../api/setting';
+  import { BatchItem, updateUserSetting } from '../api/setting';
   import formComponent from './form-component.vue';
 
   interface formDataType {
@@ -382,7 +382,7 @@
     if (!res) {
       try {
         const valueList = getValueList(fieldList);
-        await updateUserSettingBatch({ items: valueList });
+        await updateUserSetting({ items: valueList });
         Message.success(t('common.message.success'));
         emits('settingSave');
         nextTick(() => {

@@ -45,7 +45,7 @@
     const list: any[] = [];
     const result = get(
       props.schema,
-      'openAPISchema.components.schemas.outputs.properties'
+      'schema.components.schemas.outputs.properties'
     );
     _.each(_.keys(result), (key) => {
       list.push({

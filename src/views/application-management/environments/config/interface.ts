@@ -1,6 +1,6 @@
 import { ServiceRowData } from '@/views/application-management/services/config/interface';
 import { ConnectorRowData } from '@/views/operation-hub/connectors/config/interface';
-import { DataListItem } from '@/views/config/interface';
+import { DataListItem } from '@/types/global';
 
 export interface EnvironmentRow extends DataListItem {
   id: string;
