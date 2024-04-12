@@ -5,8 +5,8 @@ export enum AccountKind {
   GROUP = 'group'
 }
 export enum RoleType {
-  Admin = 'system/admin',
-  Engineer = 'system/manager',
+  Admin = 'admin',
+  Engineer = 'manager',
   User = '0'
 }
 

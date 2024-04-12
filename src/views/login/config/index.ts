@@ -1,12 +1,12 @@
 export const FirstLoginGetPassword = {
-  Specified: 'login.config.defaultpswd',
-  Docker:
+  specified: 'login.config.defaultpswd',
+  docker:
     'docker logs <id_of_walrus_container> 2>&1 | grep "Bootstrap Admin Password"',
-  Kubernetes:
+  kubernetes:
     'kubectl -n <namespace_of_walrus_deploy> logs <name_of_walrus_pod> | grep "Bootstrap Admin Password"',
   // Process: 'search "Bootstrap Admin Password" from the logs of seal process',
-  Process: 'login.config.pswd.log',
-  Invalid: 'Invalid'
+  process: 'login.config.pswd.log',
+  invalid: 'invalid'
 };
 
 export const FirstGetPasswordCommand = {
@@ -16,5 +16,28 @@ export const FirstGetPasswordCommand = {
   Process: 'process',
   Invalid: 'invalid'
 };
+
+export const externalProviders = [
+  {
+    value: 'github',
+    label: 'Github',
+    icon: 'github'
+  },
+  {
+    value: 'gitlab',
+    label: 'Gitlab',
+    icon: 'gitlab'
+  },
+  {
+    value: 'google',
+    label: 'Google',
+    icon: 'google'
+  },
+  {
+    value: 'bitbucket',
+    label: 'Bitbucket',
+    icon: 'bitbucket'
+  }
+];
 
 export default {};

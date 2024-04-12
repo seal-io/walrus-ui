@@ -21,6 +21,14 @@ interface SetPassword {
   name?: string;
 }
 
+export interface ProviderItem {
+  discription: string;
+  displayName: string;
+  loginWithPassword: boolean;
+  name: string;
+  type: string;
+}
+
 export { GlobalNamespace, NAMESPACES };
 
 const SETTINGS_API = 'settings';
@@ -40,7 +48,7 @@ export function login(data: LoginData) {
 }
 
 export function logout() {
-  return axios.delete<LoginRes>('/identify/logout');
+  return axios.get<LoginRes>('/identify/logout');
 }
 
 export function modifyPassword(data: SetPassword) {
@@ -55,6 +63,14 @@ export function getUserInfo(params?) {
     }
   });
 }
+
+export const queryIdentifyProviders = () => {
+  return axios.get<{ items: ProviderItem[] }>('/identify/providers', {
+    headers: {
+      _action: SILENCEAPI
+    }
+  });
+};
 
 export function updateUserSetting(params: {
   name: string;
@@ -77,9 +93,9 @@ export function getUserSetting() {
 export function getFirstLoginStatus() {
   const url = generateSettingAPI({
     namespace: GlobalNamespace,
-    name: 'BootPwdGainSource'
+    name: 'bootstrap-password-provision'
   });
-  return axios.get<{ id: string; value: string }>(url);
+  return axios.get<DataListItem>(url);
 }
 
 export function getWalrusFileHub() {

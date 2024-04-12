@@ -1,134 +1,134 @@
 <template>
-  <div>
-    <div class="container login" :class="{ dark: appStore.theme === 'dark' }">
+  <div class="login-page" :class="{ dark: appStore.theme === 'dark' }">
+    <div class="header">
       <div class="logo">
         <img
           alt="logo"
           :src="appStore.theme === 'dark' ? logodark : logolight"
         />
       </div>
-
-      <div class="content">
-        <div class="content-inner">
-          <LoginForm
-            v-model:hideTips="hideTips"
-            :first-login-status="firstLoginStatus"
-            @loginSuccess="handleLoginSuccess"
-          />
-          <div
-            v-if="isFirstLogin && !hideTips"
-            style="background: var(--color-fill-2)"
-            class="first-login-tips"
-          >
-            <div v-if="specifiedPSWD()" class="text" style="margin-bottom: 0"
-              ><icon-info-circle-fill />{{
-                $t('login.config.pswd.specified')
-              }}</div
+      <div class="language">
+        <a-switch
+          v-model="isDark"
+          checked-color="var(--black-2)"
+          unchecked-color="rgb(185, 207, 243)"
+          @change="toggleTheme"
+        >
+          <template #checked-icon>
+            <icon-moon class="size-16" />
+          </template>
+          <template #unchecked-icon>
+            <icon-sun class="size-16" />
+          </template>
+        </a-switch>
+        <a-dropdown @select="changeLocale">
+          <a-button shape="circle" type="text" size="mini"
+            ><i class="iconfont icon-language size-18"
+          /></a-button>
+          <template #content>
+            <a-doption
+              v-for="item in locales"
+              :key="item.value"
+              :value="item.value"
+              style="font-size: var(--font-size-normal)"
             >
-            <div v-else class="text"
-              ><icon-info-circle-fill />{{ $t('login.config.pswd.exec') }}</div
-            >
-            <highlightBlock
-              v-if="!specifiedPSWD()"
-              :code="
-                $t(_.get(FirstLoginGetPassword, firstLoginStatus?.value) || '')
-              "
-              class="hl-code"
-              style="position: relative; background: var(--color-white)"
-            >
-              <copy
-                :content="
-                  $t(
-                    _.get(FirstLoginGetPassword, firstLoginStatus?.value) || ''
-                  )
-                "
-                style="position: absolute; top: 0; right: 0"
-              ></copy>
-            </highlightBlock>
-          </div>
-        </div>
+              {{ item.label }}
+            </a-doption>
+          </template>
+        </a-dropdown>
       </div>
     </div>
-    <div class="footer">
-      <Footer />
+    <div class="main">
+      <div class="content">
+        <a-button
+          v-if="loginType !== 'provider'"
+          class="back"
+          @click="handleClickBack"
+          ><icon-arrow-left
+        /></a-button>
+        <div class="content-title">
+          <span v-if="!isModifyPassword">{{ $t('login.form.title') }}</span>
+          <span v-else>{{ $t('login.form.login.update') }}</span>
+        </div>
+
+        <SSOProvider
+          v-if="loginType === 'provider'"
+          :providers="externalProviders"
+          @select="handleLoginTypeChange"
+        ></SSOProvider>
+        <PasswordLogin
+          v-else
+          @modifyPassword="handleModifyPassword"
+        ></PasswordLogin>
+      </div>
     </div>
+    <Footer />
   </div>
 </template>
 
 <script lang="ts" setup>
-  import _ from 'lodash';
+  import { useAppStore, useUserStore } from '@/store';
+  import { ref, provide } from 'vue';
+  import { useDark, useToggle } from '@vueuse/core';
+  import useLocale from '@/hooks/locale';
+  import Footer from '@/components/footer/index.vue';
   import logolight from '@/assets/images/logo_02.png';
   import logodark from '@/assets/images/logo_05.png';
-  import { onMounted, ref } from 'vue';
-  import { getFirstLoginStatus } from '@/api/user';
-  import { useUserStore, useAppStore } from '@/store';
-  import useEnterPage from '@/hooks/use-enter-page';
-  import Footer from '@/components/footer/index.vue';
-  import highlightBlock from '@/components/highlight-block/index.vue';
-  import copy from '@/components/copy/copy-command.vue';
-  import LoginForm from './components/login-form.vue';
-  import { FirstLoginGetPassword, FirstGetPasswordCommand } from './config';
+  import { LOCALE_OPTIONS } from '@/locale';
+  import PasswordLogin from './components/password-login.vue';
+  import SSOProvider from './components/sso-provider.vue';
+  import { externalProviders } from './config';
+  import { queryIdentifyProviders, ProviderItem } from './api';
 
-  const { enterUserPage } = useEnterPage();
-  const userStore = useUserStore();
+  const locales = [...LOCALE_OPTIONS];
   const appStore = useAppStore();
-  const isFirstLogin = ref(false);
-  const hideTips = ref(false);
-  const firstLoginStatus = ref<any>({});
-  // TODO delete
-  const handleLoginSuccess = () => {
-    isFirstLogin.value = true;
+  const { changeLocale } = useLocale();
+  const isDark = useDark({
+    selector: 'body',
+    attribute: 'arco-theme',
+    valueDark: 'dark',
+    valueLight: 'light',
+    storageKey: 'arco-theme',
+    onChanged(dark: boolean) {
+      appStore.toggleTheme(dark);
+    }
+  });
+  const toggleTheme = useToggle(isDark);
+  const loginType = ref('provider');
+  const providerList = ref<ProviderItem[]>([]);
+  const isModifyPassword = ref(false);
+
+  provide('providerList', providerList);
+
+  const handleLoginTypeChange = (type: string, item) => {
+    loginType.value = type;
   };
-  const getUserLoginStatus = async () => {
+
+  const handleClickBack = () => {
+    loginType.value = 'provider';
+  };
+
+  const handleModifyPassword = () => {
+    isModifyPassword.value = true;
+  };
+
+  const fetchData = async () => {
     try {
-      const { data } = await getFirstLoginStatus();
-      const value = data?.value;
-      isFirstLogin.value = value !== FirstGetPasswordCommand.Invalid;
-      firstLoginStatus.value = data;
-      userStore.setInfo({
-        userSetting: {
-          FirstLogin: {
-            value
-          }
-        }
-      });
+      const { data } = await queryIdentifyProviders();
+      providerList.value = data.items || [];
     } catch (error) {
       // ignore
+      providerList.value = [];
     }
   };
-  const specifiedPSWD = () => {
-    return (
-      _.get(firstLoginStatus.value, 'value') ===
-      FirstGetPasswordCommand.Specified
-    );
+  const init = () => {
+    fetchData();
   };
-
-  // enter page password-free
-  const enterPageForFree = async () => {
-    try {
-      await userStore.info();
-      if (userStore.name) {
-        enterUserPage();
-      }
-    } catch (error) {
-      // ingore
-    }
-  };
-  const init = async () => {
-    userStore.resetInfo();
-    // appStore.resetInfo();
-    await getUserLoginStatus();
-    enterPageForFree();
-  };
-  onMounted(() => {
-    init();
-  });
+  init();
 </script>
 
 <style lang="less" scoped>
-  .container {
-    display: flex;
-    margin-top: 0;
+  .login-page {
     background-image: url('../../assets/images/bg2.jpg');
     background-repeat: no-repeat;
     background-position: center center;
@@ -139,115 +139,81 @@
       background-image: none;
     }
 
-    :deep(.hljs.bash) {
-      background-color: var(--color-white);
-    }
+    .header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 20px;
+      padding-right: 30px;
 
-    :deep(.hljs) {
-      white-space: break-spaces;
-    }
+      .logo {
+        img {
+          width: 136px;
+          height: auto;
+        }
+      }
 
-    .hl-code {
-      &:hover {
-        .copy-btn {
-          opacity: 1;
-          transition: opacity 0.2s var(--seal-transition-func);
+      .language {
+        display: flex;
+        align-items: center;
+        height: 24px;
+        font-size: 0;
+
+        .iconfont {
+          color: var(--color-text-selected);
+        }
+
+        .arco-switch {
+          margin-right: 20px;
+        }
+
+        :deep(.arco-switch-checked) {
+          .arco-switch-handle {
+            color: var(--color-text-3);
+            background-color: transparent;
+
+            .arco-switch-handle-icon {
+              display: flex;
+              align-items: center;
+            }
+          }
         }
       }
     }
 
-    .copy-btn {
-      opacity: 0;
-      transition: opacity 0.2s var(--seal-transition-func);
-    }
-
-    :deep(.arco-space-item) {
-      .arco-space-vertical.get-pwd {
-        padding: 20px;
-        background-color: var(--color-fill-2);
-        border-radius: var(--border-radius-small);
-
-        .arco-icon {
-          margin-right: 8px;
-          color: var(--sealblue-6);
-        }
-      }
-    }
-
-    .first-login-tips {
-      width: 380px;
-      margin-top: 40px;
-      padding: 10px;
-      font-size: 12px;
-      border-radius: var(--border-radius-small);
-
-      .text {
-        margin-bottom: 10px;
-        color: var(--color-text-2);
-      }
-
-      .arco-icon {
-        margin-right: 4px;
-        color: var(--sealblue-6);
-      }
-    }
-
-    .banner {
-      width: 550px;
-      background: linear-gradient(163.85deg, #1d2129 0%, #00308f 100%);
-    }
-
-    .content {
+    .main {
       position: relative;
       display: flex;
       flex: 1;
       align-items: center;
       justify-content: center;
       height: max-content;
-      min-height: calc(100vh - 48px);
+      min-height: calc(100vh - 104px);
       padding-bottom: 40px;
 
-      .content-inner {
-        padding: 20px;
+      .content {
+        position: relative;
+        padding: var(--card-content-padding);
         background-color: rgba(var(--color-background-2), 0.7);
         border-radius: 8px;
-      }
-    }
 
-    .footer {
-      width: 100%;
-      background-color: var(--color-white);
-    }
-  }
+        &-title {
+          color: var(--color-text-1);
+          font-weight: var(--font-weight-medium);
+          font-size: 24px;
+          line-height: 48px;
+          text-align: center;
+        }
 
-  .logo {
-    position: fixed;
-    top: 20px;
-    left: 22px;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-
-    img {
-      width: 136px;
-      height: auto;
-    }
-
-    &-text {
-      margin-right: 4px;
-      margin-left: 4px;
-      color: var(--color-fill-1);
-      font-size: 20px;
-    }
-  }
-</style>
-
-<style lang="less" scoped>
-  // responsive
-  @media (max-width: @screen-lg) {
-    .container {
-      .banner {
-        width: 25%;
+        .back {
+          position: absolute;
+          top: 20px;
+          left: 20px;
+          color: var(--color-text-3);
+          font-size: 20px;
+        }
       }
     }
   }

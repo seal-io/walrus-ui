@@ -115,10 +115,10 @@
   import { get } from 'lodash';
   import { reactive, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { modifyPassword } from '@/api/user';
   import { useUserStore } from '@/store';
   import { updateUserSetting } from '@/views/system/api/setting';
-  import { urlReg } from '@/utils/validate';
+  import { modifyPassword } from '../api';
+  import { FirstGetPasswordCommand } from '../config';
 
   const cllectionLink = 'https://seal-io.github.io/docs/improvement-plan';
   const { t } = useI18n();
@@ -186,8 +186,8 @@
       try {
         if (userStore.isSystemAdmin()) {
           await Promise.all([
-            modifyPassword(data),
-            updateUserSetting({ items: settings })
+            modifyPassword(data)
+            // updateUserSetting({ items: settings })
           ]);
         } else {
           await modifyPassword(data);
@@ -197,7 +197,7 @@
           userSetting: {
             ...userSetting,
             serverUrl: { name: serverUrlID, value: formData.serverUrl },
-            FirstLogin: { value: 'Invalid' }
+            FirstLogin: { value: FirstGetPasswordCommand.Invalid }
           }
         });
         emits('updatePassword', formData.newPassword);
