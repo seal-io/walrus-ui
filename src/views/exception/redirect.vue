@@ -23,4 +23,10 @@
   });
 </script>
 
+<script lang="ts">
+  export default {
+    name: 'Redirect'
+  };
+</script>
+
 <style></style>

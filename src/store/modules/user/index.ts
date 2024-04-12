@@ -7,7 +7,7 @@ import {
   LoginData,
   getUserSetting as userSettings,
   updateUserSetting as updateSettings
-} from '@/api/user';
+} from '@/views/login/api';
 import _ from 'lodash';
 import { FirstGetPasswordCommand } from '@/views/login/config';
 import { getUserResourcePermission } from '@/utils/auth';
@@ -23,6 +23,7 @@ const useUserStore = defineStore('user', {
   state: (): UserState => ({
     applicableEnvironmentTypes: [],
     name: undefined,
+    displayName: undefined,
     avatar: undefined,
     job: undefined,
     id: '',
@@ -82,16 +83,13 @@ const useUserStore = defineStore('user', {
       const permissions: AnyObject = getUserResourcePermission(data);
       this.permissions = {};
       this.setInfo({ ...data, name: data.displayName, permissions });
-
-      // TODO: remove this code after the first login verification is completed
-      this.cancelVerificationManually();
     },
     getProjectUserActions(id, resource) {
       const path = `${this.permissionsKey.projectRoles}.${id}.policies.${resource}`;
       return path;
     },
     isSystemAdmin() {
-      return _.some(this.roles, (item) => item.id === RoleType.Admin);
+      return this.role === RoleType.Admin;
     },
     checkUserRole(roles, role) {
       return _.some(roles, (item) => item.id === role);
@@ -182,8 +180,9 @@ const useUserStore = defineStore('user', {
       const { data } = await userSettings();
       const items = data.items || [];
       const settingData = items.reduce((obj, item) => {
-        obj[item.name] = {
-          ...item
+        const name = item.metadata?.name;
+        obj[name] = {
+          ...item.status
         };
         return obj;
       }, {});

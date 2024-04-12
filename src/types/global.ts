@@ -64,8 +64,8 @@ export interface AxiosRequestPayload {
     namespace: string;
     [key: string]: any;
   };
-  spec: object;
-  status: object;
+  spec: Record<string, any>;
+  status: Record<string, any>;
 }
 
 export interface RequestCallbackArgs {
@@ -82,6 +82,6 @@ export interface DataListItem {
     namespace: string;
     [key: string]: any;
   };
-  spec: object;
-  status: object;
+  spec: Record<string, any>;
+  status: Record<string, any>;
 }

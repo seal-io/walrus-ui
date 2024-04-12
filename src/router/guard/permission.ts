@@ -12,6 +12,11 @@ export default function setupPermissionGuard(router: Router) {
     const userStore = useUserStore();
     const Permission = usePermission(to);
 
+    if (!to.meta?.requiresAuth) {
+      next();
+      return;
+    }
+
     // when forbidden to use password-free login from ui only need userStore.name && userStore?.userSetting?.FirstLogin?.value
     if (userStore.name && !userStore.isFirstLogin()) {
       // path to '/' redirect to 'login'
@@ -39,6 +44,7 @@ export default function setupPermissionGuard(router: Router) {
       });
     }
   });
+
   router.afterEach(() => {
     NProgress.done();
   });

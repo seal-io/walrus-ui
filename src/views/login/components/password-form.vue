@@ -1,43 +1,11 @@
 <template>
   <div class="main-wrapper">
     <div id="login-form-wrapper" class="login-form-wrapper">
-      <div class="login-form-title">
-        <span v-show="!showModify">{{ $t('login.form.title') }}</span>
-        <span v-show="showModify">{{ $t('login.form.login.update') }}</span>
-        <div class="language">
-          <a-switch
-            v-model="isDark"
-            checked-color="var(--black-2)"
-            unchecked-color="rgb(185, 207, 243)"
-            @change="toggleTheme"
-          >
-            <template #checked-icon>
-              <icon-moon class="size-16" />
-            </template>
-            <template #unchecked-icon>
-              <icon-sun class="size-16" />
-            </template>
-          </a-switch>
-          <a-dropdown @select="changeLocale">
-            <a-button shape="circle" type="text" size="mini"
-              ><i class="iconfont icon-language size-18"
-            /></a-button>
-            <template #content>
-              <a-doption
-                v-for="item in locales"
-                :key="item.value"
-                :value="item.value"
-                style="font-size: var(--font-size-normal)"
-              >
-                {{ item.label }}
-              </a-doption>
-            </template>
-          </a-dropdown>
-        </div>
-      </div>
       <!-- login box -->
       <div v-show="!showModify">
-        <div class="login-form-error-msg">{{ errorMessage }}</div>
+        <div v-if="errorMessage" class="login-form-error-msg">{{
+          errorMessage
+        }}</div>
         <a-form
           ref="loginForm"
           :model="userInfo"
@@ -121,7 +89,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { useDark, useToggle } from '@vueuse/core';
-  import { ref, reactive, onMounted } from 'vue';
+  import { ref, reactive, onMounted, inject, watch } from 'vue';
   import { LOCALE_OPTIONS } from '@/locale';
   import useLocale from '@/hooks/locale';
   import { useUserStore, useAppStore } from '@/store';
@@ -141,6 +109,7 @@
     TEMP_LOGIN_INFO
   } from '@/utils/auth';
   import modifyPassword from './modify-password.vue';
+  import { FirstGetPasswordCommand } from '../config';
 
   const props = defineProps({
     firstLoginStatus: {
@@ -150,11 +119,14 @@
       }
     }
   });
+  const providerList = inject('providerList', ref([]));
   const CRYPT_TEXT = 'web';
-  const emits = defineEmits(['loginSuccess', 'update:hideTips']);
+  const emits = defineEmits([
+    'loginSuccess',
+    'update:hideTips',
+    'modifyPassword'
+  ]);
   const { enterUserPage } = useEnterPage();
-  const { changeLocale } = useLocale();
-  const locales = [...LOCALE_OPTIONS];
   const errorMessage = ref('');
   const { loading, setLoading } = useLoading();
   const userStore = useUserStore();
@@ -230,6 +202,18 @@
     }
   };
 
+  const handleShowModifyCallback = () => {
+    showModify.value = true;
+    emits('update:hideTips', true);
+    emits('loginSuccess');
+    emits('modifyPassword');
+  };
+  const checkShowModify = () => {
+    if (userStore?.isFirstLogin() && userStore.name) {
+      handleShowModifyCallback();
+    }
+  };
+
   const handleSubmit = async ({ errors, values }) => {
     if (!errors) {
       setLoading(true);
@@ -259,9 +243,7 @@
           }
         });
         if (userStore?.isFirstLogin() && userStore.isSystemAdmin()) {
-          showModify.value = true;
-          emits('update:hideTips', true);
-          emits('loginSuccess');
+          handleShowModifyCallback();
           getUserPartialSetting();
           return;
         }
@@ -279,13 +261,7 @@
   const setRememberPassword = (val) => {
     rememberPassword.value = val;
   };
-  const checkShowModify = () => {
-    if (userStore?.isFirstLogin() && userStore.name) {
-      showModify.value = true;
-      emits('update:hideTips', true);
-      emits('loginSuccess');
-    }
-  };
+
   const getLocalSetting = async () => {
     const res = await readLocalLoginInfo(LOGIN_INFO);
     userInfo.username = res?.username || '';
@@ -301,10 +277,30 @@
 
     // ========= refresh page when modify password =============
   };
-  onMounted(async () => {
-    getLocalSetting();
-    checkShowModify();
-  });
+  const getDefaultUserName = () => {
+    const data: any = _.find(providerList.value, {
+      loginWithPassword: true
+    });
+    userInfo.username = data?.name || '';
+  };
+  watch(
+    () => props.firstLoginStatus,
+    (val) => {
+      if (val) {
+        const isFirstLogin =
+          props.firstLoginStatus?.value !== FirstGetPasswordCommand.Invalid;
+        if (isFirstLogin) {
+          checkShowModify();
+        } else {
+          getLocalSetting();
+        }
+      }
+    },
+    {
+      immediate: false,
+      deep: true
+    }
+  );
 </script>
 
 <style lang="less" scoped>
@@ -317,58 +313,14 @@
   .login-form {
     &-wrapper {
       width: 100%;
-      width: 380px;
-      // min-width: 320px;
-      .language {
-        position: fixed;
-        top: 20px;
-        right: 30px;
-        display: flex;
-        align-items: center;
-        height: 24px;
-        font-size: 0;
 
-        .iconfont {
-          color: var(--color-text-selected);
-        }
-
-        .arco-switch {
-          margin-right: 20px;
-        }
-
-        :deep(.arco-switch-checked) {
-          .arco-switch-handle {
-            color: var(--color-text-3);
-            background-color: transparent;
-
-            .arco-switch-handle-icon {
-              display: flex;
-              align-items: center;
-            }
-          }
-        }
+      .password-type {
+        width: 380px;
       }
     }
 
     .arco-input-wrapper {
       width: 100%;
-    }
-
-    &-title {
-      text-align: center;
-    }
-
-    &-title {
-      color: var(--color-text-1);
-      font-weight: var(--font-weight-medium);
-      font-size: 24px;
-      line-height: 32px;
-    }
-
-    &-sub-title {
-      color: var(--color-text-3);
-      font-size: var(--font-size-large);
-      line-height: 24px;
     }
 
     &-error-msg {
@@ -380,10 +332,6 @@
     &-password-actions {
       display: flex;
       justify-content: space-between;
-    }
-
-    &-register-btn {
-      color: var(--color-text-3) !important;
     }
   }
 </style>
