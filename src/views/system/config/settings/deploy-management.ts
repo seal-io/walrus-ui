@@ -27,8 +27,8 @@ export const deployManagement: SettingsItem = {
       },
       subGroup: [
         {
-          id: 'DeployerImage',
-          key: 'DeployerImage',
+          id: 'terraform-deployer-image',
+          key: 'terraform-deployer-image',
           label: 'system.setting.TerraformDeployerImage',
           parentId: '',
           component: {
@@ -41,8 +41,8 @@ export const deployManagement: SettingsItem = {
           type: 'string'
         },
         {
-          id: 'DeployerNetworkMirrorUrl',
-          key: 'DeployerNetworkMirrorUrl',
+          id: 'terraform-deployer-network-mirror-url',
+          key: 'terraform-deployer-network-mirror-url',
           label: 'system.setting.DeployerNetworkMirrorUrl',
           desc: 'system.setting.DeployerNetworkMirrorUrl.desc',
           showExtra: true,
@@ -76,8 +76,8 @@ export const deployManagement: SettingsItem = {
       },
       subGroup: [
         {
-          id: 'DeployerHttpProxy',
-          key: 'DeployerHttpProxy',
+          id: 'deployer-http-proxy',
+          key: 'deployer-http-proxy',
           // label: 'system.setting.offlineManage.httpProxy',
           label: 'HTTP_PROXY',
           desc: 'system.setting.offlineManage.httpProxy.desc',
@@ -93,8 +93,8 @@ export const deployManagement: SettingsItem = {
           type: 'string'
         },
         {
-          id: 'DeployerHttpsProxy',
-          key: 'DeployerHttpsProxy',
+          id: 'deployer-https-proxy',
+          key: 'deployer-https-proxy',
           // label: 'system.setting.offlineManage.httpsProxy',
           label: 'HTTPS_PROXY',
           desc: 'system.setting.offlineManage.httpsProxy.desc',
@@ -110,8 +110,8 @@ export const deployManagement: SettingsItem = {
           type: 'string'
         },
         {
-          id: 'DeployerAllProxy',
-          key: 'DeployerAllProxy',
+          id: 'deployer-all-proxy',
+          key: 'deployer-all-proxy',
           // label: 'system.setting.offlineManage.allProxy',
           label: 'ALL_PROXY',
           desc: 'system.setting.offlineManage.allProxy.desc',
@@ -127,8 +127,8 @@ export const deployManagement: SettingsItem = {
           type: 'string'
         },
         {
-          id: 'DeployerNoProxy',
-          key: 'DeployerNoProxy',
+          id: 'deployer-no-proxy',
+          key: 'deployer-no-proxy',
           // label: 'system.setting.offlineManage.noProxy',
           label: 'NO_PROXY',
           desc: 'system.setting.offlineManage.noProxy.desc',

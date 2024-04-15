@@ -189,8 +189,12 @@
       settingsInfo.value = _.reduce(
         data.items || [],
         (result, item) => {
-          if (item.name) {
-            result[item.name] = item.value;
+          const name = item.metadata?.name;
+          if (name) {
+            result[name] = {
+              data: item,
+              value: item.status.value
+            };
           }
           return result;
         },

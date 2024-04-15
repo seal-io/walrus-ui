@@ -7,14 +7,26 @@
         status="500"
         :subtitle="$t('exception.result.500.description')"
       />
-      <a-button key="back" type="primary">
+      <a-button key="back" type="primary" @click="handleBack">
         {{ $t('exception.result.500.back') }}
       </a-button>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  import useCallCommon from '@/hooks/use-call-common';
+
+  const { router, route } = useCallCommon();
+
+  const handleBack = () => {
+    if (route.query.back) {
+      router.replace({ name: route.query.back as string });
+    } else {
+      router.back();
+    }
+  };
+</script>
 
 <script lang="ts">
   export default {

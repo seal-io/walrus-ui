@@ -8,13 +8,14 @@
 
   const { router } = useCallCommon();
   const redirectPage = () => {
-    const { ...othersQuery } = router.currentRoute.value.query;
-    const { to } = router.currentRoute.value.params;
-    const toPage = to ? `Page${to}` : 'Page500';
+    const query = router.currentRoute.value;
+    const { code, ...othersQuery } = router.currentRoute.value.params;
+    const toPage = code ? `Page${code}` : 'Page500';
     router.replace({
       name: toPage,
       query: {
-        ...othersQuery
+        ...othersQuery,
+        back: 'Login'
       }
     });
   };

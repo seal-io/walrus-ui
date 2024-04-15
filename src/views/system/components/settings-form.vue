@@ -229,6 +229,7 @@
   import { Message } from '@arco-design/web-vue';
   import { useI18n } from 'vue-i18n';
   import validate from '@/utils/validate';
+  import { handleBatchRequest } from '@/views/config/utils';
   import { SettingsItem, ValueType } from '../config';
   import { BatchItem, updateUserSetting } from '../api/setting';
   import formComponent from './form-component.vue';
@@ -360,14 +361,21 @@
     return list.join('/');
   };
   const getValueList = (fieldList) => {
+    console.log('fieldList=========', fieldList);
     const list: Array<BatchItem> = [];
     fieldList.forEach((item) => {
       if (item.editable) {
         list.push({
           name: item.key,
-          value: isObject(formData.value[item.key])
-            ? JSON.stringify(formData.value[item.key])
-            : formData.value[item.key]
+          namespace: item.data.metadata.namespace,
+          data: {
+            ...item.data,
+            spec: {
+              value: isObject(formData.value[item.key])
+                ? JSON.stringify(formData.value[item.key])
+                : formData.value[item.key]
+            }
+          }
         });
       }
     });
@@ -382,7 +390,8 @@
     if (!res) {
       try {
         const valueList = getValueList(fieldList);
-        await updateUserSetting({ items: valueList });
+        await handleBatchRequest(valueList, updateUserSetting);
+
         Message.success(t('common.message.success'));
         emits('settingSave');
         nextTick(() => {

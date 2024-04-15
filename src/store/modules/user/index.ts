@@ -79,10 +79,17 @@ const useUserStore = defineStore('user', {
 
     // Get user's information
     async info() {
-      const { data } = await getUserInfo();
-      const permissions: AnyObject = getUserResourcePermission(data);
-      this.permissions = {};
-      this.setInfo({ ...data, name: data.displayName, permissions });
+      try {
+        const { data } = await getUserInfo();
+        const permissions: AnyObject = getUserResourcePermission(data);
+        this.permissions = {};
+        this.setInfo({ ...data, name: data.displayName, permissions });
+      } catch (error) {
+        // error
+      }
+
+      // TODO: remove this line after the backend is ready
+      // this.cancelVerificationManually();
     },
     getProjectUserActions(id, resource) {
       const path = `${this.permissionsKey.projectRoles}.${id}.policies.${resource}`;
@@ -182,6 +189,7 @@ const useUserStore = defineStore('user', {
       const settingData = items.reduce((obj, item) => {
         const name = item.metadata?.name;
         obj[name] = {
+          data: item,
           ...item.status
         };
         return obj;
@@ -217,6 +225,7 @@ const useUserStore = defineStore('user', {
     cancelVerificationManually() {
       this.$patch({
         name: 'freeUser',
+        role: RoleType.Admin,
         roles: [{ id: RoleType.Admin }],
         userSetting: {
           FirstLogin: {

@@ -26,5 +26,6 @@ export default {
   'propfile.permission.type.project': 'Project Permissions',
   'propfile.permission.type.system': 'System Permissions',
   'propfile.password.leastlength':
-    'password length cannot be less than 6 characters'
+    'password length cannot be less than 6 characters',
+  'propfile.provider.user.source': 'Create User Provider'
 };

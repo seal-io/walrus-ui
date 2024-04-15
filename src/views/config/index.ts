@@ -161,6 +161,10 @@ export const UserTabs = {
   TOKENS: 'tokens'
 };
 
+export const SubjectTabs = {
+  USERS: 'users',
+  PROVIDERS: 'providers'
+};
 export const QAlinkMap = {
   Project: [
     {

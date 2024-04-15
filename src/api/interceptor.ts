@@ -75,11 +75,12 @@ axios.interceptors.response.use(
         : data.statusText);
 
     const result = {
-      code: data?.status,
+      code: data?.code,
       msg,
       data: data?.data,
       api: reqUrl
     };
+    console.log('result=====================', result);
     if (
       !noToastAPI.includes(reqUrl) &&
       !axios.isCancel(error) &&

@@ -1,6 +1,7 @@
 import _, { reduce, each, get, sortBy, keys, uniq, map, uniqBy } from 'lodash';
 import dayjs from 'dayjs';
 import { dateFormatMap } from '@/views/config';
+import { async } from '@antv/x6/lib/registry/marker/async';
 
 export const getStackLineDataList = (
   source: any[],
@@ -136,6 +137,10 @@ export const setDurationValue = (val) => {
     return `${minute}'${second}''`;
   }
   return `${second}''`;
+};
+
+export const handleBatchRequest = async (list, fn) => {
+  return Promise.all(list.map((item) => fn(item)));
 };
 
 export default {};

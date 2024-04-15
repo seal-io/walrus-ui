@@ -16,7 +16,19 @@
         </template>
       </HeaderInfo>
       <ComCard padding="0 var(--card-content-padding) 20px">
-        <Users></Users>
+        <a-tabs
+          v-model:active-key="activeKey"
+          :default-active-key="activeKey"
+          class="page-line-tabs"
+          @change="setPageTabActive"
+        >
+          <a-tab-pane :key="SubjectTabs.USERS" title="Internal Users">
+            <Users></Users>
+          </a-tab-pane>
+          <a-tab-pane :key="SubjectTabs.PROVIDERS" title="Provider Users">
+            <ProviderUsers></ProviderUsers>
+          </a-tab-pane>
+        </a-tabs>
       </ComCard>
     </ComCard>
   </div>
@@ -24,10 +36,17 @@
 
 <script lang="ts" setup>
   import { USERS } from '@/router/config';
-  import { QAlinkMap } from '@/views/config';
+  import { SubjectTabs, QAlinkMap } from '@/views/config';
+  import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import QuestionPopup from '@/components/question-popup/index.vue';
   import HeaderInfo from '@/components/header-info/index.vue';
   import Users from '@/views/system/pages/users.vue';
+  import ProviderUsers from '@/views/subject-providers/components/providers.vue';
+
+  const { activeKey, setPageTabActive } = useTabActive(
+    TabPage.USERTAB,
+    SubjectTabs.USERS
+  );
 </script>
 
 <script lang="ts">

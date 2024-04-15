@@ -112,12 +112,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { get } from 'lodash';
+  import _, { get } from 'lodash';
   import { reactive, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
+  import { handleBatchRequest } from '@/views/config/utils';
   import { useUserStore } from '@/store';
   import { updateUserSetting } from '@/views/system/api/setting';
-  import { modifyPassword } from '../api';
+  import { modifyPassword, NAMESPACES } from '../api';
   import { FirstGetPasswordCommand } from '../config';
 
   const cllectionLink = 'https://seal-io.github.io/docs/improvement-plan';
@@ -164,6 +165,24 @@
     }
   };
 
+  const updateServerURLAndTelemetry = async (settings) => {
+    const userSetting = get(userStore, 'userInfo.userSetting');
+    const list = _.map(settings, (item) => {
+      return {
+        name: item.name,
+        namespace: NAMESPACES,
+        data: {
+          ...userSetting[item.name]?.data,
+          status: {
+            ...userSetting[item.name]?.data?.status,
+            value: item.value
+          }
+        }
+      };
+    });
+
+    return handleBatchRequest(list, updateUserSetting);
+  };
   const handleSubmit = async ({ errors }) => {
     if (!errors) {
       const data = {
@@ -186,8 +205,8 @@
       try {
         if (userStore.isSystemAdmin()) {
           await Promise.all([
-            modifyPassword(data)
-            // updateUserSetting({ items: settings })
+            modifyPassword(data),
+            updateServerURLAndTelemetry(settings)
           ]);
         } else {
           await modifyPassword(data);
@@ -196,14 +215,21 @@
         userStore.setInfo({
           userSetting: {
             ...userSetting,
-            serverUrl: { name: serverUrlID, value: formData.serverUrl },
-            FirstLogin: { value: FirstGetPasswordCommand.Invalid }
+            serverUrl: {
+              data: _.get(userSetting, 'serverUrl.data', {}),
+              value: formData.serverUrl
+            },
+            FirstLogin: {
+              data: _.get(userSetting, 'FirstLogin.data', {}),
+              value: FirstGetPasswordCommand.Invalid
+            }
           }
         });
         emits('updatePassword', formData.newPassword);
         // Message.success(t('common.message.success'));
       } catch (error) {
         // ignore
+        console.log('error========112333', error);
       }
     }
   };
@@ -211,8 +237,10 @@
     () => props.settingsInfo,
     (val) => {
       if (val) {
-        formData.serverUrl = val.ServeUrl || window.location.origin;
-        formData.enableTelemetry = val.EnableTelemetry === 'true';
+        formData.serverUrl =
+          props.settingsInfo.ServeUrl?.value || window.location.origin;
+        formData.enableTelemetry =
+          props.settingsInfo.EnableTelemetry?.value === 'true';
       }
     },
     { immediate: true }
@@ -221,6 +249,8 @@
 
 <style lang="less" scoped>
   .container {
+    min-width: 400px;
+
     :deep(.arco-card-body) {
       padding: 0;
     }

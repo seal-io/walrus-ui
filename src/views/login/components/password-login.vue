@@ -71,6 +71,7 @@
       userStore.setInfo({
         userSetting: {
           FirstLogin: {
+            data,
             value
           }
         }
@@ -87,7 +88,7 @@
     );
   };
 
-  const handleModifyPassword = (password: string) => {
+  const handleModifyPassword = () => {
     emits('modifyPassword');
   };
   // enter page password-free

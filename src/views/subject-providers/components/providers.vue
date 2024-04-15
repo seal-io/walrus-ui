@@ -33,7 +33,7 @@
           "
           type="primary"
           @click="handleCreate"
-          >{{ $t('profile.account.create') }}</a-button
+          >{{ $t('propfile.provider.user.source') }}</a-button
         >
       </template>
     </FilterBox>
@@ -50,8 +50,16 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="name"
+          data-index="metadata.name"
           :title="$t('profile.account.type.user')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="spec.displayName"
+          title="昵称"
         >
         </a-table-column>
         <a-table-column
@@ -64,37 +72,6 @@
           <template #cell="{ record }">
             <span>{{
               dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
-            }}</span>
-          </template>
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="roles"
-          :title="$t('profile.account.role')"
-        >
-          <template #cell="{ record }">
-            <i
-              style="color: var(--sealblue-6)"
-              class="iconfont mright-5 size-14"
-              :class="[
-                _.get(
-                  _.find(
-                    roleTypeList,
-                    (item) => item.value === _.get(record, 'roles.0.role.id')
-                  ),
-                  'icon'
-                ) || 'icon-user'
-              ]"
-            ></i>
-            <span>{{
-              $t(
-                getListLabel(
-                  _.get(record, 'roles.0.role.id') || '0',
-                  roleTypeList
-                )
-              )
             }}</span>
           </template>
         </a-table-column>
@@ -118,25 +95,13 @@
         </a-table-column>
       </template>
     </a-table>
-    <a-pagination
-      size="small"
-      :total="total"
-      :page-size="queryParams.perPage"
-      :current="queryParams.page"
-      show-total
-      show-page-size
-      :hide-on-single-page="total <= 10"
-      @change="handlePageChange"
-      @page-size-change="handlePageSizeChange"
-    />
-    <CreateAccountModal
+    <CreateSubjectProvider
       v-model:show="showModal"
       v-model:action="action"
       :data-info="dataInfo"
-      :role-list="roleList"
       @save="handleSave"
     >
-    </CreateAccountModal>
+    </CreateSubjectProvider>
   </div>
 </template>
 
@@ -150,23 +115,22 @@
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { getListLabel } from '@/utils/func';
-  import { DataListItem, RoleItem } from '../config/interface';
-  import { roleTypeList, actionList } from '../config/users';
-  import { querySubjects, deleteSubjects, queryRoles } from '../api/users';
-  import CreateAccountModal from '../components/create-account-modal.vue';
+  import { DataListItem, FormData } from '../config/interface';
+  import { actionList } from '../config';
+  import { querySubjectProviders, deleteSubjectProvider } from '../api';
+  import CreateSubjectProvider from './create-subject-provider.vue';
 
   const appStore = useAppStore();
   const userStore = useUserStore();
   const dataList = ref<DataListItem[]>([]);
   const loading = ref(false);
   const total = ref(0);
-  const dataInfo = ref({});
+  const dataInfo = ref<any>({});
   const showModal = ref(false);
   const action = ref('create');
-  const roleList = ref<RoleItem[]>(_.cloneDeep(roleTypeList));
   const queryParams = reactive({
-    page: 1,
-    perPage: appStore.perPage || 10,
+    page: '',
+    perPage: '',
     query: ''
   });
 
@@ -176,7 +140,7 @@
       const params: any = {
         ..._.pickBy(queryParams, (val) => !!val)
       };
-      const { data } = await querySubjects(params);
+      const { data } = await querySubjectProviders(params);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
       loading.value = false;
@@ -223,7 +187,10 @@
   const handleDeleteConfirm = async (row) => {
     try {
       loading.value = true;
-      await deleteSubjects({ id: row.id });
+      await deleteSubjectProvider({
+        name: row.metadata?.name,
+        namesspace: row.metadata?.namesspace
+      });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
@@ -250,27 +217,10 @@
       handleDelete(row);
     }
   };
-  const getRolesList = async () => {
-    try {
-      const params = {
-        page: -1,
-        kind: 'system'
-      };
-      const { data } = await queryRoles(params);
-      roleList.value = _.map(data.items || [], (item) => {
-        return {
-          ..._.cloneDeep(item),
-          label: item.id,
-          value: item.id
-        };
-      });
-    } catch (error) {
-      roleList.value = [];
-    }
-  };
+
   onMounted(() => {
     fetchData();
   });
 </script>
 
-<style></style>
+<style lang="less" scoped></style>

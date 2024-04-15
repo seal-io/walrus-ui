@@ -10,7 +10,7 @@
           :subtitle="$t('exception.result.403.description')"
         />
         <div class="operation-row">
-          <a-button key="back" type="primary" @click="back">
+          <a-button key="back" type="primary" @click="handleBack">
             {{ $t('exception.result.403.back') }}
           </a-button>
         </div>
@@ -21,12 +21,16 @@
 
 <script lang="ts" setup>
   import NavBar from '@/components/navbar/index.vue';
-  import { useRouter } from 'vue-router';
+  import useCallCommon from '@/hooks/use-call-common';
 
-  const router = useRouter();
-  const back = () => {
-    // warning： Go to the node that has the permission
-    router.back();
+  const { router, route } = useCallCommon();
+
+  const handleBack = () => {
+    if (route.query.back) {
+      router.replace({ name: route.query.back as string });
+    } else {
+      router.back();
+    }
   };
 </script>
 
