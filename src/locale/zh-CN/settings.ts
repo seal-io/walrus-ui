@@ -28,4 +28,8 @@ export default {
   'settings.close': '关闭',
   'settings.color.tooltip':
     '根据主题颜色生成的 10 个梯度色（将配置复制到项目中，主题色才能对亮色 / 暗黑模式同时生效）',
+  'settings.user.nickName': '昵称',
+  'settings.user.email': '邮箱',
+  'settings.user.avatar': '头像',
+  'settings.user.setting': '用户设置'
 };

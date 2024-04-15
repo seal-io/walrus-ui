@@ -183,7 +183,7 @@
   const getUserPartialSetting = async () => {
     try {
       const params = {
-        name: ['ServeUrl', 'EnableTelemetry']
+        name: ['serve-url', 'enable-telemetry']
       };
       const { data } = await queryUserPartialSetting(params);
       settingsInfo.value = _.reduce(
@@ -243,7 +243,7 @@
         userStore.setInfo({
           userSetting: {
             ...userSetting,
-            FirstLogin: { ...props.firstLoginStatus }
+            'bootstrap-password-provision': { ...props.firstLoginStatus }
           }
         });
         if (userStore?.isFirstLogin() && userStore.isSystemAdmin()) {
@@ -281,12 +281,7 @@
 
     // ========= refresh page when modify password =============
   };
-  const getDefaultUserName = () => {
-    const data: any = _.find(providerList.value, {
-      loginWithPassword: true
-    });
-    userInfo.username = data?.name || '';
-  };
+
   watch(
     () => props.firstLoginStatus,
     (val) => {

@@ -63,7 +63,7 @@ const useUserStore = defineStore('user', {
   actions: {
     switchRoles() {
       return new Promise((resolve) => {
-        this.role = this.role === 'user' ? 'admin' : 'user';
+        this.role = this.role === 'user' ? 'Admin' : 'user';
         resolve(this.role);
       });
     },
@@ -87,9 +87,6 @@ const useUserStore = defineStore('user', {
       } catch (error) {
         // error
       }
-
-      // TODO: remove this line after the backend is ready
-      // this.cancelVerificationManually();
     },
     getProjectUserActions(id, resource) {
       const path = `${this.permissionsKey.projectRoles}.${id}.policies.${resource}`;
@@ -216,7 +213,7 @@ const useUserStore = defineStore('user', {
     // check first login and is admin user must change password, general user no need to  change password when first login
     isFirstLogin() {
       return (
-        this.userSetting?.FirstLogin?.value !==
+        _.get(this.userSetting, ['bootstrap-password-provision', 'value']) !==
           FirstGetPasswordCommand.Invalid && this.isSystemAdmin()
       );
     },
@@ -228,7 +225,7 @@ const useUserStore = defineStore('user', {
         role: RoleType.Admin,
         roles: [{ id: RoleType.Admin }],
         userSetting: {
-          FirstLogin: {
+          'bootstrap-password-provision': {
             value: FirstGetPasswordCommand.Invalid
           }
         }

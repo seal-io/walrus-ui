@@ -40,26 +40,28 @@
     </div>
     <div class="main">
       <div class="content">
-        <a-button
-          v-if="loginType !== loginTypeMap.provider"
-          class="back"
-          @click="handleClickBack"
-          ><icon-arrow-left
-        /></a-button>
-        <div class="content-title">
-          <span v-if="!isModifyPassword">{{ $t('login.form.title') }}</span>
-          <span v-else>{{ $t('login.form.login.update') }}</span>
-        </div>
+        <a-spin :loading="loading" fill>
+          <a-button
+            v-if="loginType !== loginTypeMap.provider && providerList.length"
+            class="back"
+            @click="handleClickBack"
+            ><icon-arrow-left
+          /></a-button>
+          <div class="content-title">
+            <span v-if="!isModifyPassword">{{ $t('login.form.title') }}</span>
+            <span v-else>{{ $t('login.form.login.update') }}</span>
+          </div>
 
-        <SSOProvider
-          v-if="loginType === loginTypeMap.provider"
-          :providers="providerList"
-          @select="handleLoginTypeChange"
-        ></SSOProvider>
-        <PasswordLogin
-          v-else
-          @modifyPassword="handleModifyPassword"
-        ></PasswordLogin>
+          <SSOProvider
+            v-if="loginType === loginTypeMap.provider"
+            :providers="providerList"
+            @select="handleLoginTypeChange"
+          ></SSOProvider>
+          <PasswordLogin
+            v-else
+            @modifyPassword="handleModifyPassword"
+          ></PasswordLogin>
+        </a-spin>
       </div>
     </div>
     <Footer />
@@ -82,6 +84,7 @@
   import { queryIdentifyProviders, ProviderItem, ssoLogin } from './api';
 
   const locales = [...LOCALE_OPTIONS];
+  const loading = ref(false);
   const appStore = useAppStore();
   const userStore = useUserStore();
   const { changeLocale } = useLocale();
@@ -116,6 +119,7 @@
         provider: item.name
       };
 
+      // small window: fullscreen=no,scrollbars=yes,left=300,top=0,toolbar=no,height=800, width=700
       window.open(ssoLogin(params), '_self');
     } catch (error) {
       // ignore
@@ -150,11 +154,15 @@
     if (userStore.name && userStore.isFirstLogin()) {
       loginType.value = loginTypeMap.password;
       isModifyPassword.value = true;
+    } else if (!providerList.value.length) {
+      loginType.value = loginTypeMap.password;
     }
   };
-  const init = () => {
-    fetchData();
+  const init = async () => {
+    loading.value = true;
+    await fetchData();
     checkShowModify();
+    loading.value = false;
   };
   init();
 </script>

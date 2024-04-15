@@ -15,7 +15,6 @@ export default {
   'settings.navbar.alerts': 'alerts',
   'settings.menu': 'Menu',
   'settings.tabBar': 'Tab Bar',
-  // 'settings.company': 'SEAL Software(Shenzhen) Co., Ltd.',
   'settings.company': 'SEAL',
   'settings.footer': 'Footer',
   'settings.otherSettings': 'Other Settings',
@@ -28,4 +27,8 @@ export default {
   'settings.close': 'Close',
   'settings.color.tooltip':
     '10 gradient colors generated according to the theme color',
+  'settings.user.nickName': 'Nickname',
+  'settings.user.email': 'Email',
+  'settings.user.avatar': 'Avatar',
+  'settings.user.setting': 'User Settings'
 };

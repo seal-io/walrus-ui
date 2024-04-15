@@ -41,7 +41,7 @@
           v-model.trim="formData.metadata.name"
           :label="$t('profile.account.name')"
           :required="true"
-          :max-length="30"
+          :max-length="validateInputLength.NAME"
           show-word-limit
           style="width: 100%"
           :disabled="action === 'edit'"
@@ -54,7 +54,7 @@
       >
         <seal-input
           v-model.trim="formData.spec.displayName"
-          label="昵称"
+          :label="$t('settings.user.nickName')"
           :required="false"
           :max-length="30"
           show-word-limit
@@ -188,9 +188,9 @@
       </a-form-item>
       <a-form-item :label="$t('common.table.description')" hide-label>
         <seal-textarea
-          v-model="formData.spec.discription"
+          v-model="formData.spec.description"
           :label="$t('common.table.description')"
-          :max-length="50"
+          :max-length="validateInputLength.DESC"
           show-word-limit
           style="width: 100%"
           :auto-size="{ minRows: 4, maxRows: 6 }"
@@ -224,7 +224,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, reactive, PropType, computed } from 'vue';
-  import { validateUserNameRegx } from '@/views/config';
+  import { validateUserNameRegx, validateInputLength } from '@/views/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import {
@@ -267,7 +267,7 @@
       namespace: GlobalNamespace
     },
     spec: {
-      discription: '',
+      description: '',
       displayName: '',
       type: ProviderTypes.GitHub,
       externalConfig: {
@@ -316,9 +316,9 @@
         namespace: GlobalNamespace
       },
       spec: {
-        discription: '',
+        description: '',
         displayName: '',
-        type: '',
+        type: ProviderTypes.GitHub,
         externalConfig: {
           github: {
             clientID: '',

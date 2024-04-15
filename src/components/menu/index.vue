@@ -158,7 +158,6 @@
         const query: any = item.meta?.query;
         const isReplace: any = item.meta?.replace;
         tabBarStore.clearTags();
-        console.log('project list', item, projectStore.projectList);
         if (item.name === PROJECT.List) {
           await initDefaultProject();
           gotoEnvironmentDetail();
@@ -372,7 +371,9 @@
                         <span>
                           {item.key === 'Profile' ? (
                             <Autotip style={{ maxWidth: '80px' }} class="flex">
-                              {userStore.name || t(item.name)}
+                              {userStore.displayName ||
+                                userStore.name ||
+                                t(item.name)}
                             </Autotip>
                           ) : (
                             t(item.name || '')

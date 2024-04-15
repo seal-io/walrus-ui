@@ -67,7 +67,7 @@
 
             <a-form-item
               hide-asterisk
-              field="serverUrl"
+              field="serve-url"
               hide-label
               :validate-trigger="['change', 'input']"
               :rules="[
@@ -75,7 +75,7 @@
               ]"
             >
               <seal-input
-                v-model.trim="formData.serverUrl"
+                v-model.trim="formData['serve-url']"
                 style="width: 100%"
                 :placeholder="$t('system.setting.serverurl')"
               >
@@ -91,7 +91,7 @@
               }}</div
             >
             <a-form-item hide-label>
-              <a-checkbox v-model="formData.enableTelemetry">
+              <a-checkbox v-model="formData['enable-telemetry']">
                 <span
                   v-html="
                     $t('login.config.user.action', { link: cllectionLink })
@@ -118,7 +118,12 @@
   import { handleBatchRequest } from '@/views/config/utils';
   import { useUserStore } from '@/store';
   import { updateUserSetting } from '@/views/system/api/setting';
-  import { modifyPassword, NAMESPACES } from '../api';
+  import {
+    modifyPassword,
+    NAMESPACES,
+    ResourceKinds,
+    apiVersion
+  } from '../api';
   import { FirstGetPasswordCommand } from '../config';
 
   const cllectionLink = 'https://seal-io.github.io/docs/improvement-plan';
@@ -145,14 +150,12 @@
       }
     }
   });
-  const serverUrlID = 'ServeUrl';
-  const enableTelemetry = 'EnableTelemetry';
   const formData = reactive({
-    oldPassword: props.oldPassword,
-    newPassword: '',
-    confirmPassword: '',
-    serverUrl: window.location.origin,
-    enableTelemetry: true
+    'oldPassword': props.oldPassword,
+    'newPassword': '',
+    'confirmPassword': '',
+    'serve-url': window.location.origin,
+    'enable-telemetry': true
   });
 
   const validateConfirmPassword = (value, callback) => {
@@ -172,9 +175,13 @@
         name: item.name,
         namespace: NAMESPACES,
         data: {
-          ...userSetting[item.name]?.data,
-          status: {
-            ...userSetting[item.name]?.data?.status,
+          kind: ResourceKinds.Setting,
+          apiVersion,
+          metadata: {
+            name: item.name,
+            namespace: NAMESPACES
+          },
+          spec: {
             value: item.value
           }
         }
@@ -193,12 +200,12 @@
       const userSetting = get(userStore, 'userInfo.userSetting');
       const settings = [
         {
-          name: serverUrlID,
-          value: formData.serverUrl
+          name: 'serve-url',
+          value: formData['serve-url']
         },
         {
-          name: enableTelemetry,
-          value: formData.enableTelemetry.toString()
+          name: 'enable-telemetry',
+          value: formData['enable-telemetry'].toString()
         }
       ];
 
@@ -215,12 +222,16 @@
         userStore.setInfo({
           userSetting: {
             ...userSetting,
-            serverUrl: {
-              data: _.get(userSetting, 'serverUrl.data', {}),
-              value: formData.serverUrl
+            'serve-url': {
+              data: _.get(userSetting, ['serve-url', 'data'], {}),
+              value: formData['serve-url']
             },
-            FirstLogin: {
-              data: _.get(userSetting, 'FirstLogin.data', {}),
+            'bootstrap-password-provision': {
+              data: _.get(
+                userSetting,
+                ['bootstrap-password-provision', 'data'],
+                {}
+              ),
               value: FirstGetPasswordCommand.Invalid
             }
           }
@@ -237,10 +248,10 @@
     () => props.settingsInfo,
     (val) => {
       if (val) {
-        formData.serverUrl =
-          props.settingsInfo.ServeUrl?.value || window.location.origin;
-        formData.enableTelemetry =
-          props.settingsInfo.EnableTelemetry?.value === 'true';
+        formData['serve-url'] =
+          props.settingsInfo['serve-url']?.value || window.location.origin;
+        formData['enable-telemetry'] =
+          props.settingsInfo['enable-telemetry']?.value === 'true';
       }
     },
     { immediate: true }

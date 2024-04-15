@@ -50,8 +50,24 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="name"
+          data-index="metadata.name"
           :title="$t('profile.account.type.user')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="spec.displayName"
+          :title="$t('settings.user.nickName')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="spec.description"
+          :title="$t('common.table.description')"
         >
         </a-table-column>
         <a-table-column
@@ -82,7 +98,7 @@
                 _.get(
                   _.find(
                     roleTypeList,
-                    (item) => item.value === _.get(record, 'roles.0.role.id')
+                    (item) => item.value === _.get(record, 'spec.role')
                   ),
                   'icon'
                 ) || 'icon-user'
@@ -91,7 +107,7 @@
             <span>{{
               $t(
                 getListLabel(
-                  _.get(record, 'roles.0.role.id') || '0',
+                  _.get(record, 'spec.role') || RoleType.User,
                   roleTypeList
                 )
               )
@@ -151,7 +167,7 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { getListLabel } from '@/utils/func';
   import { DataListItem, RoleItem } from '../config/interface';
-  import { roleTypeList, actionList } from '../config/users';
+  import { roleTypeList, actionList, RoleType } from '../config/users';
   import { querySubjects, deleteSubjects, queryRoles } from '../api/users';
   import CreateAccountModal from '../components/create-account-modal.vue';
 
@@ -223,7 +239,10 @@
   const handleDeleteConfirm = async (row) => {
     try {
       loading.value = true;
-      await deleteSubjects({ id: row.id });
+      await deleteSubjects({
+        name: row.metadata.name,
+        namespace: row.metadata.namespace
+      });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

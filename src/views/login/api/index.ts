@@ -1,7 +1,11 @@
 import axios from 'axios';
 import qs from 'query-string';
 import { SILENCEAPI } from '@/api/config';
-import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
+import ResourceKinds, {
+  GlobalNamespace,
+  NAMESPACES,
+  apiVersion
+} from '@/views/config/resource-kinds';
 import {
   RequestCallbackArgs,
   AxiosRequestPayload,
@@ -29,7 +33,7 @@ export interface ProviderItem {
   type: string;
 }
 
-export { GlobalNamespace, NAMESPACES };
+export { GlobalNamespace, NAMESPACES, ResourceKinds, apiVersion };
 
 const SETTINGS_API = 'settings';
 

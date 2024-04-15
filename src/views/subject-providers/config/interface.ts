@@ -10,7 +10,7 @@ export interface FormData {
     namespace: string;
   };
   spec: {
-    discription: string;
+    description: string;
     displayName: string;
     type: string;
     externalConfig: Record<
