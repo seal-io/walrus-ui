@@ -22,28 +22,31 @@
             class="password"
             type="primary"
             long
-            onClick={() => handleSelectType('password', {})}
+            style={{ width: '380px' }}
+            onClick={() => handleSelectType('Internal', { type: 'Internal' })}
             v-slots={{
               icon: () => <icon-lock />
             }}
           >
             Login with password
           </a-button>
-          <a-divider margin={45}>Or</a-divider>
+          {/* <a-divider margin={45}>Or</a-divider> */}
           <div class="box">
             {props.providers.map((provider: any) => (
-              <a-button
+              <a-link
                 key={provider.value}
                 class="item"
+                type="primary"
+                style={{ width: '100%' }}
                 onClick={() => handleSelectType(provider.value, provider)}
                 v-slots={{
                   icon: () => (
-                    <ProviderIcon provider={provider.icon} size={28} />
+                    <ProviderIcon provider={provider.icon} size={20} />
                   )
                 }}
               >
                 <span class="text">{provider.label}</span>
-              </a-button>
+              </a-link>
             ))}
           </div>
         </div>
@@ -64,14 +67,16 @@
 
   .box {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: max-content;
+    min-width: 100%;
 
     .item {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       margin-right: 30px;
       cursor: pointer;
 

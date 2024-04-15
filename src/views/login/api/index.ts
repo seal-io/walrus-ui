@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'query-string';
 import { SILENCEAPI } from '@/api/config';
 import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
 import {
@@ -20,7 +21,6 @@ interface SetPassword {
   password: string;
   name?: string;
 }
-
 export interface ProviderItem {
   discription: string;
   displayName: string;
@@ -46,6 +46,11 @@ export interface LoginRes {
 export function login(data: LoginData) {
   return axios.post<LoginRes>('/identify/login', data);
 }
+
+export const ssoLogin = (params: { provider: string }) => {
+  const url = `/identify/login?${qs.stringify(params)}`;
+  return url;
+};
 
 export function logout() {
   return axios.get<LoginRes>('/identify/logout');

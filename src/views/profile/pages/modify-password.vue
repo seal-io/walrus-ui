@@ -94,7 +94,7 @@
   import { useI18n } from 'vue-i18n';
   import { useRouter } from 'vue-router';
   import { Message } from '@arco-design/web-vue';
-  import { modifyPassword } from '@/api/user';
+  import { modifyPassword } from '@/views/login/api';
   import { useUserStore } from '@/store';
   import GroupTitle from '@/components/group-title/index.vue';
 

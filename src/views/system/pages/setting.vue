@@ -113,6 +113,7 @@
     sourceList.value = sList.filter((item) => {
       return !item.hidden;
     });
+    console.log('sourceList++++++++++=', sourceList.value);
   };
 
   const fetchData = async () => {
@@ -127,7 +128,6 @@
         };
         return obj;
       }, {});
-      console.log('settingFormData++++++++++=', settingFormData.value);
     } catch (error) {
       sourceList.value = [];
     }

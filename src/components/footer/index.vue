@@ -70,7 +70,7 @@
     getUserInfo();
   };
   onMounted(() => {
-    getAppVersion();
+    // getAppVersion();
   });
 </script>
 

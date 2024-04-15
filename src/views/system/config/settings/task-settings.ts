@@ -26,8 +26,8 @@ export const taskSettings: SettingsItem = {
       },
       subGroup: [
         {
-          id: 'ConnectorStatusSyncCronExpr',
-          key: 'ConnectorStatusSyncCronExpr',
+          id: 'connector-status-sync-cron',
+          key: 'connector-status-sync-cron',
           label: 'system.setting.ConnectorCheckCronExpr',
           desc: 'system.setting.ConnectorCheckCronExpr.desc',
           parentId: '',
@@ -47,8 +47,8 @@ export const taskSettings: SettingsItem = {
           type: 'string'
         },
         {
-          id: 'ResourceComponentStatusSyncCronExpr',
-          key: 'ResourceComponentStatusSyncCronExpr',
+          id: 'resource-component-status-sync-cron',
+          key: 'resource-component-status-sync-cron',
           label: 'system.setting.ResourceStatusCheckCronExpr',
           desc: 'system.setting.ResourceStatusCheckCronExpr.desc',
           parentId: '',
@@ -68,8 +68,8 @@ export const taskSettings: SettingsItem = {
           type: 'string'
         },
         {
-          id: 'ResourceRelationshipCheckCronExpr',
-          key: 'ResourceRelationshipCheckCronExpr',
+          id: 'resource-relationship-check-cron',
+          key: 'resource-relationship-check-cron',
           label: 'system.setting.ServiceDependencyCheckCronExpr',
           desc: 'system.setting.ServiceDependencyCheckCronExpr.desc',
           parentId: '',

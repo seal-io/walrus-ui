@@ -19,22 +19,22 @@ export const FirstGetPasswordCommand = {
 
 export const externalProviders = [
   {
-    value: 'github',
+    value: 'Github',
     label: 'Github',
     icon: 'github'
   },
   {
-    value: 'gitlab',
+    value: 'Gitlab',
     label: 'Gitlab',
     icon: 'gitlab'
   },
   {
-    value: 'google',
+    value: 'Google',
     label: 'Google',
     icon: 'google'
   },
   {
-    value: 'bitbucket',
+    value: 'Bitbucket',
     label: 'Bitbucket',
     icon: 'bitbucket'
   }

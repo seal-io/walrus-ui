@@ -3,7 +3,7 @@ import exception from './exception';
 
 export default [
   {
-    path: '/redirect/:to',
+    path: '/redirect',
     name: 'Redirect',
     component: () => import('@/views/exception/redirect.vue'),
     meta: {

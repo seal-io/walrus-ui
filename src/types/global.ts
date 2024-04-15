@@ -71,7 +71,7 @@ export interface AxiosRequestPayload {
 export interface RequestCallbackArgs {
   data: AxiosRequestPayload;
   namespace: string;
-  name: string;
+  name?: string;
 }
 
 export interface DataListItem {

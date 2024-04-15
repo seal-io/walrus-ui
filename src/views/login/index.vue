@@ -41,7 +41,7 @@
     <div class="main">
       <div class="content">
         <a-button
-          v-if="loginType !== 'provider'"
+          v-if="loginType !== loginTypeMap.provider"
           class="back"
           @click="handleClickBack"
           ><icon-arrow-left
@@ -52,8 +52,8 @@
         </div>
 
         <SSOProvider
-          v-if="loginType === 'provider'"
-          :providers="externalProviders"
+          v-if="loginType === loginTypeMap.provider"
+          :providers="providerList"
           @select="handleLoginTypeChange"
         ></SSOProvider>
         <PasswordLogin
@@ -67,6 +67,7 @@
 </template>
 
 <script lang="ts" setup>
+  import _ from 'lodash';
   import { useAppStore, useUserStore } from '@/store';
   import { ref, provide } from 'vue';
   import { useDark, useToggle } from '@vueuse/core';
@@ -78,10 +79,11 @@
   import PasswordLogin from './components/password-login.vue';
   import SSOProvider from './components/sso-provider.vue';
   import { externalProviders } from './config';
-  import { queryIdentifyProviders, ProviderItem } from './api';
+  import { queryIdentifyProviders, ProviderItem, ssoLogin } from './api';
 
   const locales = [...LOCALE_OPTIONS];
   const appStore = useAppStore();
+  const userStore = useUserStore();
   const { changeLocale } = useLocale();
   const isDark = useDark({
     selector: 'body',
@@ -93,19 +95,35 @@
       appStore.toggleTheme(dark);
     }
   });
+  const loginTypeMap = {
+    provider: 'provider',
+    password: 'Internal'
+  };
   const toggleTheme = useToggle(isDark);
-  const loginType = ref('provider');
+  const loginType = ref(loginTypeMap.provider);
   const providerList = ref<ProviderItem[]>([]);
   const isModifyPassword = ref(false);
 
   provide('providerList', providerList);
 
-  const handleLoginTypeChange = (type: string, item) => {
-    loginType.value = type;
+  const handleLoginTypeChange = async (type: string, item) => {
+    if (item.type === 'Internal') {
+      loginType.value = type;
+      return;
+    }
+    try {
+      const params = {
+        provider: item.name
+      };
+
+      window.open(ssoLogin(params), '_self');
+    } catch (error) {
+      // ignore
+    }
   };
 
   const handleClickBack = () => {
-    loginType.value = 'provider';
+    loginType.value = loginTypeMap.provider;
   };
 
   const handleModifyPassword = () => {
@@ -115,14 +133,28 @@
   const fetchData = async () => {
     try {
       const { data } = await queryIdentifyProviders();
-      providerList.value = data.items || [];
+      providerList.value = _.map(data.items || [], (item) => {
+        return {
+          ...item,
+          icon: item.type,
+          value: item.name,
+          label: item.type
+        };
+      }).filter((item) => item.type !== 'Internal');
     } catch (error) {
       // ignore
       providerList.value = [];
     }
   };
+  const checkShowModify = () => {
+    if (userStore.name && userStore.isFirstLogin()) {
+      loginType.value = loginTypeMap.password;
+      isModifyPassword.value = true;
+    }
+  };
   const init = () => {
     fetchData();
+    checkShowModify();
   };
   init();
 </script>

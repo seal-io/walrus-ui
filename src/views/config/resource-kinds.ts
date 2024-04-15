@@ -1,6 +1,7 @@
 export default {
   Catalog: 'Catalog',
-  Template: 'Template'
+  Template: 'Template',
+  SubjectProvider: 'SubjectProvider'
 };
 
 export const apiVersion = 'walrus.seal.io/v1';

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'query-string';
 import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
-import { AxiosRequestPayload } from '@/types/global';
+import { AxiosRequestPayload, DataListItem } from '@/types/global';
 
 type ValueType = string | number | boolean;
 
@@ -25,13 +25,14 @@ export interface SettingsItem {
   editable: boolean;
   private?: boolean;
 }
+
 interface ResList {
-  items: Array<SettingsItem>;
+  items: Array<DataListItem>;
 }
 export interface BatchItem {
-  id?: string;
-  name?: string;
-  value: ValueType;
+  name: string;
+  namespace: string;
+  data: AxiosRequestPayload;
 }
 
 export function updateUserSetting(params: {

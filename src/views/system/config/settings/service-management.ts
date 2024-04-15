@@ -26,8 +26,8 @@ export const serviceManagement: SettingsItem = {
       },
       subGroup: [
         {
-          id: 'ServeUrl',
-          key: 'ServeUrl',
+          id: 'serve-url',
+          key: 'serve-url',
           label: 'system.setting.serverurl',
           parentId: '',
           component: {
@@ -39,8 +39,8 @@ export const serviceManagement: SettingsItem = {
           type: 'string'
         },
         {
-          id: 'EnableTelemetry',
-          key: 'EnableTelemetry',
+          id: 'enable-telemetry',
+          key: 'enable-telemetry',
           label: 'login.config.join.improvement',
           parentId: '',
           component: {
@@ -70,8 +70,8 @@ export const serviceManagement: SettingsItem = {
       },
       subGroup: [
         {
-          id: 'SkipRemoteTLSVerify',
-          key: 'SkipRemoteTLSVerify',
+          id: 'enable-remote-tls-verify',
+          key: 'enable-remote-tls-verify',
           label: 'system.setting.SkipRemoteTLSVerify',
           desc: 'system.setting.SkipRemoteTLSVerify.desc',
           parentId: '',
@@ -134,8 +134,8 @@ export const serviceManagement: SettingsItem = {
       },
       subGroup: [
         {
-          id: 'EnableBuiltinCatalog',
-          key: 'EnableBuiltinCatalog',
+          id: 'enable-builtin-catalog',
+          key: 'enable-builtin-catalog',
           label: 'system.setting.enableBuiltinCatalog',
           desc: 'system.setting.enableBuiltinCatalog.desc',
           parentId: '',
@@ -149,8 +149,8 @@ export const serviceManagement: SettingsItem = {
           type: 'boolean'
         },
         {
-          id: 'EnableSyncCatalog',
-          key: 'EnableSyncCatalog',
+          id: 'enable-sync-catalog',
+          key: 'enable-sync-catalog',
           label: 'system.setting.enableSyncCatalog',
           desc: 'system.setting.enableSyncCatalog.desc',
           parentId: '',
@@ -164,36 +164,36 @@ export const serviceManagement: SettingsItem = {
           type: 'boolean'
         }
       ]
-    },
-    {
-      id: '',
-      key: '',
-      label: 'system.setting.task.enhance',
-      value: '',
-      type: 'groupTitle',
-      component: {},
-      parentId: '',
-      isEditable: false,
-      style: {
-        fontWeight: 500,
-        marginTop: '10px',
-        marginBottom: '15px'
-      },
-      subGroup: [
-        {
-          id: 'OpenAiApiToken',
-          key: 'OpenAiApiToken',
-          label: 'system.setting.openAiApiToken',
-          parentId: '',
-          component: {
-            type: 'password',
-            required: false
-          },
-          value: '',
-          type: 'string'
-        }
-      ]
     }
+    // {
+    //   id: '',
+    //   key: '',
+    //   label: 'system.setting.task.enhance',
+    //   value: '',
+    //   type: 'groupTitle',
+    //   component: {},
+    //   parentId: '',
+    //   isEditable: false,
+    //   style: {
+    //     fontWeight: 500,
+    //     marginTop: '10px',
+    //     marginBottom: '15px'
+    //   },
+    //   subGroup: [
+    //     {
+    //       id: 'OpenAiApiToken',
+    //       key: 'OpenAiApiToken',
+    //       label: 'system.setting.openAiApiToken',
+    //       parentId: '',
+    //       component: {
+    //         type: 'password',
+    //         required: false
+    //       },
+    //       value: '',
+    //       type: 'string'
+    //     }
+    //   ]
+    // }
   ]
 };
 
