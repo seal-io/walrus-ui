@@ -43,10 +43,10 @@ export function querySubjectProviders(params: queryParams) {
 
 export const deleteSubjectProvider = (param: {
   name: string;
-  namesspace: string;
+  namespace: string;
 }) => {
   const url = generateSubjectProvidersAPI({
-    namespace: param.namesspace,
+    namespace: param.namespace,
     name: param.name
   });
   return axios.delete(url);

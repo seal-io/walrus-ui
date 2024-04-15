@@ -6,9 +6,13 @@ import {
   ListQuery,
   RequestCallbackArgs
 } from '@/types/global';
-import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
+import ResourceKinds, {
+  GlobalNamespace,
+  NAMESPACES,
+  apiVersion
+} from '@/views/config/resource-kinds';
 
-export { GlobalNamespace, NAMESPACES };
+export { GlobalNamespace, NAMESPACES, ResourceKinds, apiVersion };
 
 export const SUBJECT_API = 'subjects';
 
@@ -38,9 +42,9 @@ export function querySubjects(params: queryParams) {
   });
 }
 
-export const deleteSubjects = (param: { name: string; namesspace: string }) => {
+export const deleteSubjects = (param: { name: string; namespace: string }) => {
   const url = generateSubjectAPI({
-    namespace: param.namesspace,
+    namespace: param.namespace,
     name: param.name
   });
   return axios.delete(url);

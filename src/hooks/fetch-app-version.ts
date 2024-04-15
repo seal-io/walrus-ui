@@ -26,7 +26,8 @@ export function fetchAppVersion(): { version: string; commitId: string } {
 }
 
 export function queryAppServerVersion() {
-  return axios.get(`/debug/version`);
+  return {};
+  // return axios.get(`/debug/version`);
 }
 export function showVersionModal({
   data,

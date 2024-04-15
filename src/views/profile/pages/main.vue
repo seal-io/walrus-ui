@@ -33,7 +33,7 @@
           </a-tab-pane>
           <a-tab-pane
             :key="UserTabs.PASSWORD"
-            :title="$t('user.password.modify')"
+            :title="$t('settings.user.setting')"
           >
             <ModifyPassword></ModifyPassword>
           </a-tab-pane>

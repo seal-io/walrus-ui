@@ -25,28 +25,28 @@
             style={{ width: '380px' }}
             onClick={() => handleSelectType('Internal', { type: 'Internal' })}
             v-slots={{
-              icon: () => <icon-lock />
+              icon: () => <icon-lock class="size-16" />
             }}
           >
-            Login with password
+            <span>Login with password</span>
           </a-button>
           {/* <a-divider margin={45}>Or</a-divider> */}
           <div class="box">
             {props.providers.map((provider: any) => (
-              <a-link
+              <a-button
                 key={provider.value}
                 class="item"
-                type="primary"
+                type="outline"
                 style={{ width: '100%' }}
                 onClick={() => handleSelectType(provider.value, provider)}
                 v-slots={{
                   icon: () => (
-                    <ProviderIcon provider={provider.icon} size={20} />
+                    <ProviderIcon provider={provider.icon} size={16} />
                   )
                 }}
               >
-                <span class="text">{provider.label}</span>
-              </a-link>
+                <span class="text">Login with {provider.label}</span>
+              </a-button>
             ))}
           </div>
         </div>
@@ -60,6 +60,7 @@
     height: 48px;
     margin: 30px 0;
     margin-top: 50px;
+    padding: 0 30px 10px;
     font-weight: var(--font-weight-bold);
     font-size: var(--font-size-large);
     text-align: center;
@@ -85,8 +86,6 @@
       }
 
       .text {
-        margin-left: 8px;
-        font-weight: var(--font-weight-bold);
         font-size: var(--font-size-large);
       }
     }

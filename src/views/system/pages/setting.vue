@@ -113,7 +113,6 @@
     sourceList.value = sList.filter((item) => {
       return !item.hidden;
     });
-    console.log('sourceList++++++++++=', sourceList.value);
   };
 
   const fetchData = async () => {

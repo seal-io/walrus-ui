@@ -3,7 +3,7 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="500"
+    :width="600"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
@@ -28,7 +28,7 @@
       <a-form-item
         :label="$t('profile.account.name')"
         hide-label
-        field="name"
+        field="metadata.name"
         :validate-trigger="['change', 'input']"
         :rules="[
           {
@@ -39,7 +39,7 @@
         ]"
       >
         <seal-input
-          v-model.trim="formData.name"
+          v-model.trim="formData.metadata.name"
           :label="$t('profile.account.name')"
           :required="true"
           :max-length="30"
@@ -48,9 +48,38 @@
           :disabled="action === 'edit'"
         ></seal-input>
       </a-form-item>
+      <a-form-item hide-label field="spec.displayName">
+        <seal-input
+          v-model.trim="formData.spec.displayName"
+          :label="$t('settings.user.nickName')"
+          :required="false"
+          :max-length="validateInputLength.NAME"
+          show-word-limit
+          style="width: 100%"
+        ></seal-input>
+      </a-form-item>
       <a-form-item
-        :label="$t('profile.account.password')"
-        field="password"
+        hide-label
+        field="spec.email"
+        :validate-trigger="['change', 'input']"
+        :rules="[
+          {
+            required: true,
+            message: $t('common.form.rule.input', {
+              name: $t('settings.user.email')
+            })
+          }
+        ]"
+      >
+        <seal-input
+          v-model.trim="formData.spec.email"
+          :label="$t('settings.user.email')"
+          :required="true"
+          style="width: 100%"
+        ></seal-input>
+      </a-form-item>
+      <a-form-item
+        field="spec.credential"
         :validate-trigger="['change', 'input']"
         hide-label
         :rules="[
@@ -62,7 +91,7 @@
       >
         <a-input-group style="width: 100%">
           <seal-input-password
-            v-model="formData.password"
+            v-model="formData.spec.credential"
             style="
               width: 100%;
               border-radius: var(--border-radius-small) 0 0
@@ -86,7 +115,7 @@
       </a-form-item>
       <a-form-item
         :label="$t('profile.account.role')"
-        field="roleId"
+        field="spec.role"
         hide-label
         validate-trigger="change"
         :rules="[
@@ -97,7 +126,7 @@
         ]"
       >
         <seal-select
-          v-model="formData.roleId"
+          v-model="formData.spec.role"
           :label="$t('profile.account.role')"
           style="width: 100%"
           @change="handleRoleChange"
@@ -108,7 +137,7 @@
               class="iconfont size-14"
               :class="[
                 _.get(
-                  _.find(roleList, (item) => item.value === formData.roleId),
+                  _.find(roleList, (item) => item.value === formData.spec.role),
                   'icon'
                 ) || 'icon-user'
               ]"
@@ -127,6 +156,16 @@
             <span>{{ $t(item.label) }}</span>
           </a-option>
         </seal-select>
+      </a-form-item>
+      <a-form-item :label="$t('common.table.description')" hide-label>
+        <seal-textarea
+          v-model="formData.spec.description"
+          :label="$t('common.table.description')"
+          :max-length="validateInputLength.DESC"
+          show-word-limit
+          style="width: 100%"
+          :auto-size="{ minRows: 4, maxRows: 6 }"
+        ></seal-textarea>
       </a-form-item>
     </a-form>
     <template #footer>
@@ -156,11 +195,17 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, reactive, PropType } from 'vue';
-  import { validateUserNameRegx } from '@/views/config';
+  import { validateUserNameRegx, validateInputLength } from '@/views/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { accountTypeList, roleTypeList } from '../config/users';
+  import { accountTypeList, roleTypeList, RoleType } from '../config/users';
   import { RoleItem } from '../config/interface';
-  import { createSubject, updateSubject } from '../api/users';
+  import {
+    createSubject,
+    updateSubject,
+    ResourceKinds,
+    GlobalNamespace,
+    apiVersion
+  } from '../api/users';
 
   const props = defineProps({
     action: {
@@ -192,39 +237,47 @@
   const emits = defineEmits(['update:show', 'update:action', 'save']);
   const submitLoading = ref(false);
   const formref = ref();
-  const formData = reactive({
-    kind: 'user',
-    domain: 'builtin',
-    name: '',
-    password: '',
-    roleId: '0'
+  const formData = ref<any>({
+    kind: ResourceKinds.Subject,
+    apiVersion,
+    metadata: {
+      namespace: GlobalNamespace,
+      name: ''
+    },
+    spec: {
+      description: '',
+      email: '',
+      displayName: '',
+      provider: 'default',
+      credential: '',
+      role: RoleType.User
+    }
   });
 
   const handleRoleChange = (value) => {};
   const handleGeneratePassword = () => {
-    formData.password = _.get(Math.random().toString(32).split('.'), '1');
+    formData.value.spec.credential = _.get(
+      Math.random().toString(32).split('.'),
+      '1'
+    );
   };
   const handleOk = async () => {
     const res = await formref.value.validate();
     try {
       if (!res) {
         submitLoading.value = true;
-        const data: any = _.pickBy(formData, (val) => val);
-        if (formData.roleId !== '0') {
-          data.roles = [
-            {
-              role: {
-                id: formData.roleId
-              }
-            }
-          ];
-        } else {
-          data.roles = [];
-        }
+
         if (props.action === 'create') {
-          await createSubject(data);
+          await createSubject({
+            namespace: GlobalNamespace,
+            data: formData.value
+          });
         } else {
-          await updateSubject(data);
+          await updateSubject({
+            namespace: GlobalNamespace,
+            name: formData.value.metadata.name,
+            data: formData.value
+          });
         }
         submitLoading.value = false;
         emits('save');
@@ -238,17 +291,26 @@
     emits('update:show', false);
   };
   const reset = () => {
-    formData.roleId = '0';
-    formData.name = '';
-    formData.password = '';
+    formData.value = {
+      kind: ResourceKinds.Subject,
+      apiVersion,
+      metadata: {
+        namespace: GlobalNamespace,
+        name: ''
+      },
+      spec: {
+        description: '',
+        email: '',
+        displayName: '',
+        provider: 'default',
+        credential: '',
+        role: RoleType.User
+      }
+    };
   };
   const handleBeforeOpen = () => {
     if (props.action === 'edit') {
-      _.assignIn(
-        formData,
-        _.pick(props.dataInfo, ['kind', 'name', 'id', 'domain'])
-      );
-      formData.roleId = _.get(props.dataInfo, 'roles.0.role.id') || '0';
+      formData.value = _.cloneDeep(props.dataInfo);
     }
   };
   const handleBeforeClose = () => {

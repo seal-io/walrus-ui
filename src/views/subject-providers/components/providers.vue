@@ -59,7 +59,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="spec.displayName"
-          title="昵称"
+          :title="$t('settings.user.nickName')"
         >
         </a-table-column>
         <a-table-column
@@ -189,7 +189,7 @@
       loading.value = true;
       await deleteSubjectProvider({
         name: row.metadata?.name,
-        namesspace: row.metadata?.namesspace
+        namespace: row.metadata?.namespace
       });
       loading.value = false;
       execSucceed();

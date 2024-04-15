@@ -88,7 +88,8 @@ export const InputWidth = {
 export const validateInputLength = {
   NAME: 30,
   TemplateName: 63,
-  DESC: 200
+  DESC: 50,
+  LABEL: 63
 };
 
 export const TabPage = {

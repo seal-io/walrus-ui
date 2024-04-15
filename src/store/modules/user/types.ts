@@ -2,7 +2,7 @@ import { AnyObject } from '@/types/global';
 import { RouteRecordRaw } from 'vue-router';
 
 export type permissionItem = 'GET' | 'POST' | 'PUT' | 'DELETE' | '*';
-export type RoleType = '' | '*' | 'Admin' | 'user';
+export type RoleType = '' | '*' | 'Admin' | 'Viewer' | 'Manager';
 
 export const permissionKey = {
   projectRoles: 'projectRoles',

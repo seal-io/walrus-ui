@@ -4,6 +4,52 @@
       <a-form-item
         hide-asterisk
         hide-label
+        field="displayName"
+        :trigger="['change', 'blur']"
+        :rules="[
+          {
+            required: true,
+            message: $t('common.form.rule.input', {
+              name: $t('settings.user.nickName')
+            })
+          }
+        ]"
+      >
+        <seal-input
+          v-model="formData.displayName"
+          :style="{ width: `${InputWidth.LARGE}px` }"
+          :required="true"
+          :max-length="validateInputLength.NAME"
+          show-limit-word
+          allow-clear
+          :placeholder="$t('settings.user.nickName')"
+        />
+      </a-form-item>
+      <a-form-item
+        hide-asterisk
+        hide-label
+        field="email"
+        :trigger="['change', 'blur']"
+        :rules="[
+          {
+            required: true,
+            message: $t('common.form.rule.input', {
+              name: $t('settings.user.email')
+            })
+          }
+        ]"
+      >
+        <seal-input
+          v-model="formData.email"
+          :style="{ width: `${InputWidth.LARGE}px` }"
+          :required="true"
+          allow-clear
+          :placeholder="$t('settings.user.email')"
+        />
+      </a-form-item>
+      <a-form-item
+        hide-asterisk
+        hide-label
         field="oldPassword"
         :trigger="['change', 'blur']"
         :rules="[
@@ -21,7 +67,7 @@
       <a-form-item
         hide-asterisk
         hide-label
-        field="newPassword"
+        field="password"
         :trigger="['change', 'blur']"
         :rules="[
           { required: true, message: $t('user.password.rules.newpassword') },
@@ -29,7 +75,7 @@
         ]"
       >
         <seal-input-password
-          v-model="formData.newPassword"
+          v-model="formData.password"
           :style="{ width: `${InputWidth.LARGE}px` }"
           :required="true"
           allow-clear
@@ -72,23 +118,11 @@
         </EditPageFooter>
       </a-form-item>
     </a-form>
-    <!-- <EditPageFooter :size="100">
-      <template #save>
-        <a-button type="primary" class="save-btn" html-type="submit">{{
-          $t('common.button.save')
-        }}</a-button>
-      </template>
-      <template #cancel>
-        <a-button type="outline" class="cancel-btn" @click="handleCancel">{{
-          $t('common.button.cancel')
-        }}</a-button>
-      </template>
-    </EditPageFooter> -->
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { InputWidth } from '@/views/config';
+  import { InputWidth, validateInputLength } from '@/views/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { reactive } from 'vue';
   import { useI18n } from 'vue-i18n';
@@ -96,7 +130,6 @@
   import { Message } from '@arco-design/web-vue';
   import { modifyPassword } from '@/views/login/api';
   import { useUserStore } from '@/store';
-  import GroupTitle from '@/components/group-title/index.vue';
 
   const { t } = useI18n();
   const userStore = useUserStore();
@@ -111,8 +144,10 @@
   });
 
   const formData = reactive({
+    displayName: '',
+    email: '',
+    password: '',
     oldPassword: '',
-    newPassword: '',
     confirmPassword: ''
   });
   const handleCancel = () => {
@@ -121,7 +156,7 @@
   const validateConfirmPassword = (value, callback) => {
     if (!value) {
       callback(t('user.password.rules.confirmpassword'));
-    } else if (value !== formData.newPassword) {
+    } else if (value !== formData.password) {
       callback(t('user.password.rules.comparepassword'));
     } else {
       callback();
@@ -129,15 +164,15 @@
   };
   const handleSubmit = async ({ errors }) => {
     if (!errors) {
-      const data = {
-        oldPassword: formData.oldPassword,
-        password: formData.newPassword,
-        name: userStore.name
-      };
-      await modifyPassword(data);
+      await modifyPassword(formData);
       Message.success(t('common.message.success'));
     }
   };
+  const init = () => {
+    formData.displayName = userStore.displayName || '';
+    formData.email = userStore.email || '';
+  };
+  init();
 </script>
 
 <style lang="less" scoped>

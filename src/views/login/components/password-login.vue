@@ -70,7 +70,7 @@
       isFirstLogin.value = value !== FirstGetPasswordCommand.Invalid;
       userStore.setInfo({
         userSetting: {
-          FirstLogin: {
+          'bootstrap-password-provision': {
             data,
             value
           }
