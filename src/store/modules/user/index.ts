@@ -83,7 +83,7 @@ const useUserStore = defineStore('user', {
         const { data } = await getUserInfo();
         const permissions: AnyObject = getUserResourcePermission(data);
         this.permissions = {};
-        this.setInfo({ ...data, name: data.displayName, permissions });
+        this.setInfo({ ...data, permissions });
       } catch (error) {
         // error
       }

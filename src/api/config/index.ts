@@ -33,4 +33,17 @@ export const noToastAPI: string[] = [];
 
 export const FieldManagerMethods = ['post', 'put'];
 
+export const overrideRequestConfig = (config) => {
+  if (FieldManagerMethods.includes(config.method)) {
+    config.params = {
+      ...config.params,
+      fieldManager: 'walrus-ui'
+    };
+  }
+  if (config.params?.fieldSelector) {
+    config.params.fieldSelector = `metadata.name=${config.params.fieldSelector}`;
+  }
+  return config;
+};
+
 export default {};

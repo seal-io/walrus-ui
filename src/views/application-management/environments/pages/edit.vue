@@ -58,7 +58,7 @@
           <seal-input
             v-model.trim="formData.name"
             :view-status="pageAction === PageAction.VIEW"
-            :disabled="!!id && !isCloneAction"
+            :disabled="!!name && !isCloneAction"
             :label="$t('operation.environments.table.name')"
             :required="true"
             :style="{ width: `${InputWidth.LARGE}px` }"
@@ -83,7 +83,8 @@
             :view-status="pageAction === PageAction.VIEW"
             :label="$t('applications.environment.type')"
             :required="true"
-            :disabled="!!id && !isCloneAction"
+            :is-locale="true"
+            :disabled="!!name && !isCloneAction"
             :options="EnvironmentTypeList"
             :style="{ width: `${InputWidth.LARGE}px` }"
             @change="handleEnvironmentTypeChange"
@@ -285,6 +286,7 @@
     validateInputLength,
     InputWidth,
     EnvironmentTypeMap,
+    EnvironmentTypeList,
     EnvironmentTypeOrder,
     SaveActions,
     HintKeyMaps
@@ -310,9 +312,6 @@
   import { onBeforeRouteLeave } from 'vue-router';
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
   import usePageAction from '@/hooks/use-page-action';
-  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
-  import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
-  import LabelsList from '@/components/form-create/custom-components/labels-list.vue';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import useCompleteData from '@/views/application-management/services/hooks/use-complete-data';
   import { BreadcrumbOptions } from '@/views/config/interface';
@@ -344,9 +343,10 @@
   const tabBarStore = useTabBarStore();
   const { router, route, t } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
-  const id = route.query.id as string;
+  const name = route.query.name as string;
   const isCloneAction = route.params.clone as string; // only in clone
-  const environmentId = route.params.environmentId as string;
+  const environmentName = route.params.environmentName as string;
+  const projectName = route.params.projectName as string;
   const formref = ref();
   const resourceRef = ref(); // only in clone
   const resourceList = ref<any[]>([]);
@@ -401,15 +401,15 @@
       [HintKeyMaps.var]: [...projectVariables.value, ...variables]
     };
   });
-  const EnvironmentTypeList = computed(() => {
-    return _.map(userStore.applicableEnvironmentTypes, (item) => {
-      return {
-        label: t(EnvironmentTypeMap[item] || ''),
-        value: item,
-        order: EnvironmentTypeOrder[item]
-      };
-    }).sort((a, b) => a.order - b.order);
-  });
+  // const EnvironmentTypeList = computed(() => {
+  //   return _.map(userStore.applicableEnvironmentTypes, (item) => {
+  //     return {
+  //       label: t(EnvironmentTypeMap[item] || ''),
+  //       value: item,
+  //       order: EnvironmentTypeOrder[item]
+  //     };
+  //   }).sort((a, b) => a.order - b.order);
+  // });
   const selectableConnectors = computed(() => {
     return _.filter(connectorList.value, (item) => {
       return item.applicableEnvironmentType === formData.value.type;
@@ -420,10 +420,10 @@
     if (isCloneAction) {
       return t('applications.environment.clone');
     }
-    if (!id) {
+    if (!name) {
       return t('operation.environments.create');
     }
-    if (id && pageAction.value === PageAction.EDIT) {
+    if (name && pageAction.value === PageAction.EDIT) {
       return t('operation.environments.edit');
     }
     return t('operation.environments.view');
@@ -439,7 +439,7 @@
     if (route.name === PROJECT.EnvDetail) {
       pageAction.value = userStore.hasProjectResourceActions({
         resource: Resources.Environments,
-        environmentID: id,
+        environmentID: name,
         projectID: route.params.projectId,
         actions: ['POST']
       })
@@ -453,7 +453,7 @@
     }
     const hasPermission = userStore.hasProjectResourceActions({
       resource: Resources.Environments,
-      environmentID: id,
+      environmentID: name,
       projectID: route.params.projectId,
       actions: ['POST']
     });
@@ -504,9 +504,12 @@
   };
   const getItemEnvironmentInfo = async () => {
     copyFormData = cloneDeep(formData.value);
-    if (!id) return;
+    if (!name) return;
     try {
-      const { data } = await queryItemEnvironments({ id });
+      const { data } = await queryItemEnvironments({
+        environmentName: name,
+        namespace: projectName
+      });
       formData.value = data;
       formData.value.edges = [];
       formData.value.connectorIDs = map(get(data, 'connectors') || [], (s) => {
@@ -593,12 +596,15 @@
         if (isCloneAction) {
           handleCloneEnvironment(data);
         }
-        if (id && !isCloneAction) {
+        if (name && !isCloneAction) {
           await updateEnvironment(data);
         } else if (isCloneAction) {
-          await cloneEnvironment(data, environmentId);
-        } else if (!id && !environmentId) {
-          await createEnvironment(data);
+          await cloneEnvironment(data, environmentName);
+        } else if (!name && !environmentName) {
+          await createEnvironment({
+            data,
+            namespace: projectName
+          });
         }
         copyFormData = cloneDeep(formData.value);
         tabBarStore.deleteTag(0, {
@@ -637,8 +643,7 @@
   const getProjectVariables = async () => {
     try {
       const params = {
-        page: -1,
-        includeInherited: true
+        namespace: projectName
       };
       const { data } = await queryProjectVairables(params);
       projectVariables.value = _.map(data?.items || [], (item) => {

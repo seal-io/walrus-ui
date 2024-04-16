@@ -7,7 +7,7 @@ export enum AccountKind {
 export enum RoleType {
   Admin = 'Admin',
   Engineer = 'Manager',
-  User = 'Viewer'
+  User = 'User'
 }
 
 export const RolesTypeMap = {

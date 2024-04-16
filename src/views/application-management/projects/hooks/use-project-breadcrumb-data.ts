@@ -5,7 +5,10 @@ import { Resources, Actions } from '@/permissions/config';
 import { PROJECT, WORKFLOW } from '@/router/config';
 import useCallCommon from '@/hooks/use-call-common';
 import { useProjectStore, useUserStore } from '@/store';
-import { queryProjects } from '@/views/application-management/projects/api';
+import {
+  queryProjects,
+  GlobalNamespace
+} from '@/views/application-management/projects/api';
 import { queryEnvironments } from '@/views/application-management/environments/api';
 import { queryServices } from '@/views/application-management/services/api';
 import {
@@ -56,21 +59,22 @@ export default function useProjectData() {
     route: PROJECT.Detail
   };
   const getProjectList = async () => {
-    if (!route.params.projectId) return [];
+    if (!route.params.projectName) return [];
     let projectList: any[] = [];
     projectRequestToken?.cancel();
     projectRequestToken = createAxiosToken();
     try {
       const params = {
-        page: -1
+        namespace: GlobalNamespace
       };
       RequestLoadingMap.project = true;
       const { data } = await queryProjects(params, projectRequestToken?.token);
       projectList = data.items || [];
       const list = _.map(data.items, (item) => {
         return {
-          label: item.name,
-          value: item.id
+          ...item,
+          label: item.metadata.name,
+          value: item.metadata.name
         };
       });
       projectStore.setInfo({
@@ -91,18 +95,18 @@ export default function useProjectData() {
     const accessedList = _.filter(projectList, (item) => {
       return userStore.hasProjectResourceActions({
         resource: Resources.Projects,
-        projectID: item.id || item.value,
+        projectID: item.metadata?.name || item.value,
         actions: [Actions.GET]
       });
     });
     const list = _.map(accessedList, (item) => {
       return {
         ..._.cloneDeep(item),
-        label: item.name || item.label,
-        value: item.id || item.value
+        label: item.metadata?.name || item.label,
+        value: item.metadata?.name || item.value
       };
     });
-    const defaultValue = route.params.projectId || _.get(list, '0.value');
+    const defaultValue = route.params.projectName || _.get(list, '0.value');
     const defaultName = _.find(list, { value: defaultValue })?.label as string;
 
     return {
@@ -128,22 +132,22 @@ export default function useProjectData() {
     route: PROJECT.EnvDetail,
     routeParams: {
       action: PageAction.VIEW,
-      projectId: route.params.projectId,
-      environmentId: route.params.environmentId
+      projectName: route.params.projectName,
+      environmentName: route.params.environmentName
     },
     routeQuery: {
-      id: route.params.environmentId
+      name: route.params.environmentName
     }
   };
 
   const getEnvironmentList = async () => {
-    if (!route.params.environmentId) return [];
+    if (!route.params.environmentName) return [];
     let environmentList: any[] = [];
     environmentRequestToken?.cancel();
     environmentRequestToken = createAxiosToken();
     try {
       const params = {
-        page: -1
+        namespace: route.params.projectName as string
       };
       RequestLoadingMap.environment = true;
       const { data } = await queryEnvironments(
@@ -163,11 +167,11 @@ export default function useProjectData() {
     const list = _.map(environmentList, (item) => {
       return {
         ..._.cloneDeep(item),
-        label: item.name,
-        value: item.id
+        label: item.metadata?.name as string,
+        value: item.metadata?.name
       };
     });
-    const defaultValue = route.params.environmentId || _.get(list, '0.id');
+    const defaultValue = route.params.environmentName || _.get(list, '0.value');
     const defaultName = _.find(list, { value: defaultValue })?.label as string;
 
     projectStore.setInfo({

@@ -3,7 +3,9 @@ export default {
   Template: 'Template',
   SubjectProvider: 'SubjectProvider',
   Subject: 'Subject',
-  Setting: 'Setting'
+  Setting: 'Setting',
+  Settings: 'Settings',
+  Project: 'Project'
 };
 
 export const apiVersion = 'walrus.seal.io/v1';

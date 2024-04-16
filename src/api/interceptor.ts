@@ -12,7 +12,8 @@ import {
   NoBaseURLApiList,
   responseStatusMap,
   noToastAPI,
-  FieldManagerMethods
+  FieldManagerMethods,
+  overrideRequestConfig
 } from './config';
 // import { getToken } from '@/utils/auth';
 // import { h } from 'vue';
@@ -48,12 +49,7 @@ axios.interceptors.request.use(
       config.baseURL = '';
     }
 
-    if (FieldManagerMethods.includes(config.method as string)) {
-      config.params = {
-        ...config.params,
-        fieldManager: 'walrus-ui'
-      };
-    }
+    overrideRequestConfig(config);
 
     return config;
   },

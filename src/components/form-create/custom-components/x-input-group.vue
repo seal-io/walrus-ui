@@ -225,7 +225,8 @@
   import { useAttrs, PropType, ref, inject } from 'vue';
   import {
     InjectCompleteDataKey,
-    InjectShowInputHintKey
+    InjectShowInputHintKey,
+    validateInputLength
   } from '@/views/config';
   import hintInput from '@/components/hint-input/index.vue';
   import internalComponents from '../components/internal';
@@ -389,8 +390,8 @@
     'update:dataDesc',
     'update:dataExtra'
   ]);
-  const maxKeyLength = 100;
-  const maxValueLength = 100;
+  const maxKeyLength = validateInputLength.LABEL;
+  const maxValueLength = validateInputLength.LABEL;
   const showHintInput = inject(InjectShowInputHintKey, ref(false));
   const completeData = inject(InjectCompleteDataKey, ref({}));
   const $attrs = useAttrs();

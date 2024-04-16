@@ -89,6 +89,7 @@ export const validateInputLength = {
   NAME: 30,
   TemplateName: 63,
   DESC: 50,
+  DESCRIPTION: 50,
   LABEL: 63
 };
 

@@ -106,7 +106,3 @@ export function getFirstLoginStatus() {
   });
   return axios.get<DataListItem>(url);
 }
-
-export function getWalrusFileHub() {
-  return axios.get<{ id: string; value: string }[]>(`/walrus-file-hub`);
-}

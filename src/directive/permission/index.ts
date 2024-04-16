@@ -9,6 +9,9 @@ function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
   const { permissions } = userStore;
   const { resource, actions = [] } = value;
 
+  if (userStore.isSystemAdmin()) {
+    return;
+  }
   if (resource) {
     const permissionActions = (_.get(permissions, resource) ||
       []) as Array<string>;

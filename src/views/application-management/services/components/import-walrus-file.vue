@@ -127,8 +127,8 @@
     yaml2Json
   } from '@/components/form-create/config/yaml-parse';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { getWalrusFileHub } from '@/views/login/api';
   import markdownViewer from '@/components/markdown-viewer/index.vue';
+  import { getWalrusFileHub } from '../api';
   import WalrusFilelist from './walrus-filelist.vue';
 
   interface InfoData {

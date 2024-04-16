@@ -4,7 +4,7 @@
       <FilterBox style="margin-bottom: var(--filter-box-margin)">
         <template #params>
           <a-input
-            v-model.trim="queryParams.query"
+            v-model.trim="queryParams.fieldSelector"
             allow-clear
             style="width: 240px"
             :placeholder="$t('common.search.name.placeholder')"
@@ -57,7 +57,7 @@
         :loading="loading"
         :data="dataList"
         :pagination="false"
-        row-key="id"
+        row-key="metadataName"
         :row-selection="hasDeletePermission ? rowSelection : null"
         @cell-click="handleCellClick"
         @sorter-change="handleSortChange"
@@ -83,7 +83,7 @@
               sortDirections: ['ascend', 'descend'],
               defaultSortOrder: '',
               sorter: true,
-              sortOrder: sortDataIndex === 'name' ? sortOrder : ''
+              sortOrder: sortDataIndex === 'metadata.name' ? sortOrder : ''
             }"
           >
             <template #cell="{ record }">
@@ -185,18 +185,18 @@
           <result-view
             :loading="loading"
             :title="
-              queryParams.query
+              queryParams.fieldSelector
                 ? $t('project.environment.result.nodata.title')
                 : $t('project.environment.result.title')
             "
             :subtitle="
-              queryParams.query
+              queryParams.fieldSelector
                 ? $t('project.environment.result.nodata.subtitle')
                 : $t('project.environment.result.subTitle')
             "
           >
             <template #icon>
-              <icon-find-replace v-if="queryParams.query" />
+              <icon-find-replace v-if="queryParams.fieldSelector" />
               <i v-else class="iconfont icon-server"></i>
             </template>
             <template #extra>
@@ -206,7 +206,7 @@
                     projectID: projectName,
                     resource: Resources.Environments,
                     actions: [Actions.POST]
-                  }) && !queryParams.query
+                  }) && !queryParams.fieldSelector
                 "
                 type="outline"
                 @click="handleCreate"
@@ -218,7 +218,7 @@
           </result-view>
         </template>
       </a-table>
-      <a-pagination
+      <!-- <a-pagination
         size="small"
         :total="total"
         :page-size="queryParams.perPage"
@@ -228,7 +228,7 @@
         :hide-on-single-page="total <= 10"
         @change="handlePageChange"
         @page-size-change="handlePageSizeChange"
-      />
+      /> -->
     </div>
     <CreateEnvironment
       v-model:show="showModal"
@@ -259,6 +259,7 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
+  import { handleBatchRequest } from '@/views/config/utils';
   import { EnvironmentRow } from '../config/interface';
   import {
     queryEnvironments,
@@ -305,9 +306,7 @@
   const projectName = route.params.projectName as string;
   const queryParams = reactive({
     projectName,
-    query: '',
-    page: '',
-    perPage: ''
+    fieldSelector: ''
   });
 
   const { updateChunkedList } = useUpdateChunkedList(dataList);
@@ -337,7 +336,7 @@
     router.push({
       name: PROJECT.EnvEdit,
       params: {
-        projectId: route.params.projectId,
+        projectName,
         action: PageAction.EDIT
       }
     });
@@ -369,6 +368,7 @@
       dataList.value = _.map(data.items || [], (item) => {
         return {
           ...item,
+          metadataName: item.metadata?.name,
           disabled: !userStore.hasProjectResourceActions({
             projectID: projectName,
             environmentID: item.metadata?.name,
@@ -390,22 +390,22 @@
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      queryParams.page = 1;
+      // queryParams.page = 1;
       handleFilter();
     }, 100);
   };
   const handleReset = () => {
-    queryParams.query = '';
-    queryParams.page = 1;
+    queryParams.fieldSelector = '';
+    // queryParams.page = 1;
     handleFilter();
   };
   const handlePageChange = (page: number) => {
-    queryParams.page = page;
+    // queryParams.page = page;
     handleFilter();
   };
   const handlePageSizeChange = (pageSize: number) => {
-    queryParams.page = 1;
-    queryParams.perPage = pageSize;
+    // queryParams.page = 1;
+    // queryParams.perPage = pageSize;
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
@@ -419,11 +419,11 @@
       name: PROJECT.EnvDetail,
       params: {
         ...route.params,
-        environmentId: row.id,
+        environmentName: row.metadata?.name,
         action: PageAction.VIEW
       },
       query: {
-        id: row.id
+        name: row.metadata?.name
       }
     });
   };
@@ -433,7 +433,7 @@
       params: {
         action: PageAction.EDIT
       },
-      query: { id: row.id }
+      query: { name: row.metadata?.name }
     });
   };
   const handleViewDetail = (row) => {
@@ -442,7 +442,7 @@
       params: {
         action: PageAction.VIEW
       },
-      query: { id: row.id }
+      query: { name: row.metadata?.name }
     });
   };
   const handleCellClick = (row, col) => {
@@ -454,11 +454,11 @@
     router.push({
       name: PROJECT.EnvClone,
       params: {
-        environmentId: row.id,
+        environmentName: row.metadata?.name,
         clone: 'clone'
       },
       query: {
-        id: row.id
+        name: row.metadata?.name
       }
     });
   };
@@ -482,30 +482,34 @@
     actionHandlerMap.get(value)(row);
   };
 
-  const removeDefaultActiveEnvironment = (ids: Array<{ id: string }>) => {
+  const removeDefaultActiveEnvironment = (
+    nameList: { name: string; namespace: string }[]
+  ) => {
     const { defaultActiveEnvironment } = projectStore;
     if (!defaultActiveEnvironment) return;
-    const index = _.findIndex(ids, (item) => {
-      return item.id === defaultActiveEnvironment?.id;
+    const index = _.findIndex(nameList, (item) => {
+      return item.name === defaultActiveEnvironment?.name;
     });
     if (index > -1) {
       projectStore.setDefaultActiveEnvironment(null);
       projectStore.setIsDefaultActiveEnvironment(false);
     }
   };
-  const handleDeleteConfirm = async (delList?: string[]) => {
+  const handleDeleteConfirm = async (names?: string[]) => {
     try {
       loading.value = true;
-      const ids = map(delList || selectedKeys.value, (val) => {
+      const nameList = map(names || selectedKeys.value, (val) => {
         return {
-          id: val as string
+          name: val as string,
+          namespace: projectName
         };
       });
-      await deleteEnvironment({ items: ids });
+      await handleBatchRequest(nameList, deleteEnvironment);
+
       loading.value = false;
       execSucceed();
-      removeDefaultActiveEnvironment(ids);
-      queryParams.page = 1;
+      removeDefaultActiveEnvironment(nameList);
+      // queryParams.page = 1;
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
       handleFilter();
@@ -514,7 +518,7 @@
     }
   };
   const handleDelete = async (row?: any) => {
-    const ids: any = row ? [row.id] : null;
+    const ids: any = row ? [row.metadata?.name] : null;
     deleteModal({ onOk: () => handleDeleteConfirm(ids) });
   };
   const handleStopModal = async (row) => {

@@ -53,6 +53,11 @@ interface ServiceParams extends Pagination {
     environmentId: string;
   };
 }
+
+export function getWalrusFileHub({ namespace: string }) {
+  return axios.get<{ id: string; value: string }[]>(`/walrus-file-hub`);
+}
+
 export const queryServices = (params: ServiceParams, token?) => {
   return axios.get<ResultType>(
     `${SERVICE_API_PREFIX(params.flow)}${SERVICE_API}`,
