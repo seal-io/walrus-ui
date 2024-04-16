@@ -90,15 +90,10 @@
   import _ from 'lodash';
   import { useDark, useToggle } from '@vueuse/core';
   import { ref, reactive, onMounted, inject, watch } from 'vue';
-  import { LOCALE_OPTIONS } from '@/locale';
-  import useLocale from '@/hooks/locale';
   import { useUserStore, useAppStore } from '@/store';
   import useLoading from '@/hooks/loading';
   import useEnterPage from '@/hooks/use-enter-page';
-  import {
-    queryUserPartialSetting,
-    updateUserSetting
-  } from '@/views/system/api/setting';
+  import { queryUserPartialSetting } from '@/views/system/api/setting';
   import CryptoJS from 'crypto-js';
   import {
     rememberPasswordFn,
@@ -200,6 +195,7 @@
         },
         {}
       );
+      console.log('settingsInfo', settingsInfo.value);
     } catch (error) {
       settingsInfo.value = {};
       // ingore
@@ -238,6 +234,7 @@
           });
         }
         await userStore.login(values);
+        await userStore.info();
         // help to get serverURL id
         const userSetting = _.get(userStore, 'userInfo.userSetting');
         userStore.setInfo({
@@ -246,6 +243,7 @@
             'bootstrap-password-provision': { ...props.firstLoginStatus }
           }
         });
+
         if (userStore?.isFirstLogin() && userStore.isSystemAdmin()) {
           handleShowModifyCallback();
           getUserPartialSetting();

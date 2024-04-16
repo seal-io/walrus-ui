@@ -31,4 +31,6 @@ export const responseStatusMap = {
 
 export const noToastAPI: string[] = [];
 
+export const FieldManagerMethods = ['post', 'put'];
+
 export default {};

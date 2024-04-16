@@ -1,6 +1,7 @@
 <script lang="tsx">
   import { defineComponent, ref, onMounted } from 'vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
+  import { LoginTypeMap } from '../config';
 
   export default defineComponent({
     name: 'SsoProvider',
@@ -23,7 +24,11 @@
             type="primary"
             long
             style={{ width: '380px' }}
-            onClick={() => handleSelectType('Internal', { type: 'Internal' })}
+            onClick={() =>
+              handleSelectType(LoginTypeMap.Internal, {
+                type: LoginTypeMap.Internal
+              })
+            }
             v-slots={{
               icon: () => <icon-lock class="size-16" />
             }}

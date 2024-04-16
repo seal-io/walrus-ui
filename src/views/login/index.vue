@@ -42,7 +42,7 @@
       <div class="content">
         <a-spin :loading="loading" fill>
           <a-button
-            v-if="loginType !== loginTypeMap.provider && providerList.length"
+            v-if="loginType !== LoginTypeMap.External && providerList.length"
             class="back"
             @click="handleClickBack"
             ><icon-arrow-left
@@ -53,7 +53,7 @@
           </div>
 
           <SSOProvider
-            v-if="loginType === loginTypeMap.provider"
+            v-if="loginType === LoginTypeMap.External"
             :providers="providerList"
             @select="handleLoginTypeChange"
           ></SSOProvider>
@@ -80,7 +80,7 @@
   import { LOCALE_OPTIONS } from '@/locale';
   import PasswordLogin from './components/password-login.vue';
   import SSOProvider from './components/sso-provider.vue';
-  import { externalProviders } from './config';
+  import { LoginTypeMap } from './config';
   import { queryIdentifyProviders, ProviderItem, ssoLogin } from './api';
 
   const locales = [...LOCALE_OPTIONS];
@@ -98,19 +98,16 @@
       appStore.toggleTheme(dark);
     }
   });
-  const loginTypeMap = {
-    provider: 'provider',
-    password: 'Internal'
-  };
+
   const toggleTheme = useToggle(isDark);
-  const loginType = ref(loginTypeMap.provider);
+  const loginType = ref(LoginTypeMap.External);
   const providerList = ref<ProviderItem[]>([]);
   const isModifyPassword = ref(false);
 
   provide('providerList', providerList);
 
   const handleLoginTypeChange = async (type: string, item) => {
-    if (item.type === 'Internal') {
+    if (item.type === LoginTypeMap.Internal) {
       loginType.value = type;
       return;
     }
@@ -127,7 +124,7 @@
   };
 
   const handleClickBack = () => {
-    loginType.value = loginTypeMap.provider;
+    loginType.value = LoginTypeMap.External;
   };
 
   const handleModifyPassword = () => {
@@ -144,7 +141,7 @@
           value: item.name,
           label: item.type
         };
-      }).filter((item) => item.type !== 'Internal');
+      }).filter((item) => item.type !== LoginTypeMap.Internal);
     } catch (error) {
       // ignore
       providerList.value = [];
@@ -152,10 +149,10 @@
   };
   const checkShowModify = () => {
     if (userStore.name && userStore.isFirstLogin()) {
-      loginType.value = loginTypeMap.password;
+      loginType.value = LoginTypeMap.Internal;
       isModifyPassword.value = true;
     } else if (!providerList.value.length) {
-      loginType.value = loginTypeMap.password;
+      loginType.value = LoginTypeMap.Internal;
     }
   };
   const init = async () => {
