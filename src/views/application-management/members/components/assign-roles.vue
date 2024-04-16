@@ -25,7 +25,7 @@
       <FilterBox style="margin-bottom: 15px">
         <template #params>
           <a-select
-            v-model="subjectIds"
+            v-model="subjectNames"
             allow-search
             multiple
             :max-tag-count="2"
@@ -34,8 +34,8 @@
           >
             <a-option
               v-for="item in userSubjectList"
-              :key="item.id"
-              :value="item.id"
+              :key="item.metadata?.name"
+              :value="item.metadata?.name"
               :disabled="userAssignChecked(item)"
             >
               <i
@@ -43,7 +43,7 @@
                 class="iconfont icon-tianjiahaoyouchenggong_huaban1 mright-5"
                 style="color: var(--seal-color-success)"
               ></i>
-              <span>{{ item.name }}</span>
+              <span>{{ item.metadata?.name }}</span>
             </a-option>
           </a-select>
           <a-select
@@ -63,7 +63,7 @@
           <a-space style="margin-left: 0">
             <a-button
               type="primary"
-              :disabled="!subjectIds.length || !roleId"
+              :disabled="!subjectNames.length || !roleId"
               @click="handleOk"
               >{{ $t('common.button.add') }}</a-button
             >
@@ -89,7 +89,7 @@
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
-            data-index="subject.name"
+            data-index="name"
             :title="$t('profile.account.type.user')"
           >
           </a-table-column>
@@ -102,7 +102,7 @@
           >
             <template #cell="{ record }">
               <span>{{
-                $t(getListLabel(_.get(record, 'role.id'), projectRoles))
+                $t(getListLabel(_.get(record, 'role'), projectRoles))
               }}</span>
             </template>
           </a-table-column>
@@ -111,9 +111,9 @@
             :width="210"
             :title="$t('common.table.operation')"
           >
-            <template #cell="{ record }">
+            <template #cell="{ rowIndex }">
               <a-tooltip :content="$t('common.button.delete')">
-                <a-link status="danger" @click="handleDelete(record)">
+                <a-link status="danger" @click="handleDelete(rowIndex)">
                   <template #icon>
                     <icon-delete></icon-delete>
                   </template>
@@ -149,15 +149,22 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, reactive, PropType } from 'vue';
-  import AOptgroup from '@arco-design/web-vue/es/select/optgroup';
   import FilterBox from '@/components/filter-box/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { accountTypeList, AccountKind } from '@/views/system/config/users';
   import { useUserStore } from '@/store';
   import { getListLabel } from '@/utils/func';
-  import { RowData } from '@/views/system/config/interface';
-  import { querySubjects } from '@/views/system/api/users';
-  import { queryProjectSubjects, addProjectSubjects } from '../../projects/api';
+  import { DataListItem } from '@/views/system/config/interface';
+  import {
+    querySubjects,
+    ResourceKinds,
+    apiVersion
+  } from '@/views/system/api/users';
+  import {
+    queryProjectSubjects,
+    addProjectSubjects,
+    GlobalNamespace
+  } from '../../projects/api';
   import { projectRoles } from '../../projects/config';
   import { ProjectRolesRowData } from '../../projects/config/interface';
 
@@ -174,18 +181,14 @@
         return false;
       }
     },
-    projectID: {
+    projectName: {
       type: String,
       default() {
         return '';
       }
     }
   });
-  interface SelectedMember {
-    project: { id: string };
-    subject: { id: string; name: string };
-    role: { id: string };
-  }
+
   const emits = defineEmits(['update:show', 'update:action', 'save']);
   const userStore = useUserStore();
   const loading = ref(false);
@@ -193,22 +196,21 @@
   const roleList = ref<{ label: string; value: string }[]>(
     _.cloneDeep(projectRoles)
   );
-  const subjectList = ref<RowData[]>([]);
-  const userSubjectList = ref<RowData[]>([]);
-  const groupSubjectList = ref<RowData[]>([]);
-  const selectedList = ref<SelectedMember[]>([]);
-  const subjectIds = ref<string[]>([]);
+  const subjectList = ref<DataListItem[]>([]);
+  const userSubjectList = ref<DataListItem[]>([]);
+  const selectedList = ref<ProjectRolesRowData[]>([]);
+  const subjectNames = ref<string[]>([]);
   const roleId = ref('');
 
   const userAssignChecked = (subject) => {
     return (
       _.some(
-        projectVisitors.value,
-        (sItem) => _.get(sItem, 'subject.id') === subject.id
+        selectedList.value,
+        (sItem) => _.get(sItem, 'name') === subject.metadata?.name
       ) ||
       _.some(
-        selectedList.value,
-        (sItem) => _.get(sItem, 'subject.id') === subject.id
+        projectVisitors.value,
+        (sItem) => _.get(sItem, 'name') === subject.metadata?.name
       )
     );
   };
@@ -217,56 +219,54 @@
     try {
       loading.value = true;
       const params = {
-        page: -1
+        namespace: GlobalNamespace,
+        projectName: props.projectName
       };
       const { data } = await queryProjectSubjects(params);
       projectVisitors.value = data.items || [];
-
+      selectedList.value = _.cloneDeep(data.items || []);
       loading.value = false;
     } catch (error) {
       loading.value = false;
+      console.log('error', error);
     }
   };
   const getSubjectList = async () => {
     try {
       const params = {
-        page: -1
+        namespace: GlobalNamespace
       };
       const { data } = await querySubjects(params);
       subjectList.value = data.items || [];
       userSubjectList.value = _.filter(data.items, (item) => {
-        return item.kind === AccountKind.USER && item.name !== userStore.name;
-      });
-      groupSubjectList.value = _.filter(data.items, (item) => {
-        return item.kind === AccountKind.GROUP;
+        return item.metadata?.name !== userStore.name;
       });
     } catch (error) {
       userSubjectList.value = [];
-      groupSubjectList.value = [];
       subjectList.value = [];
     }
   };
 
   const setSelectedList = () => {
-    const list = _.map(subjectIds.value, (subjectId) => {
+    const list = _.map(subjectNames.value, (subjectName) => {
       const subject = _.find(subjectList.value, (item) => {
-        return item.id === subjectId;
+        return item.metadata.name === subjectName;
       });
       return {
-        project: { id: props.projectID },
-        subject: { id: subjectId, name: subject?.name || '' },
-        role: { id: roleId.value }
-      };
+        namespace: subject?.metadata?.namespace,
+        name: subject?.metadata?.name,
+        role: roleId.value
+      } as ProjectRolesRowData;
     });
     selectedList.value = _.concat(list, selectedList.value);
   };
   const resetForm = () => {
-    subjectIds.value = [];
+    subjectNames.value = [];
     roleId.value = '';
   };
   const handleOk = async () => {
     try {
-      if (subjectIds.value.length && roleId.value) {
+      if (subjectNames.value.length && roleId.value) {
         setSelectedList();
         // reset form
         resetForm();
@@ -277,7 +277,19 @@
   };
   const handleSubmit = async () => {
     try {
-      await addProjectSubjects({ items: selectedList.value });
+      await addProjectSubjects({
+        projectName: props.projectName,
+        namespace: GlobalNamespace,
+        data: {
+          apiVersion,
+          kind: ResourceKinds.ProjectSubjects,
+          items: selectedList.value,
+          metadata: {
+            namespace: GlobalNamespace,
+            name: props.projectName
+          }
+        }
+      });
       emits('save');
       emits('update:show', false);
     } catch (error) {
@@ -285,10 +297,7 @@
     }
   };
 
-  const handleDelete = async (row) => {
-    const index = _.findIndex(selectedList.value, (item) => {
-      return item.subject.id === row.subject.id;
-    });
+  const handleDelete = async (index) => {
     selectedList.value.splice(index, 1);
   };
   const init = async () => {

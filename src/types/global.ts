@@ -49,7 +49,7 @@ export interface GeneralChart {
 
 export interface ListQuery {
   name?: string;
-  namespace?: string;
+  namespace: string;
   fieldSelector?: string;
   labelSelector?: string;
   limit?: number;
@@ -59,6 +59,7 @@ export interface ListQuery {
 export interface AxiosRequestPayload {
   apiVersion: string;
   kind: string;
+  items?: any[];
   metadata: {
     name: string;
     namespace: string;

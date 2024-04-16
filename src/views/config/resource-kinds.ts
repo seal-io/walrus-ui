@@ -3,6 +3,7 @@ export default {
   Template: 'Template',
   SubjectProvider: 'SubjectProvider',
   Subject: 'Subject',
+  ProjectSubjects: 'ProjectSubjects',
   Setting: 'Setting',
   Settings: 'Settings',
   Project: 'Project'

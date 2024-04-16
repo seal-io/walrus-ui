@@ -3,7 +3,7 @@
     <FilterBox style="margin-bottom: var(--filter-box-margin)">
       <template #params>
         <a-input
-          v-model.trim="queryParams.query"
+          v-model.trim="queryParams.fieldSelector"
           allow-clear
           style="width: 240px"
           :placeholder="$t('common.search.name.placeholder')"
@@ -29,7 +29,7 @@
         }}</a-button>
         <a-button
           v-permission-app="{
-            projectID: route.params.projectId,
+            projectID: route.params.projectName,
             resource: Resources.ProjectSubjects,
             actions: [Actions.DELETE]
           }"
@@ -51,11 +51,11 @@
       :bordered="false"
       :data="projectVisitors"
       :pagination="false"
-      row-key="id"
+      row-key="name"
       :row-selection="
         userStore.hasProjectResourceActions({
           resource: Resources.ProjectSubjects,
-          projectID: route.params.projectId,
+          projectID: route.params.projectName,
           actions: [Actions.DELETE]
         })
           ? rowSelection
@@ -68,7 +68,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="subject.name"
+          data-index="name"
           :title="$t('applications.member.table.name')"
         >
         </a-table-column>
@@ -80,23 +80,8 @@
           :title="$t('profile.account.role')"
         >
           <template #cell="{ record }">
-            <!-- <a-select
-              v-if="hasPutPermission && record.subject?.id !== userStore?.id"
-              :model-value="record?.role?.id"
-              :style="{
-                width: '200px'
-              }"
-              @change="(val) => handleChangeRole(val, record)"
-            >
-              <a-option
-                v-for="item in projectRoles"
-                :value="item.value"
-                :key="item.value"
-                :label="$t(item.label)"
-              ></a-option>
-            </a-select> -->
             <span>{{
-              $t(getListLabel(_.get(record, 'role.id'), projectRoles))
+              $t(getListLabel(_.get(record, 'role'), projectRoles))
             }}</span>
           </template>
         </a-table-column>
@@ -104,7 +89,7 @@
           v-if="
             userStore.hasProjectResourceActions({
               resource: Resources.ProjectSubjects,
-              projectID: route.params.projectId,
+              projectID: route.params.projectName,
               actions: [Actions.DELETE]
             })
           "
@@ -127,7 +112,7 @@
         </a-table-column>
       </template>
     </a-table>
-    <a-pagination
+    <!-- <a-pagination
       size="small"
       :total="total"
       :page-size="queryParams.perPage"
@@ -137,10 +122,10 @@
       :hide-on-single-page="total <= 10"
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
-    />
+    /> -->
     <AssignRoles
       v-model:show="showModal"
-      :project-i-d="projectID"
+      :project-name="projectName"
       @save="fetchData"
     ></AssignRoles>
   </div>
@@ -148,6 +133,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import { handleBatchRequest } from '@/views/config/utils';
   import { CommonButtonValue } from '@/views/config';
   import { Resources, Actions } from '@/permissions/config';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
@@ -161,7 +147,10 @@
   import {
     queryProjectSubjects,
     deleteProjectSubjects,
-    addProjectSubjects
+    addProjectSubjects,
+    GlobalNamespace,
+    apiVersion,
+    ResourceKinds
   } from '../../projects/api';
   import { projectRoles } from '../../projects/config';
   import { ProjectRolesRowData } from '../../projects/config/interface';
@@ -176,25 +165,20 @@
   const showModal = ref(false);
   const total = ref(0);
   let timer: any = null;
-  const projectID = route.params.projectId as string;
+  const projectName = route.params.projectName as string;
   const projectVisitors = ref<ProjectRolesRowData[]>([]);
 
-  const formData = reactive({
-    project: { id: route.params.projectId as string },
-    subject: { id: '' },
-    role: { id: '' }
-  });
   const queryParams = reactive({
-    page: 1,
-    perPage: appStore.perPage || 10,
-    query: ''
+    fieldSelector: '',
+    namespace: GlobalNamespace,
+    projectName
   });
 
   const hasPutPermission = computed(() => {
     return (
       userStore.hasProjectResourceActions({
         resource: Resources.ProjectSubjects,
-        projectID: route.params.projectId,
+        projectID: route.params.projectName,
         actions: [Actions.POST]
       }) &&
       userStore.hasRolesActionsPermission({
@@ -203,21 +187,7 @@
       })
     );
   });
-  const handleChangeRole = async (val, record) => {
-    try {
-      const data = [
-        {
-          project: { id: projectID },
-          subject: { id: record.subject.id },
-          role: { id: val }
-        }
-      ];
-      await addProjectSubjects({ items: data });
-      execSucceed();
-    } catch (error) {
-      //
-    }
-  };
+
   const setActionList = (row) => {
     const list = _.filter(actionList, (item) => {
       return item.filterFun ? item.filterFun({ row }) : true;
@@ -239,7 +209,11 @@
         ..._.pickBy(queryParams, (val) => !!val)
       };
       const { data } = await queryProjectSubjects(params);
-      projectVisitors.value = data.items || [];
+      projectVisitors.value = _.map(data.items || [], (item) => {
+        return {
+          ...item
+        };
+      });
       total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {
@@ -253,22 +227,22 @@
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      queryParams.page = 1;
+      // queryParams.page = 1;
       handleFilter();
     }, 100);
   };
   const handleReset = () => {
-    queryParams.query = '';
-    queryParams.page = 1;
+    // queryParams.query = '';
+    // queryParams.page = 1;
     handleFilter();
   };
   const handlePageChange = (page: number) => {
-    queryParams.page = page;
+    // queryParams.page = page;
     handleFilter();
   };
   const handlePageSizeChange = (pageSize: number) => {
-    queryParams.page = 1;
-    queryParams.perPage = pageSize;
+    // queryParams.page = 1;
+    // queryParams.perPage = pageSize;
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
@@ -276,14 +250,25 @@
     showModal.value = true;
   };
 
-  const handleDeleteConfirm = async (delIds?: string[]) => {
+  const handleDeleteConfirm = async (names?: string[]) => {
     try {
-      const ids = _.map(delIds || selectedKeys.value, (val) => {
-        return {
-          id: val
-        };
+      const list = names || selectedKeys.value;
+      const updateList = _.filter(projectVisitors.value, (item) => {
+        return !_.includes(list, item.name);
       });
-      await deleteProjectSubjects({ items: ids });
+      await addProjectSubjects({
+        projectName,
+        namespace: GlobalNamespace,
+        data: {
+          apiVersion,
+          kind: ResourceKinds.ProjectSubjects,
+          items: updateList,
+          metadata: {
+            namespace: GlobalNamespace,
+            name: projectName
+          }
+        }
+      });
       execSucceed();
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
@@ -293,13 +278,13 @@
     }
   };
 
-  const handleDelete = async (ids?: string[]) => {
-    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
+  const handleDelete = async (names?: string[]) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(names) });
   };
 
   const handleClickAction = (val, row) => {
     if (CommonButtonValue.Delete === val) {
-      handleDelete([row.id]);
+      handleDelete([row.name]);
     }
   };
   fetchData();

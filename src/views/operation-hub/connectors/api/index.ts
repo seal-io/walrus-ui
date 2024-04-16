@@ -1,10 +1,31 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { Pagination } from '@/types/global';
+import _ from 'lodash';
+import {
+  ListQuery,
+  RequestCallbackArgs,
+  DataListItem,
+  ListResult
+} from '@/types/global';
 import router from '@/router';
+import ResourKinds, {
+  GlobalNamespace,
+  apiVersion,
+  NAMESPACES
+} from '@/views/config/resource-kinds';
 import { ConnectorRowData, ConnectorFormData } from '../config/interface';
 
-export const CONNECTOR_API = '/connectors';
+export { GlobalNamespace, NAMESPACES, ResourKinds, apiVersion };
+
+export const CONNECTOR_API = 'connectors';
+
+const generateConnectorAPI = (params: { name?: string; namespace: string }) => {
+  const { name, namespace } = params;
+  if (name) {
+    return `${NAMESPACES}/${namespace}/${CONNECTOR_API}/${name}`;
+  }
+  return `${NAMESPACES}/${namespace}/${CONNECTOR_API}`;
+};
 
 export const PROJECT_API_PREFIX = () => {
   return `/projects/${router.currentRoute.value.params.projectId}`;
@@ -18,62 +39,56 @@ export const getPermissionRouteParams = () => {
   const { params } = router.currentRoute.value;
   return { projectID: params?.projectId };
 };
-export interface QueryType extends Pagination {
-  extract?: string[];
-  sort?: string[];
-  _group?: string[];
+
+export interface QueryType extends ListQuery {
+  sort?: string;
 }
 
 export interface ResultType {
   filters: unknown;
   items: ConnectorRowData[];
-  pagination: Pagination;
 }
+
 export function queryConnectors(params: QueryType, cancelToken?) {
-  let url = CONNECTOR_API;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}`;
-  }
-  return axios.get<ResultType>(`${url}`, {
-    params,
+  const url = generateConnectorAPI({
+    name: params.name,
+    namespace: params.namespace
+  });
+
+  return axios.get<ListResult<DataListItem>>(url, {
+    params: _.omit(params, ['name', 'namespace']),
     cancelToken,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
   });
 }
-export function queryItemConnector(params: { id: string }) {
-  let url = `${CONNECTOR_API}/${params.id}`;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${params.id}`;
-  }
-  return axios.get(`${url}`);
-}
-export function createConnector(data: ConnectorFormData) {
-  let url = CONNECTOR_API;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}`;
-  }
-  return axios.post(`${url}`, data);
-}
 
-export function updateConnector(data: ConnectorFormData) {
-  let url = `${CONNECTOR_API}/${data.id}`;
-
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${data.id}`;
-  }
-  return axios.put(`${url}`, data);
-}
-
-export function deleteConnector(data: {
-  items: Array<{ id: string | number }>;
+export function queryItemConnector(params: {
+  name: string;
+  namespace: string;
 }) {
-  let url = CONNECTOR_API;
-  if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}`;
-  }
-  return axios.delete(`${url}`, { data });
+  const url = generateConnectorAPI(params);
+  return axios.get(url);
+}
+export function createConnector(params: RequestCallbackArgs) {
+  const url = generateConnectorAPI({
+    namespace: params.namespace
+  });
+  return axios.post(url, params.data);
+}
+
+export function updateConnector(params: RequestCallbackArgs) {
+  const url = generateConnectorAPI({
+    name: params.name,
+    namespace: params.namespace
+  });
+  return axios.put(`${url}`, params.data);
+}
+
+export function deleteConnector(data: { name: string; namespace: string }) {
+  const url = generateConnectorAPI(data);
+  return axios.delete(url);
 }
 
 export function reinstallFinOpsTools(data: ConnectorFormData) {
