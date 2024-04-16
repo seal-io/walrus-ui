@@ -40,4 +40,9 @@ export const externalProviders = [
   }
 ];
 
+export const LoginTypeMap = {
+  Internal: 'Internal',
+  External: 'External'
+};
+
 export default {};

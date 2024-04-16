@@ -10,7 +10,6 @@ export default function useEnterPage() {
   const router = useRouter();
   const userStore = useUserStore();
   const { t } = useI18n();
-  // const { initDefaultProject, gotoEnvironmentDetail } = useEnterApplication();
   const getFirstRouteName = () => {
     const firstChildren = get(appRoutes, '0.children') || [];
     const firstName = get(appRoutes, '0.name');
@@ -23,9 +22,7 @@ export default function useEnterPage() {
   };
 
   const enterUserPage = async () => {
-    userStore.info();
-    // await initDefaultProject();
-    // gotoEnvironmentDetail();
+    // userStore.info();
     router.push({
       path: '/'
     });

@@ -11,7 +11,8 @@ import {
   localeMap,
   NoBaseURLApiList,
   responseStatusMap,
-  noToastAPI
+  noToastAPI,
+  FieldManagerMethods
 } from './config';
 // import { getToken } from '@/utils/auth';
 // import { h } from 'vue';
@@ -46,6 +47,14 @@ axios.interceptors.request.use(
     if (some(NoBaseURLApiList, (api) => url.startsWith(api))) {
       config.baseURL = '';
     }
+
+    if (FieldManagerMethods.includes(config.method as string)) {
+      config.params = {
+        ...config.params,
+        fieldManager: 'walrus-ui'
+      };
+    }
+
     return config;
   },
   (error) => {
