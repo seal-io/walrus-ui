@@ -25,7 +25,7 @@
           </a-option>
         </a-select>
         <a-input
-          v-model.trim="queryParams.query"
+          v-model.trim="queryParams.fieldSelector"
           allow-clear
           style="width: 240px"
           :placeholder="$t('common.search.name.placeholder')"
@@ -80,7 +80,7 @@
       :loading="loading"
       :data="dataList"
       :pagination="false"
-      row-key="id"
+      row-key="metadataName"
       :row-selection="rowSelectionState"
       @cell-click="handleCellClick"
       @sorter-change="handleSortChange"
@@ -91,7 +91,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="name"
+          data-index="metadata.name"
           :title="
             $t('common.table.name.list', {
               type: $t('operation.connectors.table.connector')
@@ -112,9 +112,9 @@
               size="small"
               :hoverable="false"
             >
-              {{ record.name }}
+              {{ record.metadata?.name }}
             </a-link>
-            <span v-else>{{ record.name }}</span>
+            <span v-else>{{ record.metadata?.name }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -193,10 +193,10 @@
         </a-table-column>
         <a-table-column
           v-if="
-            route.params.projectId
+            route.params.projectName
               ? userStore.hasProjectResourceActions({
                   resource: Resources.Connectors,
-                  projectID: route.params.projectId,
+                  projectID: route.params.projectName,
                   actions: [Actions.PUT]
                 })
               : userStore.hasRolesActionsPermission({
@@ -227,7 +227,7 @@
         <result-view
           :loading="loading"
           :title="
-            queryParams.query
+            queryParams.fieldSelector
               ? $t('common.result.nodata.title', {
                   type: $t('operation.connectors.table.connector')
                 })
@@ -236,16 +236,16 @@
                 })
           "
           :subtitle="
-            queryParams.query ? $t('common.result.nodata.subtitle') : ''
+            queryParams.fieldSelector ? $t('common.result.nodata.subtitle') : ''
           "
         >
           <template #icon>
-            <icon-find-replace v-if="queryParams.query" />
+            <icon-find-replace v-if="queryParams.fieldSelector" />
             <i v-else class="iconfont icon-connector1"></i>
           </template>
           <template #extra>
             <primaryButtonGroup
-              v-if="hasPutPermission && !queryParams.query"
+              v-if="hasPutPermission && !queryParams.fieldSelector"
               size="medium"
               :actions="connectorTypeList"
               position="br"
@@ -263,7 +263,7 @@
         </result-view>
       </template>
     </a-table>
-    <a-pagination
+    <!-- <a-pagination
       size="small"
       :total="total"
       :page-size="queryParams.perPage"
@@ -273,11 +273,13 @@
       :hide-on-single-page="total <= 10"
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
-    />
+    /> -->
   </div>
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
+  import { handleBatchRequest } from '@/views/config/utils';
   import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import { Resources, Actions } from '@/permissions/config';
   import { EnvironmentTypeMap } from '@/views/config';
@@ -289,7 +291,6 @@
   import { UseSortDirection } from '@/utils/common';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
-  import dayjs from 'dayjs';
   import _, { get, map, pickBy, find, toLower, cloneDeep } from 'lodash';
   import { reactive, ref, onMounted, nextTick, computed, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -312,7 +313,8 @@
     deleteConnector,
     isProjectContext,
     CONNECTOR_API,
-    PROJECT_API_PREFIX
+    PROJECT_API_PREFIX,
+    GlobalNamespace
   } from '../api';
 
   const props = defineProps({
@@ -362,20 +364,18 @@
   let timer: any = null;
   const loading = ref(false);
   const total = ref(0);
-  const projectID = route.params.projectId as string;
+  const projectName = route.params.projectName as string;
   const queryParams = reactive({
-    query: '',
-    page: 1,
-    perPage: appStore.perPage || 10,
+    fieldSelector: '',
     category: ''
   });
   const dataList = ref<ConnectorRowData[]>([]);
 
   const hasPutPermission = computed(() => {
-    return projectID
+    return projectName
       ? userStore.hasProjectResourceActions({
           resource: Resources.Connectors,
-          projectID,
+          projectID: projectName,
           actions: [Actions.POST]
         })
       : userStore.hasRolesActionsPermission({
@@ -385,10 +385,10 @@
   });
 
   const hasDeletePermission = computed(() => {
-    return projectID
+    return projectName
       ? userStore.hasProjectResourceActions({
           resource: Resources.Connectors,
-          projectID,
+          projectID: projectName,
           actions: [Actions.DELETE]
         })
       : userStore.hasRolesActionsPermission({
@@ -403,15 +403,15 @@
           ? item.category === queryParams.category && !item.project
           : !item.project;
       }
-      return get(item, 'project.id') === route.params?.projectId;
+      return get(item, 'project.metadata.name') === route.params?.projectName;
     },
     mapFun(item) {
       if (props.scope === 'project') {
         return {
           ...item,
           disabled: !userStore.hasProjectResourceActions({
-            projectID: route.params.projectId,
-            connectorID: item.id,
+            projectID: projectName,
+            connectorID: item.metadata?.name,
             resource: Resources.Connectors,
             actions: [Actions.DELETE]
           })
@@ -429,7 +429,7 @@
   const setActionList = (row) => {
     const list = _.filter(actionList, (item) => {
       return item.filterFun
-        ? item.filterFun({ itemInfo: row, projectID })
+        ? item.filterFun({ itemInfo: row, projectID: projectName })
         : true;
     });
     const res = _.map(list, (o) => {
@@ -449,10 +449,10 @@
 
   const rowSelectionState = computed(() => {
     // for project
-    if (route.params.projectId) {
+    if (route.params.projectName) {
       return userStore.hasProjectResourceActions({
         resource: Resources.Connectors,
-        projectID: route.params.projectId,
+        projectID: projectName,
         actions: [Actions.DELETE]
       })
         ? rowSelection
@@ -485,11 +485,12 @@
       dataList.value = _.map(data?.items || [], (item) => {
         return {
           ...item,
+          metadataName: item.metadata?.name,
           disabled:
             props.scope === 'project'
               ? !userStore.hasProjectResourceActions({
-                  projectID: route.params.projectId,
-                  connectorID: item.id,
+                  projectID: route.params.projectName,
+                  connectorID: item.metadata?.name,
                   resource: Resources.Connectors,
                   actions: [Actions.DELETE]
                 })
@@ -511,12 +512,12 @@
   };
 
   const handlePageChange = (page: number) => {
-    queryParams.page = page;
+    // queryParams.page = page;
     handleFilter();
   };
   const handlePageSizeChange = (pageSize: number) => {
-    queryParams.page = 1;
-    queryParams.perPage = pageSize;
+    // queryParams.page = 1;
+    // queryParams.perPage = pageSize;
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
@@ -525,7 +526,7 @@
       name: item.route,
       params: {
         action: 'edit',
-        projectId: route.params.projectId
+        projectName
       }
     });
   };
@@ -556,39 +557,43 @@
           action: action || 'view'
         },
         query: {
-          id: row.id
+          name: row.metadata?.name
         }
       });
     } else {
       router.push({
         name: data?.route,
         params: {
-          projectId: route.params.projectId,
+          projectName,
           action: action || 'view'
         },
         query: {
-          id: row.id
+          name: row.metadata.name
         }
       });
     }
   };
   const handleCellClick = (row, col) => {
-    if (col.dataIndex === 'name' && isLocalConnectorType(row.category)) {
+    if (
+      col.dataIndex === 'metadata.name' &&
+      isLocalConnectorType(row.category)
+    ) {
       handleView(row);
     }
   };
-  const handleDeleteConfirm = async (delList?: string[]) => {
+  const handleDeleteConfirm = async (names?: string[]) => {
     try {
       loading.value = true;
-      const ids = map(delList || selectedKeys.value, (val) => {
+      const nameList = map(names || selectedKeys.value, (val) => {
         return {
-          id: val
+          name: val,
+          namespace: projectName || GlobalNamespace
         };
       });
-      await deleteConnector({ items: ids });
+      await handleBatchRequest(nameList, deleteConnector);
       loading.value = false;
       execSucceed();
-      queryParams.page = 1;
+      // queryParams.page = 1;
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
       handleFilter();
@@ -642,8 +647,8 @@
       loading.value = false;
     }
   };
-  const handleDelete = async (ids?: string[]) => {
-    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
+  const handleDelete = async (names?: string[]) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(names) });
   };
 
   const handleClickAction = (value, row) => {
@@ -662,7 +667,7 @@
         handleReinstall(row);
         break;
       case 'delete':
-        handleDelete([row.id]);
+        handleDelete([row.metadata.name]);
         break;
       default:
         break;
@@ -703,8 +708,9 @@
   };
   const handleReset = () => {
     queryParams.category = '';
-    queryParams.query = '';
-    queryParams.page = 1;
+    queryParams.fieldSelector = '';
+    // queryParams.query = '';
+    // queryParams.page = 1;
     handleFilter();
     nextTick(() => {
       createConnectChunkRequest();

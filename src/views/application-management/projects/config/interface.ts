@@ -17,8 +17,7 @@ export interface ProjectFormData {
 }
 
 export interface ProjectRolesRowData {
-  id: string;
-  project: { id: string };
-  role: { id: string };
-  subject: any;
+  name: string;
+  namespace: string;
+  role: string;
 }

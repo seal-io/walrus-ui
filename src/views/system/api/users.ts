@@ -1,4 +1,5 @@
 import axios from 'axios';
+import _ from 'lodash';
 import qs from 'query-string';
 import {
   ListResult,
@@ -24,18 +25,13 @@ const generateSubjectAPI = (params: { namespace?: string; name?: string }) => {
   return `/${NAMESPACES}/${GlobalNamespace}/${SUBJECT_API}`;
 };
 
-export interface queryParams extends ListQuery {
-  page: number;
-  perPage?: number;
-}
-
 // ============= subjects ===========
-export function querySubjects(params: queryParams) {
+export function querySubjects(params: ListQuery) {
   const url = generateSubjectAPI({
     namespace: GlobalNamespace
   });
   return axios.get<ListResult<DataListItem>>(url, {
-    params,
+    params: _.omit(params, ['namespace']),
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }

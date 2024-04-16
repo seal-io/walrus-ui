@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 // silence request no toast when response error
 export const SILENCEAPI = 'silence';
 
@@ -41,7 +43,12 @@ export const overrideRequestConfig = (config) => {
     };
   }
   if (config.params?.fieldSelector) {
-    config.params.fieldSelector = `metadata.name=${config.params.fieldSelector}`;
+    config.params.fieldSelector = _.map(
+      _.concat(config.params.fieldSelector),
+      (item) => {
+        return `metadata.name=${item}`;
+      }
+    ).join(',');
   }
   return config;
 };

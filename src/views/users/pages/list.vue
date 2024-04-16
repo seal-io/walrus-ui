@@ -23,10 +23,10 @@
           class="page-line-tabs"
           @change="setPageTabActive"
         >
-          <a-tab-pane :key="SubjectTabs.USERS" title="Internal Users">
+          <a-tab-pane :key="SubjectTabs.USERS" title="Users">
             <Users></Users>
           </a-tab-pane>
-          <a-tab-pane :key="SubjectTabs.PROVIDERS" title="Provider Users">
+          <a-tab-pane :key="SubjectTabs.PROVIDERS" title="User Providers">
             <ProviderUsers></ProviderUsers>
           </a-tab-pane>
         </a-tabs>

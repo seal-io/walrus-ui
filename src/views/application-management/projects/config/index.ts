@@ -6,9 +6,9 @@ import { MoreAction } from '@/views/config/interface';
 
 const userStore = useUserStore();
 export enum ProjectRoles {
-  Owner = 'project/owner',
-  Member = 'project/member',
-  Viewer = 'project/viewer'
+  Owner = 'Owner',
+  Member = 'Member',
+  Viewer = 'Viewer'
 }
 
 export const projectRoles = [

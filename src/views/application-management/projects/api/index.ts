@@ -104,8 +104,8 @@ export const queryProjectSubjects = (
     namespace: params.namespace as string,
     name: params.projectName
   });
-  return axios.get<ListResult<DataListItem>>(url, {
-    params: _.omit(params, ['namespace']),
+  return axios.get<ListResult<ProjectRolesRowData>>(url, {
+    params: _.omit(params, ['namespace', 'projectName']),
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -119,7 +119,7 @@ export const addProjectSubjects = (
     namespace: params.namespace,
     name: params.projectName
   });
-  return axios.post(url, params.data);
+  return axios.put(url, params.data);
 };
 
 export const deleteProjectSubjects = (params: {
