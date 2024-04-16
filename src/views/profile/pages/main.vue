@@ -62,16 +62,8 @@
   );
 
   const userRole = computed(() => {
-    const { roles } = userStore;
-    const admin = _.find(roles, (item) => item.id === RoleType.Admin);
-    if (admin) {
-      return _.get(RolesTypeMap, admin.id);
-    }
-    const engnieer = _.find(roles, (item) => item.id === RoleType.Engineer);
-    if (engnieer) {
-      return _.get(RolesTypeMap, engnieer.id);
-    }
-    return _.get(RolesTypeMap, RoleType.User);
+    const { role } = userStore;
+    return _.get(RolesTypeMap, RoleType[role]);
   });
 </script>
 

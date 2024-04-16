@@ -361,7 +361,6 @@
     return list.join('/');
   };
   const getValueList = (fieldList) => {
-    console.log('fieldList=========', fieldList);
     const list: Array<BatchItem> = [];
     fieldList.forEach((item) => {
       if (item.editable) {

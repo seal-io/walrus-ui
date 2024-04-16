@@ -3,14 +3,18 @@ import qs from 'query-string';
 import { Pagination, ListQuery } from '@/types/global';
 import router from '@/router';
 import _ from 'lodash';
-import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
+import ResourceKinds, {
+  GlobalNamespace,
+  NAMESPACES,
+  apiVersion
+} from '@/views/config/resource-kinds';
 import { EnvironmentRow, EnvironFormData } from '../config/interface';
 
 export const ENVIRONMENT_API = 'environments';
 
 export const PROJECT_API = '/projects';
 
-export { GlobalNamespace, NAMESPACES };
+export { GlobalNamespace, NAMESPACES, ResourceKinds, apiVersion };
 
 const generateEnvironmentAPI = (params: {
   namespace: string;
@@ -34,7 +38,6 @@ export const getPermissionRouteParams = () => {
 
 export interface QueryType extends ListQuery {
   extract?: string[];
-  projectName: string;
   sort?: string[];
 }
 
@@ -43,10 +46,10 @@ export interface ResultType {
   pagination: Pagination;
 }
 export function queryEnvironmentsList(params: QueryType, token?) {
-  const url = generateEnvironmentAPI({ namespace: params.projectName });
+  const url = generateEnvironmentAPI({ namespace: params.namespace as string });
 
   return axios.get<ResultType>(url, {
-    params: _.omit(params, ['projectName']),
+    params: _.omit(params, ['namespace']),
     cancelToken: token,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -55,10 +58,10 @@ export function queryEnvironmentsList(params: QueryType, token?) {
 }
 
 export function queryEnvironments(params: QueryType, token?) {
-  const url = generateEnvironmentAPI({ namespace: params.projectName });
+  const url = generateEnvironmentAPI({ namespace: params.namespace as string });
 
   return axios.get<ResultType>(url, {
-    params: _.omit(params, ['projectName']),
+    params: _.omit(params, ['namespace']),
     cancelToken: token,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -66,11 +69,11 @@ export function queryEnvironments(params: QueryType, token?) {
   });
 }
 export function queryEnvironmentList(params: QueryType, token?) {
-  const url = generateEnvironmentAPI({ namespace: params.projectName });
+  const url = generateEnvironmentAPI({ namespace: params.namespace as string });
 
   return axios.get<ResultType>(url, {
     params: {
-      ..._.omit(params, ['projectName'])
+      ..._.omit(params, ['namespace'])
     },
     cancelToken: token,
     paramsSerializer: (obj) => {
@@ -81,10 +84,10 @@ export function queryEnvironmentList(params: QueryType, token?) {
 
 export function queryItemEnvironments(params: {
   environmentName: string;
-  projectName: string;
+  namespace: string;
 }) {
   const url = generateEnvironmentAPI({
-    namespace: params.projectName,
+    namespace: params.namespace,
     name: params.environmentName
   });
 
@@ -93,9 +96,9 @@ export function queryItemEnvironments(params: {
 
 export function createEnvironment(params: {
   data: EnvironFormData;
-  projectName: string;
+  namespace: string;
 }) {
-  const url = generateEnvironmentAPI({ namespace: params.projectName });
+  const url = generateEnvironmentAPI({ namespace: params.namespace });
 
   return axios.post(url, params.data);
 }

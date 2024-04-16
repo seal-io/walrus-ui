@@ -19,7 +19,7 @@
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
           :label="$t('common.table.name')"
-          field="name"
+          field="metadata.name"
           hide-label
           :validate-trigger="['change', 'input']"
           :rules="[
@@ -35,7 +35,7 @@
           ]"
         >
           <seal-input
-            v-model.trim="formData.name"
+            v-model.trim="formData.metadata.name"
             :label="$t('common.table.name')"
             :required="true"
             :disabled="action === 'edit'"
@@ -46,58 +46,58 @@
         </a-form-item>
         <a-form-item :label="$t('common.table.description')" hide-label>
           <seal-textarea
-            v-model="formData.description"
+            v-model="formData.spec.description"
             :label="$t('common.table.description')"
-            :max-length="200"
+            :max-length="validateInputLength.DESC"
             show-word-limit
             style="width: 100%"
             :auto-size="{ minRows: 4, maxRows: 6 }"
           ></seal-textarea>
         </a-form-item>
-        <a-form-item :label="$t(`applications.projects.form.label`)" hide-label>
+        <a-form-item
+          :label="$t(`applications.projects.form.label`)"
+          hide-label
+          field="metadata.labels"
+          :rules="[
+            {
+              required: false,
+              validator(val, callback) {
+                if (!labelsData.list.length) {
+                  callback();
+                  return;
+                }
+                const valid = _.some(labelsData.list, (item) => {
+                  return !_.trim(item.key);
+                });
+                if (valid) {
+                  callback(
+                    i18n.global.t('resource.definition.detail.rules.labelKey')
+                  );
+                  return;
+                }
+                callback();
+              },
+              message: i18n.global.t('common.rule.object.key')
+            }
+          ]"
+        >
           <SealFormItemWrap
             :label="$t(`applications.projects.form.label`)"
             style="width: 100%; text-align: left"
           >
-            <a-space
-              v-if="labelList.length"
-              style="display: flex; flex-direction: column; width: 100%"
-              direction="vertical"
-            >
-              <xInputGroup
-                v-for="(sItem, sIndex) in labelList"
-                :key="sIndex"
-                v-model:dataKey="sItem.key"
-                v-model:dataValue="sItem.value"
-                v-model:value="formData.labels"
-                class="group-item"
-                :label-list="labelList"
-                :position="sIndex"
-                :trigger-validate="validateTrigger"
-                always-delete
-                should-key
-                @add="(obj) => handleAddLabel(obj, labelList)"
-                @delete="handleDeleteLabel(labelList, sIndex)"
-              ></xInputGroup>
-            </a-space>
-            <template v-else>
-              <a-link
-                class="p-0"
-                @click="
-                  () => {
-                    handleAddLabel(labelItem, labelList);
-                  }
-                "
-              >
-                <icon-plus-circle-fill :size="24" font-size="14px" />
-              </a-link>
-            </template>
+            <keyValueLabels
+              v-model:value="formData.metadata.labels"
+              v-model:label-list="labelsData.list"
+              :validate-trigger="validateTrigger"
+              :labels="labelsData.labels"
+              page-action="edit"
+            ></keyValueLabels>
           </SealFormItemWrap>
         </a-form-item>
       </a-form>
     </div>
     <template #footer>
-      <EditPageFooter>
+      <EditPageFooter style="margin-top: 0">
         <template #save>
           <a-button
             :loading="submitLoading"
@@ -122,14 +122,19 @@
 
 <script lang="ts" setup>
   import { useUserStore } from '@/store';
-  import { ref, reactive, PropType } from 'vue';
-  import { reduce, omit, keys, get } from 'lodash';
+  import { ref, PropType } from 'vue';
+  import i18n from '@/locale';
+  import _ from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
-  import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
-  import thumbButton from '@/components/buttons/thumb-button.vue';
+  import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import { validateLabelNameRegx, validateInputLength } from '@/views/config';
-  import { createProject, updateProject } from '../api';
+  import {
+    createProject,
+    updateProject,
+    ResourceKinds,
+    apiVersion,
+    GlobalNamespace
+  } from '../api';
   import { ProjectFormData } from '../config/interface';
 
   const props = defineProps({
@@ -158,43 +163,52 @@
       }
     }
   });
-  const labelItem = { key: '', value: '' };
   const userStore = useUserStore();
   const emit = defineEmits(['save', 'update:show', 'reset']);
   const formref = ref();
   const loading = ref(false);
+  const validateTrigger = ref(false);
   const submitLoading = ref(false);
+  const labelsData = ref<any>({
+    labels: {},
+    list: []
+  });
   const formData = ref<ProjectFormData>({
-    name: '',
-    description: '',
-    labels: {}
+    apiVersion,
+    kind: ResourceKinds.Project,
+    metadata: {
+      namespace: GlobalNamespace,
+      name: '',
+      labels: {}
+    },
+    spec: {
+      description: ''
+    }
   });
 
-  const {
-    labelList,
-    handleAddLabel,
-    handleDeleteLabel,
-    getLabelList,
-    validateLabel,
-    resetStatus,
-    validateTrigger
-  } = useLabelsActions(formData);
   const handleCancel = () => {
     emit('update:show', false);
   };
 
   const handleOk = async () => {
     const res = await formref.value?.validate();
-    validateLabel();
-    if (!res && !validateTrigger.value) {
+    validateTrigger.value = true;
+    if (!res) {
       try {
         submitLoading.value = true;
         // TODO
         if (props.action === 'create') {
-          await createProject(formData.value);
+          await createProject({
+            namespace: GlobalNamespace,
+            data: formData.value
+          });
           await userStore.info();
         } else {
-          await updateProject(formData.value);
+          await updateProject({
+            namespace: GlobalNamespace,
+            name: formData.value.metadata.name,
+            data: formData.value
+          });
         }
         setTimeout(() => {
           emit('save');
@@ -209,20 +223,28 @@
 
   const handleBeforeOpen = () => {
     if (props.action === 'create') {
-      labelList.value = [];
       formData.value = {
-        name: '',
-        description: '',
-        labels: {}
+        apiVersion,
+        kind: ResourceKinds.Project,
+        metadata: {
+          namespace: GlobalNamespace,
+          name: '',
+          labels: {}
+        },
+        spec: {
+          description: ''
+        }
       };
+      labelsData.value.labels = {};
+      labelsData.value.list = [];
+      validateTrigger.value = false;
     } else {
       formData.value = props.info;
-      getLabelList();
+      labelsData.value.labels = _.cloneDeep(formData.value.metadata.labels);
     }
   };
   const handleBeforeClose = () => {
     formref.value.resetFields();
-    resetStatus();
   };
 </script>
 

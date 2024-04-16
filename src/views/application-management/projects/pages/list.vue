@@ -26,7 +26,7 @@
         <FilterBox style="margin-bottom: var(--filter-box-margin)">
           <template #params>
             <a-input
-              v-model.trim="queryParams.query"
+              v-model.trim="queryParams.fieldSelector"
               allow-clear
               style="width: 240px"
               :placeholder="$t('common.search.name.placeholder')"
@@ -80,7 +80,7 @@
           :loading="loading"
           :data="dataList"
           :pagination="false"
-          row-key="id"
+          row-key="metadataName"
           :row-selection="rowSelection"
           @cell-click="handleCellClick"
           @selection-change="handleSelectChange"
@@ -93,7 +93,7 @@
               :body-cell-class="
                 (record) =>
                   userStore.hasProjectResourceActions({
-                    projectID: record.id,
+                    projectID: record.metadata?.name,
                     resource: Resources.Projects,
                     actions: [Actions.GET]
                   })
@@ -101,7 +101,7 @@
                     : ''
               "
               :cell-style="{ minWidth: '40px' }"
-              data-index="name"
+              data-index="metadata.name"
               :title="
                 $t('common.table.name.list', {
                   type: $t('applications.projects.table.name')
@@ -111,23 +111,23 @@
                 sortDirections: ['ascend', 'descend'],
                 defaultSortOrder: '',
                 sorter: true,
-                sortOrder: sortDataIndex === 'name' ? sortOrder : ''
+                sortOrder: sortDataIndex === 'metadata.name' ? sortOrder : ''
               }"
             >
               <template #cell="{ record }">
                 <a-link
                   v-if="
                     userStore.hasProjectResourceActions({
-                      projectID: record.id,
+                      projectID: record.metadata?.name,
                       resource: Resources.Projects,
                       actions: [Actions.GET]
                     })
                   "
                   :hoverable="false"
                   size="small"
-                  >{{ record.name }}</a-link
+                  >{{ record.metadata?.name }}</a-link
                 >
-                <span v-else>{{ record.name }}</span>
+                <span v-else>{{ record.metadata?.name }}</span>
               </template>
             </a-table-column>
             <a-table-column
@@ -135,7 +135,7 @@
               tooltip
               :cell-style="{ minWidth: '40px' }"
               align="left"
-              data-index="description"
+              data-index="spec.description"
               :title="$t('common.table.description')"
             >
             </a-table-column>
@@ -185,18 +185,18 @@
             <result-view
               :loading="loading"
               :title="
-                queryParams.query
+                queryParams.fieldSelector
                   ? $t('project.result.nodata.title')
                   : $t('project.result.title')
               "
               :subtitle="
-                queryParams.query
+                queryParams.fieldSelector
                   ? $t('common.result.nodata.subtitle')
                   : $t('project.result.subTitle')
               "
             >
               <template #icon>
-                <icon-find-replace v-if="queryParams.query" />
+                <icon-find-replace v-if="queryParams.fieldSelector" />
                 <i v-else class="iconfont icon-PROJECT"></i>
               </template>
               <template #extra>
@@ -205,7 +205,7 @@
                     userStore.hasRolesActionsPermission({
                       resource: Resources.Projects,
                       actions: [Actions.POST]
-                    }) && !queryParams.query
+                    }) && !queryParams.fieldSelector
                   "
                   type="outline"
                   @click="handleCreate"
@@ -217,7 +217,7 @@
             </result-view>
           </template>
         </a-table>
-        <a-pagination
+        <!-- <a-pagination
           size="small"
           :total="total"
           :page-size="queryParams.perPage"
@@ -227,7 +227,7 @@
           :hide-on-single-page="total <= 10"
           @change="handlePageChange"
           @page-size-change="handlePageSizeChange"
-        />
+        /> -->
       </div>
       <CreateProjectModal
         v-model:show="showProjectModal"
@@ -252,12 +252,13 @@
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { handleBatchRequest } from '@/views/config/utils';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
   import useHotKeys, { HotKeys } from '@/hooks/use-hot-keys';
   import CreateProjectModal from '../components/create-project.vue';
   import { ProjectRowData } from '../config/interface';
-  import { queryProjects, deleteProjects } from '../api';
+  import { queryProjects, deleteProjects, GlobalNamespace } from '../api';
   import { actionList } from '../config';
 
   let timer: any = null;
@@ -279,12 +280,9 @@
   const dataList = ref<ProjectRowData[]>([]);
   const total = ref(0);
   const projectInfo = ref<any>({});
-  const projectID = ref('');
   const action = ref<'create' | 'edit'>('create');
   const queryParams = reactive({
-    query: '',
-    page: 1,
-    perPage: appStore.perPage || 10
+    fieldSelector: ''
   });
 
   const setActionList = (row) => {
@@ -320,14 +318,15 @@
   const handleViewProject = async (row) => {
     router.push({
       name: PROJECT.Detail,
-      params: { projectId: row.id }
+      params: { projectName: row.metadata?.name }
     });
   };
   const handleCellClick = (row, col) => {
+    console.log('handleCellclick', row, col);
     if (
-      col.dataIndex === 'name' &&
+      col.dataIndex === 'metadata.name' &&
       userStore.hasProjectResourceActions({
-        projectID: row.id,
+        projectID: row.metadata?.name,
         resource: Resources.Projects,
         actions: [Actions.GET]
       })
@@ -340,14 +339,16 @@
       loading.value = true;
       const params: any = {
         ...pickBy(queryParams, (val) => !!val),
-        sort: [sort.value]
+        sort: [sort.value],
+        namespace: GlobalNamespace
       };
       const { data } = await queryProjects(params);
       dataList.value = _.map(data?.items || [], (item) => {
         return {
           ...item,
+          metadataName: item.metadata?.name,
           disabled: !userStore.hasProjectResourceActions({
-            projectID: item.id,
+            projectID: item.metadata?.name,
             resource: Resources.Projects,
             actions: [Actions.DELETE]
           })
@@ -363,8 +364,8 @@
     fetchData();
   };
   const handleSaveProject = () => {
-    queryParams.query = '';
-    queryParams.page = 1;
+    queryParams.fieldSelector = '';
+    // queryParams.page = 1;
     handleFilter();
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
@@ -375,38 +376,38 @@
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      queryParams.page = 1;
+      // queryParams.page = 1;
       handleFilter();
     }, 100);
   };
   const handleReset = () => {
-    queryParams.query = '';
-    queryParams.page = 1;
+    queryParams.fieldSelector = '';
+    // queryParams.page = 1;
     handleFilter();
   };
   const handlePageChange = (page: number) => {
-    queryParams.page = page;
+    // queryParams.page = page;
     handleFilter();
   };
   const handlePageSizeChange = (pageSize: number) => {
-    queryParams.page = 1;
-    queryParams.perPage = pageSize;
+    // queryParams.page = 1;
+    // queryParams.perPage = pageSize;
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
 
   const setEnterProjectDefault = () => {
     projectStore.setEnterProjectDefault({
-      projectId: '',
+      projectName: '',
       detail: false,
       list: true
     });
   };
   const updateProjectStore = async (list) => {
-    const ids = map(list, (item) => item.id);
-    projectStore.removeProjects(ids);
+    const names = map(list, (item) => item.name);
+    projectStore.removeProjects(names);
     const defaultProject = projectStore.defaultActiveProject;
-    if (ids.includes(defaultProject?.id)) {
+    if (names.includes(defaultProject?.name)) {
       projectStore.setInfo({
         defaultActiveProject: null
       });
@@ -415,25 +416,26 @@
   const handleDeleteConfirm = async (delList?: string[]) => {
     try {
       loading.value = true;
-      const ids = map(delList || selectedKeys.value, (val) => {
+      const nameList = map(delList || selectedKeys.value, (val) => {
         return {
-          id: val as string
+          name: val,
+          namespace: GlobalNamespace
         };
       });
-      await deleteProjects({ items: ids });
+      await handleBatchRequest(nameList, deleteProjects);
       loading.value = false;
       execSucceed();
-      queryParams.page = 1;
+      // queryParams.page = 1;
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
       handleFilter();
-      await updateProjectStore(ids);
+      await updateProjectStore(nameList);
     } catch (error) {
       loading.value = false;
     }
   };
-  const handleDelete = async (ids?: string[]) => {
-    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
+  const handleDelete = async (names?: string[]) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(names) });
   };
 
   const handleClickAction = (value, row) => {
@@ -442,7 +444,7 @@
       return;
     }
     if (value === 'delete') {
-      handleDelete([row.id]);
+      handleDelete([row.metadata.name]);
     }
   };
 

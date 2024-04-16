@@ -122,7 +122,8 @@
     modifyPassword,
     NAMESPACES,
     ResourceKinds,
-    apiVersion
+    apiVersion,
+    GlobalNamespace
   } from '../api';
   import { FirstGetPasswordCommand } from '../config';
 
@@ -169,17 +170,16 @@
   };
 
   const updateServerURLAndTelemetry = async (settings) => {
-    const userSetting = get(userStore, 'userInfo.userSetting');
     const list = _.map(settings, (item) => {
       return {
         name: item.name,
-        namespace: NAMESPACES,
+        namespace: GlobalNamespace,
         data: {
           kind: ResourceKinds.Setting,
           apiVersion,
           metadata: {
             name: item.name,
-            namespace: NAMESPACES
+            namespace: GlobalNamespace
           },
           spec: {
             value: item.value

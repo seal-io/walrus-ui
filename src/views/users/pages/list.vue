@@ -37,9 +37,8 @@
 
 <script lang="ts" setup>
   import { USERS } from '@/router/config';
-  import { SubjectTabs, QAlinkMap } from '@/views/config';
+  import { SubjectTabs } from '@/views/config';
   import useTabActive, { TabPage } from '@/hooks/use-tab-active';
-  import QuestionPopup from '@/components/question-popup/index.vue';
   import HeaderInfo from '@/components/header-info/index.vue';
   import Users from '@/views/system/pages/users.vue';
   import ProviderUsers from '@/views/subject-providers/components/providers.vue';

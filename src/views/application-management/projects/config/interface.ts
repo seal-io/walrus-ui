@@ -1,20 +1,19 @@
-export interface ProjectRowData {
-  name: string;
-  id: string;
-  description: string;
-  labels: object;
-  createTime: string;
-  upateTime: string;
-  label?: string;
-  value?: string;
-}
+import { DataListItem } from '@/types/global';
+
+export type ProjectRowData = DataListItem;
 
 export interface ProjectFormData {
-  id?: string;
-  name: string;
-  description: string;
-  labels: object;
-  labelList?: Array<{ key: string; value: string }>;
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name: string;
+    namespace: string;
+    labels: { [key: string]: string };
+  };
+  spec: {
+    displayName?: string;
+    description: string;
+  };
 }
 
 export interface ProjectRolesRowData {

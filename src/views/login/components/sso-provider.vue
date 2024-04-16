@@ -19,9 +19,27 @@
       };
       return () => (
         <div class="wrapper">
+          <div class="box">
+            {props.providers.map((provider: any) => (
+              <a-button
+                key={provider.value}
+                class="item"
+                type="primary"
+                style={{ width: '100%' }}
+                onClick={() => handleSelectType(provider.value, provider)}
+                v-slots={{
+                  icon: () => (
+                    <ProviderIcon provider={provider.icon} size={16} />
+                  )
+                }}
+              >
+                <span class="text">Login with {provider.label}</span>
+              </a-button>
+            ))}
+          </div>
           <a-button
             class="password"
-            type="primary"
+            type="outline"
             long
             style={{ width: '380px' }}
             onClick={() =>
@@ -35,25 +53,6 @@
           >
             <span>Login with password</span>
           </a-button>
-          {/* <a-divider margin={45}>Or</a-divider> */}
-          <div class="box">
-            {props.providers.map((provider: any) => (
-              <a-button
-                key={provider.value}
-                class="item"
-                type="outline"
-                style={{ width: '100%' }}
-                onClick={() => handleSelectType(provider.value, provider)}
-                v-slots={{
-                  icon: () => (
-                    <ProviderIcon provider={provider.icon} size={16} />
-                  )
-                }}
-              >
-                <span class="text">Login with {provider.label}</span>
-              </a-button>
-            ))}
-          </div>
         </div>
       );
     }
@@ -61,11 +60,13 @@
 </script>
 
 <style lang="less" scoped>
+  .wrapper {
+    padding: 0 20px;
+  }
+
   .password {
-    height: 48px;
     margin: 30px 0;
-    margin-top: 50px;
-    padding: 0 30px 10px;
+    padding: 0 30px;
     font-weight: var(--font-weight-bold);
     font-size: var(--font-size-large);
     text-align: center;
@@ -83,8 +84,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 30px;
       cursor: pointer;
+
+      &:first-child {
+        height: 48px;
+        margin-top: 50px;
+      }
 
       &:last-child {
         margin-right: 0;
