@@ -26,5 +26,6 @@ export default {
   'propfile.permission.type.project': '项目权限',
   'propfile.permission.type.system': '系统权限',
   'propfile.password.leastlength': '密码长度不能小于6位',
-  'propfile.provider.user.source': '创建用户源'
+  'propfile.provider.user.source': '创建用户源',
+  'propfile.provider.source': '来源'
 };

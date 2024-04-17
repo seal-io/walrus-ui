@@ -72,7 +72,7 @@
   const handledownload = (value, data) => {
     const url = downloadCli({
       os: data.os,
-      arch: value,
+      arch: data.os === 'windows' ? `${value}.exe` : value,
       t: Date.now()
     });
     try {

@@ -58,6 +58,22 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          data-index="type"
+          :title="$t('propfile.provider.source')"
+        >
+          <template #cell="{ record }">
+            <ProviderIcon
+              :size="18"
+              :provider="
+                record.spec.type === 'Internal' ? 'walrus' : record.spec.type
+              "
+            ></ProviderIcon>
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
           data-index="spec.displayName"
           :title="$t('settings.user.nickName')"
         >
@@ -114,8 +130,8 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
-  import { getListLabel } from '@/utils/func';
-  import { DataListItem, FormData } from '../config/interface';
+  import ProviderIcon from '@/components/provider-icon/index.vue';
+  import { DataListItem } from '../config/interface';
   import { actionList } from '../config';
   import { querySubjectProviders, deleteSubjectProvider } from '../api';
   import CreateSubjectProvider from './create-subject-provider.vue';

@@ -57,6 +57,41 @@ export const serviceManagement: SettingsItem = {
     {
       id: '',
       key: '',
+      label: 'system.setting.subjectLoginExpirationSeconds',
+      value: '',
+      type: 'groupTitle',
+      component: {},
+      parentId: '',
+      isEditable: false,
+      style: {
+        fontWeight: 500,
+        marginTop: '10px',
+        marginBottom: '15px'
+      },
+      subGroup: [
+        {
+          id: 'subject-login-expiration-seconds',
+          key: 'subject-login-expiration-seconds',
+          label: 'system.setting.subjectLoginExpirationSeconds',
+          desc: '',
+          parentId: '',
+          component: {
+            type: 'number',
+            required: false,
+            match: '',
+            message: '',
+            binds: {
+              min: 3600
+            }
+          },
+          value: '',
+          type: 'boolean'
+        }
+      ]
+    },
+    {
+      id: '',
+      key: '',
       label: 'system.setting.SkipRemoteTLSVerify.title',
       value: '',
       type: 'groupTitle',

@@ -6,7 +6,7 @@ export const downloadCli = (params: {
   arch: string;
   t: number;
 }) => {
-  return `/cli?${qs.stringify(params)}`;
+  return `/clis/walrus-cli-${params.os}-${params.arch}`;
 };
 
 export default {};

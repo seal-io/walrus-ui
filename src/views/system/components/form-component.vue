@@ -30,6 +30,7 @@
     <template v-if="comType === 'number'">
       <seal-input-number
         v-bind="attrs.binds"
+        :label="attrs.label"
         :style="{ width: attrs.width }"
         :model-value="Number(modelValue)"
         :disabled="attrs.isDisabled || !attrs.editable"
