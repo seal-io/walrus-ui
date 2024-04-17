@@ -20,6 +20,7 @@ export default {
   'system.setting.serverManage': 'Server',
   'system.setting.apiToken': 'API Keys',
   'system.setting.serverurl': 'Server Address',
+  'system.setting.subjectLoginExpirationSeconds': 'Login Expiration Time (s)',
   'system.setting.interceptor': 'Analysis Management',
   'system.setting.mavenRepo': 'Repository URL',
   'system.setting.mavenRepo.desc':

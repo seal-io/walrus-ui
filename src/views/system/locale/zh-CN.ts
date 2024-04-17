@@ -19,6 +19,7 @@ export default {
   'system.setting.serverManage': '服务管理',
   'system.setting.apiToken': 'API Keys',
   'system.setting.serverurl': '服务器地址',
+  'system.setting.subjectLoginExpirationSeconds': '登录过期时间 (秒)',
   'system.setting.interceptor': '分析管理',
   'system.setting.pulldependce': '是否联网检索',
   'system.setting.pulldependce.desc':
