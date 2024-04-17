@@ -65,7 +65,9 @@ export interface AxiosRequestPayload {
     namespace: string;
     [key: string]: any;
   };
-  spec?: Record<string, any>;
+  spec?: {
+    [key: string]: any;
+  };
   status?: Record<string, any>;
 }
 

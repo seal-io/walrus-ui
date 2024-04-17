@@ -1,20 +1,20 @@
-export interface VariableRow {
-  id: string;
-  name: string;
-  createTime: string;
-  value: string;
-  sensitive: boolean;
-}
-export interface VariableFormData {
-  name: string;
-  description: string;
-  value: string;
-  environment: any;
-  project: any;
-  sensitive: boolean;
-  id?: string;
+import { DataListItem, AxiosRequestPayload } from '@/types/global';
+
+export type VariableRow = DataListItem;
+
+export interface VariableFormData extends AxiosRequestPayload {
+  spec: {
+    value: string;
+    sensitive: boolean;
+    description: string;
+  };
 }
 
+export type VariableScopeType =
+  | 'Environment'
+  | 'Project'
+  | 'System'
+  | 'Service';
 export interface Variable {
   name: string;
   type: string;

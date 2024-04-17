@@ -9,6 +9,13 @@ export const ScopeList = [
   { label: '包含项目', value: 'withProject' }
 ];
 
+export const VariableScope = {
+  ENVIRONMENT: 'Environment',
+  PROJECT: 'Project',
+  SYSTEM: 'System',
+  SERVICE: 'Service'
+};
+
 export const actionList: MoreAction[] = [
   {
     label: 'common.button.edit',

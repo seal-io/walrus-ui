@@ -10,6 +10,7 @@
     :body-style="{ 'max-height': '500px', 'overflow': 'auto' }"
     modal-class="project-modal"
     :title="title"
+    unmount-on-close
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -18,10 +19,10 @@
     <a-spin :loading="loading" style="width: 100%; text-align: center">
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
-          :disabled="!!formData.id && action === 'edit'"
+          :disabled="action === 'edit'"
           :label="$t('applications.applications.form.name')"
           hide-label
-          field="name"
+          field="metadata.name"
           :validate-trigger="['change', 'input']"
           :rules="[
             {
@@ -32,7 +33,7 @@
           ]"
         >
           <seal-input
-            v-model.trim="formData.name"
+            v-model.trim="formData.metadata.name"
             :label="$t('applications.applications.form.name')"
             :required="true"
             style="width: 100%"
@@ -42,7 +43,7 @@
         </a-form-item>
         <a-form-item
           :label="$t('applications.applications.secret.value')"
-          field="value"
+          field="spec.value"
           hide-label
           validate-trigger="change"
           :rules="[
@@ -50,7 +51,7 @@
           ]"
         >
           <seal-textarea
-            v-model="formData.value"
+            v-model="formData.spec.value"
             :label="$t('applications.applications.secret.value')"
             :required="true"
             style="width: 100%"
@@ -64,9 +65,9 @@
           validate-trigger="change"
         >
           <seal-textarea
-            v-model="formData.description"
+            v-model="formData.metadata.description"
             :label="$t('common.table.description')"
-            :max-length="100"
+            :max-length="validateInputLength.DESC"
             show-word-limit
             style="width: 100%"
             :auto-size="{ minRows: 4, maxRows: 5 }"
@@ -74,12 +75,12 @@
         </a-form-item>
         <a-form-item
           :label="$t('common.table.sensitive')"
-          field="sensitive"
+          field="spec.sensitive"
           hide-label
           validate-trigger="change"
         >
           <seal-checkbox
-            v-model="formData.sensitive"
+            v-model="formData.spec.sensitive"
             :label="$t('common.table.sensitive')"
             :required="false"
           ></seal-checkbox>
@@ -111,11 +112,16 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, PropType } from 'vue';
+  import { ref, PropType } from 'vue';
   import _ from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { validateLabelNameRegx, validateInputLength } from '@/views/config';
-  import { createVariable, updateVariable } from '../api';
+  import {
+    createVariable,
+    updateVariable,
+    apiVersion,
+    ResouceKinds
+  } from '../api';
   import { VariableFormData } from '../config/interface';
 
   const props = defineProps({
@@ -143,6 +149,18 @@
         return 'create';
       }
     },
+    scope: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    namespace: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
     project: {
       type: String,
       default() {
@@ -161,13 +179,19 @@
   const loading = ref(false);
   const submitLoading = ref(false);
   const formData = ref<VariableFormData>({
-    name: '',
-    value: '',
-    description: '',
-    environment: { id: '' },
-    sensitive: false,
-    project: {
-      id: ''
+    apiVersion,
+    kind: ResouceKinds.Variable,
+    metadata: {
+      name: '',
+      namespace: props.namespace
+    },
+    spec: {
+      sensitive: false,
+      value: '',
+      description: ''
+    },
+    status: {
+      scope: props.scope
     }
   });
   const handleCancel = () => {
@@ -179,16 +203,17 @@
     if (!res) {
       try {
         submitLoading.value = true;
-        const params = {
-          ..._.pickBy(formData.value, (v) => !!v)
-        };
         if (props.action === 'create') {
           await createVariable({
-            data: params
+            data: formData.value,
+            name: formData.value.metadata.name,
+            namespace: formData.value.metadata.namespace
           });
         } else {
           await updateVariable({
-            data: params
+            data: formData.value,
+            name: formData.value.metadata.name,
+            namespace: formData.value.metadata.namespace
           });
         }
         setTimeout(() => {
@@ -205,15 +230,23 @@
   const handleBeforeOpen = () => {
     if (props.action === 'create') {
       formData.value = {
-        name: '',
-        value: '',
-        description: '',
-        sensitive: false,
-        project: props.project ? { id: props.project } : null,
-        environment: props.environment ? { id: props.environment } : null
+        apiVersion,
+        kind: ResouceKinds.Variable,
+        metadata: {
+          name: '',
+          namespace: props.namespace
+        },
+        spec: {
+          sensitive: false,
+          value: '',
+          description: ''
+        }
       };
     } else {
       formData.value = props.info;
+      formData.value.spec.value = props.info.spec.sensitive
+        ? ''
+        : props.info.status?.value;
     }
   };
   const handleBeforeClose = () => {

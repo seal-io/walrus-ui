@@ -104,5 +104,9 @@ export function getFirstLoginStatus() {
     namespace: GlobalNamespace,
     name: 'bootstrap-password-provision'
   });
-  return axios.get<DataListItem>(url);
+  return axios.get<DataListItem>(url, {
+    headers: {
+      _baseurl: '/apis/walrus.seal.io/v1'
+    }
+  });
 }

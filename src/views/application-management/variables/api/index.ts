@@ -1,12 +1,15 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { Pagination, ListQuery } from '@/types/global';
+import { ListQuery, DataListItem, RequestCallbackArgs } from '@/types/global';
 import router from '@/router';
 import _ from 'lodash';
-import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
-import { VariableRow, VariableFormData } from '../config/interface';
+import ResouceKinds, {
+  GlobalNamespace,
+  NAMESPACES,
+  apiVersion
+} from '@/views/config/resource-kinds';
 
-export { GlobalNamespace, NAMESPACES };
+export { GlobalNamespace, NAMESPACES, ResouceKinds, apiVersion };
 
 export const VARIABLE_API = 'variables';
 
@@ -39,13 +42,11 @@ const isProjectContext = () => {
 };
 
 export interface QueryType extends ListQuery {
-  projectID?: string;
   name?: string;
   namespace: string;
 }
 export interface ResultType {
-  items: VariableRow[];
-  pagination: Pagination;
+  items: DataListItem[];
 }
 
 export const queryProjectVairables = (params: QueryType) => {
@@ -92,23 +93,24 @@ export const queryItemVariable = (params: {
 }) => {
   const url = generateVariableAPI(params);
   return axios.get(url, {
-    params,
+    params: _.omit(params, ['namespace', 'name']),
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
   });
 };
 
-export const createVariable = (params: { data: object; namespace: string }) => {
+export const createVariable = (params: RequestCallbackArgs) => {
   const url = generateVariableAPI({
     namespace: params.namespace
   });
   return axios.post(`${url}`, params.data);
 };
 
-export const updateVariable = (params: { data: object; namespace: string }) => {
+export const updateVariable = (params: RequestCallbackArgs) => {
   const url = generateVariableAPI({
-    namespace: params.namespace
+    namespace: params.namespace,
+    name: params.name
   });
 
   return axios.put(`${url}`, params.data);
