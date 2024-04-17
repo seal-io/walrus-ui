@@ -69,7 +69,7 @@
             :key="EnvironmentTabs.VARIABLES"
             :title="$t('menu.applicationManagement.secret')"
           >
-            <VariableList scope="environment"></VariableList>
+            <VariableList :scope="VariableScope.ENVIRONMENT"></VariableList>
           </a-tab-pane>
           <a-tab-pane
             v-if="
@@ -106,6 +106,7 @@
   import useProjectData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import VariableList from '@/views/application-management/variables/components/table-list.vue';
+  import { VariableScope } from '@/views/application-management/variables/config';
   import TabList from '@/components/tab-list/index.vue';
   import { basicInfoConfig } from '../config';
   import { queryItemEnvironments } from '../api';

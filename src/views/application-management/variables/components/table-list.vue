@@ -4,7 +4,7 @@
       <FilterBox style="margin-bottom: var(--filter-box-margin)">
         <template #params>
           <a-input
-            v-model.trim="queryParams.query"
+            v-model.trim="queryParams.fieldSelector"
             allow-clear
             style="width: 220px"
             :placeholder="$t('common.search.name.placeholder')"
@@ -26,9 +26,11 @@
         </template>
         <template
           v-if="
-            [scopeMap.ENVIRONMENT, scopeMap.GLOBAL, scopeMap.PROJECT].includes(
-              scope
-            )
+            [
+              VariableScope.ENVIRONMENT,
+              VariableScope.SYSTEM,
+              VariableScope.PROJECT
+            ].includes(scope)
           "
           #button-group
         >
@@ -58,7 +60,7 @@
         :loading="loading"
         :data="dataList"
         :pagination="false"
-        row-key="id"
+        row-key="metadataName"
         :row-selection="hasDeletePermission ? rowSelectionStatue : null"
         @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
@@ -68,7 +70,7 @@
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
-            data-index="name"
+            data-index="metadata.name"
             :title="
               $t('common.table.name.list', {
                 type: $t('applications.applications.secret')
@@ -106,7 +108,7 @@
                 <icon-lock />
               </span>
               <span v-else>
-                {{ !record.sensitive ? record.value : '*******' }}
+                {{ !record.spec.sensitive ? record.status.value : '*******' }}
               </span>
             </template>
           </a-table-column>
@@ -163,7 +165,7 @@
           <result-view
             :loading="loading"
             :title="
-              queryParams.query
+              queryParams.fieldSelector
                 ? $t('common.result.nodata.title', {
                     type: $t('applications.applications.secret')
                   })
@@ -172,11 +174,13 @@
                   })
             "
             :subtitle="
-              queryParams.query ? $t('common.result.nodata.subtitle') : ''
+              queryParams.fieldSelector
+                ? $t('common.result.nodata.subtitle')
+                : ''
             "
           >
             <template #icon>
-              <icon-find-replace v-if="queryParams.query" />
+              <icon-find-replace v-if="queryParams.fieldSelector" />
               <i
                 v-else
                 class="iconfont icon-variable"
@@ -185,7 +189,7 @@
             </template>
             <template #extra>
               <a-button
-                v-if="hasPutPermission && !queryParams.query"
+                v-if="hasPutPermission && !queryParams.fieldSelector"
                 type="outline"
                 @click="handleCreate"
                 ><icon-plus class="m-r-4" />{{
@@ -196,7 +200,7 @@
           </result-view>
         </template>
       </a-table>
-      <a-pagination
+      <!-- <a-pagination
         size="small"
         :total="total"
         :page-size="queryParams.perPage"
@@ -206,15 +210,17 @@
         :hide-on-single-page="total <= 10"
         @change="handlePageChange"
         @page-size-change="handlePageSizeChange"
-      />
+      /> -->
     </div>
     <createVariable
       v-model:show="showModal"
       :title="modalTitle"
       :action="action"
       :info="itemInfo"
-      :project="projectId"
-      :environment="environmentId"
+      :namespace="queryParams.namespace"
+      :scope="scope"
+      :project="projectName"
+      :environment="environmentName"
       @save="handleSaveItem"
     ></createVariable>
   </comCard>
@@ -224,6 +230,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useAppStore } from '@/store';
   import dayjs from 'dayjs';
+  import { handleBatchRequest } from '@/views/config/utils';
   import _, { cloneDeep, map, pickBy } from 'lodash';
   import { reactive, ref, onMounted, computed, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -233,25 +240,17 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { UseSortDirection } from '@/utils/common';
-  import { VariableRow } from '../config/interface';
-  import { queryVariables, deleteVariable } from '../api';
+  import { VariableRow, VariableScopeType } from '../config/interface';
+  import { queryVariables, deleteVariable, GlobalNamespace } from '../api';
   import createVariable from './create-variable.vue';
-  import { actionList } from '../config';
-
-  const scopeMap = {
-    PROJECT: 'project',
-    GLOBAL: 'global',
-    ENVIRONMENT: 'environment',
-    SERVICE: 'service'
-  };
+  import { actionList, VariableScope } from '../config';
 
   const props = defineProps({
     scope: {
-      type: String as PropType<
-        'project' | 'global' | 'environment' | 'service'
-      >,
+      type: String as PropType<VariableScopeType>,
+      required: true,
       default() {
-        return '';
+        return VariableScope.ENVIRONMENT;
       }
     }
   });
@@ -271,50 +270,51 @@
   const itemInfo = ref<any>({});
   const action = ref<'create' | 'edit'>('create');
   const total = ref(0);
-  const projectId = route.params.projectId as string;
-  const environmentId = route.params.environmentId as string;
+  const projectName = route.params.projectName as string;
+  const environmentName = route.params.environmentName as string;
 
   const scopeParams = reactive({
-    project: {
+    [VariableScope.PROJECT]: {
       includeInherited: true
     },
-    environment: {
+    [VariableScope.ENVIRONMENT]: {
       includeInherited: true
     },
-    service: {
+    [VariableScope.SERVICE]: {
       includeInherited: true
     },
-    global: {}
+    [VariableScope.SYSTEM]: {}
   });
   const queryParams = reactive({
-    query: '',
-    page: 1,
-    perPage: appStore.perPage || 10
+    fieldSelector: '',
+    namespace: environmentName || projectName || GlobalNamespace
   });
   const dataList = ref<VariableRow[]>([]);
 
   const hasPutPermission = computed(() => {
-    return props.scope === scopeMap.GLOBAL
+    return props.scope === VariableScope.SYSTEM
       ? userStore.hasRolesActionsPermission({
           resource: Resources.Variables,
           actions: [Actions.PUT]
         })
       : userStore.hasProjectResourceActions({
-          projectID: projectId,
-          environmentID: props.scope === scopeMap.PROJECT ? '' : environmentId,
+          projectID: projectName,
+          environmentID:
+            props.scope === VariableScope.PROJECT ? '' : environmentName,
           resource: Resources.Variables,
           actions: [Actions.PUT]
         });
   });
   const hasDeletePermission = computed(() => {
-    return props.scope === scopeMap.GLOBAL
+    return props.scope === VariableScope.SYSTEM
       ? userStore.hasRolesActionsPermission({
           resource: Resources.Variables,
           actions: [Actions.DELETE]
         })
       : userStore.hasProjectResourceActions({
-          projectID: projectId,
-          environmentID: props.scope === scopeMap.PROJECT ? '' : environmentId,
+          projectID: projectName,
+          environmentID:
+            props.scope === VariableScope.PROJECT ? '' : environmentName,
           resource: Resources.Variables,
           actions: [Actions.DELETE]
         });
@@ -327,13 +327,7 @@
   });
 
   const visibleInScope = (row) => {
-    if (props.scope === scopeMap.PROJECT) {
-      return _.get(row, 'project.id') && !_.get(row, 'environment.id');
-    }
-    if (props.scope === scopeMap.ENVIRONMENT) {
-      return _.get(row, 'project.id') && _.get(row, 'environment.id');
-    }
-    return !_.get(row, 'project.id') && !_.get(row, 'environment.id');
+    return row.status?.scope === props.scope;
   };
 
   const setActionList = (row) => {
@@ -344,7 +338,7 @@
     return list;
   };
   const rowSelectionStatue = computed(() => {
-    if (props.scope === scopeMap.GLOBAL) {
+    if (props.scope === VariableScope.SYSTEM) {
       return userStore.hasRolesActionsPermission({
         resource: Resources.Variables,
         actions: [Actions.PUT]
@@ -356,22 +350,16 @@
   });
 
   const showScope = (row) => {
-    if (_.get(row, 'project.id') && !_.get(row, 'environment.id')) {
+    if (row.status?.scope === VariableScope.PROJECT) {
       return 'applications.variable.scope.project';
     }
-    if (_.get(row, 'project.id') && _.get(row, 'environment.id')) {
+    if (row.status?.scope === VariableScope.ENVIRONMENT) {
       return 'applications.variable.scope.envrionment';
     }
     return 'applications.variable.scope.global';
   };
   const getScope = (row) => {
-    if (_.get(row, 'project.id') && !_.get(row, 'environment.id')) {
-      return scopeMap.PROJECT;
-    }
-    if (_.get(row, 'project.id') && _.get(row, 'environment.id')) {
-      return scopeMap.ENVIRONMENT;
-    }
-    return scopeMap.GLOBAL;
+    return row.status?.scope;
   };
   const handleToggleVal = (row) => {
     row.visible = !row.visible;
@@ -389,18 +377,18 @@
         return {
           ...item,
           visible: false,
-          disabled: [scopeMap.ENVIRONMENT, scopeMap.SERVICE]
+          metadataName: item.metadata?.name,
+          disabled: [VariableScope.ENVIRONMENT, VariableScope.SERVICE]
             ? getScope(item) !== props.scope ||
               !userStore.hasProjectResourceActions({
-                projectID: route.params.projectId,
-                environmentID: environmentId,
+                projectID: projectName,
+                environmentID: environmentName,
                 resource: Resources.Variables,
                 actions: [Actions.PUT]
               })
             : getScope(item) !== props.scope
         };
       });
-      total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -416,23 +404,23 @@
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      queryParams.page = 1;
+      // queryParams.page = 1;
       handleFilter();
     }, 100);
   };
 
   const handleReset = () => {
-    queryParams.query = '';
-    queryParams.page = 1;
+    // queryParams.query = '';
+    // queryParams.page = 1;
     handleFilter();
   };
   const handlePageChange = (page: number) => {
-    queryParams.page = page;
+    // queryParams.page = page;
     handleFilter();
   };
   const handlePageSizeChange = (pageSize: number) => {
-    queryParams.page = 1;
-    queryParams.perPage = pageSize;
+    // queryParams.page = 1;
+    // queryParams.perPage = pageSize;
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
@@ -443,20 +431,19 @@
       showModal.value = true;
     }, 100);
   };
-  const handleDeleteConfirm = async (delList?: string[]) => {
+  const handleDeleteConfirm = async (names?: string[]) => {
     try {
       loading.value = true;
-      const ids = map(delList || selectedKeys.value, (val) => {
+      const nameList = map(names || selectedKeys.value, (val) => {
         return {
-          id: val
+          name: val,
+          namespace: queryParams.namespace
         };
       });
-      await deleteVariable({
-        data: { items: ids }
-      });
+      await handleBatchRequest(nameList, deleteVariable);
       loading.value = false;
       execSucceed();
-      queryParams.page = 1;
+      // queryParams.page = 1;
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
       handleFilter();
@@ -473,8 +460,8 @@
     }, 100);
   };
 
-  const handleDelete = async (ids?: string[]) => {
-    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
+  const handleDelete = async (names?: string[]) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(names) });
   };
 
   const handleClickAction = (value, row) => {
@@ -483,14 +470,14 @@
         handleClickEdit(row);
         break;
       case 'delete':
-        handleDelete([row.id]);
+        handleDelete([row.metadata.name]);
         break;
       default:
         break;
     }
   };
   const handleSaveItem = () => {
-    queryParams.page = 1;
+    // queryParams.page = 1;
     handleFilter();
   };
   onMounted(async () => {

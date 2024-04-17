@@ -6,7 +6,8 @@ export default {
   ProjectSubjects: 'ProjectSubjects',
   Setting: 'Setting',
   Settings: 'Settings',
-  Project: 'Project'
+  Project: 'Project',
+  Variable: 'Variable'
 };
 
 export const apiVersion = 'walrus.seal.io/v1';
