@@ -200,7 +200,6 @@
       };
       const handleSubmit = async () => {
         const res = await formref.value?.validate();
-        console.log('formdata===', formData.value);
         if (!res) {
           try {
             submitLoading.value = true;

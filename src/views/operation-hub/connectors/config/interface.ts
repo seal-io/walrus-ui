@@ -1,19 +1,6 @@
-export interface ConnectorRowData {
-  name: string;
-  type: string;
-  status: string;
-  statusMessage: string;
-  configData: object;
-  enableFinOps: boolean;
-  finOpsStatus: string;
-  finOpsStatusMessage: string;
-  createTime: string;
-  project?: object;
-  edges: object;
-  id: string;
-  label?: string;
-  value?: string;
-}
+import { DataListItem, AxiosRequestPayload } from '@/types/global';
+
+export type ConnectorRowData = DataListItem;
 
 export interface CustomAttrbute {
   key: string;
@@ -27,26 +14,7 @@ export interface CustomAttrbute {
   style?: object;
 }
 
-export interface ConnectorFormData {
-  project?: { id: string };
-  id?: string;
-  name: string;
-  description?: string;
-  type: string;
-  applicableEnvironmentType: string;
-  configDataFormat: string;
-  customConfig: string;
-  configData: {
-    [k: string]: {
-      visible?: boolean;
-      value: string;
-      type?: string;
-    };
-  };
-  category?: string;
-  configVersion: string;
-  enableFinOps: boolean;
-}
+export type ConnectorFormData = AxiosRequestPayload;
 
 export interface ConnectorTypeData {
   label: string;

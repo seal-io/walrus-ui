@@ -367,7 +367,8 @@
   const projectName = route.params.projectName as string;
   const queryParams = reactive({
     fieldSelector: '',
-    category: ''
+    category: '',
+    namespace: projectName || GlobalNamespace
   });
   const dataList = ref<ConnectorRowData[]>([]);
 
@@ -699,7 +700,7 @@
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      queryParams.page = 1;
+      // queryParams.page = 1;
       handleFilter();
     }, 100);
     nextTick(() => {
