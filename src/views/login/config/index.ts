@@ -45,4 +45,13 @@ export const LoginTypeMap = {
   External: 'External'
 };
 
+export const ssoLoginButton = {
+  google: '使用 Google 账号登录'
+};
+
+export const providerOrder = {
+  GitHub: 1,
+  Google: 2,
+  Internal: 3
+};
 export default {};
