@@ -48,6 +48,9 @@ axios.interceptors.request.use(
     if (some(NoBaseURLApiList, (api) => url.startsWith(api))) {
       config.baseURL = '';
     }
+    if (config.headers._baseurl) {
+      config.baseURL = config.headers._baseurl;
+    }
 
     overrideRequestConfig(config);
 
@@ -105,7 +108,7 @@ axios.interceptors.response.use(
       const currentRoute = router.currentRoute.value.name;
       userStore.permissionCheckFailed();
       if (currentRoute !== LoginRouteName) {
-        window.location.reload();
+        router.replace({ name: LoginRouteName });
       }
     }
     if (axios.isCancel(error)) {

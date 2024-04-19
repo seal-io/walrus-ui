@@ -55,6 +55,7 @@
           <SSOProvider
             v-if="loginType === LoginTypeMap.External"
             :providers="providerList"
+            :loaded="loaded"
             @select="handleLoginTypeChange"
           ></SSOProvider>
           <PasswordLogin
@@ -80,7 +81,7 @@
   import { LOCALE_OPTIONS } from '@/locale';
   import PasswordLogin from './components/password-login.vue';
   import SSOProvider from './components/sso-provider.vue';
-  import { LoginTypeMap } from './config';
+  import { LoginTypeMap, providerOrder } from './config';
   import { queryIdentifyProviders, ProviderItem, ssoLogin } from './api';
 
   const locales = [...LOCALE_OPTIONS];
@@ -103,6 +104,7 @@
   const loginType = ref(LoginTypeMap.External);
   const providerList = ref<ProviderItem[]>([]);
   const isModifyPassword = ref(false);
+  const loaded = ref(false);
 
   provide('providerList', providerList);
 
@@ -139,9 +141,12 @@
           ...item,
           icon: item.type,
           value: item.name,
-          label: item.type
+          label: item.type,
+          order: providerOrder[item.type] || 6
         };
-      }).filter((item) => item.type !== LoginTypeMap.Internal);
+      })
+        .filter((item) => item.type !== LoginTypeMap.Internal)
+        .sort((a, b) => a.order - b.order);
     } catch (error) {
       // ignore
       providerList.value = [];
@@ -156,10 +161,17 @@
     }
   };
   const init = async () => {
-    loading.value = true;
-    await fetchData();
-    checkShowModify();
-    loading.value = false;
+    try {
+      loading.value = true;
+      loaded.value = false;
+      await fetchData();
+      checkShowModify();
+    } catch (error) {
+      // ignore
+    } finally {
+      loading.value = false;
+      loaded.value = true;
+    }
   };
   init();
 </script>

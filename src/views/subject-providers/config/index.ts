@@ -7,6 +7,12 @@ import ResourceKinds, {
 
 export { GlobalNamespace, NAMESPACES, ResourceKinds, apiVersion };
 
+export const FieldType = {
+  string: 'string',
+  password: 'password',
+  boolean: 'boolean'
+};
+
 export const actionList: MoreAction[] = [
   {
     label: 'common.button.edit',
@@ -25,14 +31,67 @@ export const actionList: MoreAction[] = [
 // Bitbucket, GitHub, GitLab, Gitea, Google, Internal, LDAP, Microsoft, OAuth, OIDC
 export const ProviderTypes = {
   GitHub: 'GitHub',
+  OIDC: 'OIDC',
   GitLab: 'GitLab',
   Google: 'Google',
   Bitbucket: 'Bitbucket',
   Gitea: 'Gitea',
   LDAP: 'LDAP',
   OAuth: 'OAuth',
-  OIDC: 'OIDC',
   Microsoft: 'Microsoft'
+};
+
+const specConfig_1 = [
+  {
+    key: 'clientID',
+    label: 'ClientID',
+    required: true,
+    type: FieldType.string,
+    default: ''
+  },
+  {
+    key: 'clientSecret',
+    label: 'ClientSecret',
+    required: true,
+    type: 'password',
+    default: ''
+  }
+];
+const specConfig_2 = [
+  {
+    key: 'issuer',
+    label: 'Issuer',
+    required: true,
+    type: FieldType.string,
+    default: ''
+  },
+  {
+    key: 'skipInsecureVerify',
+    label: 'SkipInsecureVerify',
+    required: false,
+    default: false,
+    type: 'boolean'
+  },
+  {
+    key: 'clientID',
+    label: 'ClientID',
+    required: true,
+    type: FieldType.string,
+    default: ''
+  },
+  {
+    key: 'clientSecret',
+    label: 'ClientSecret',
+    required: true,
+    type: FieldType.password,
+    default: ''
+  }
+];
+export const ProviderSpecConfig = {
+  GitHub: specConfig_1,
+  GitLab: specConfig_1,
+  Google: specConfig_1,
+  OIDC: specConfig_2
 };
 
 export default {};

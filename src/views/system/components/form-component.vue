@@ -143,9 +143,12 @@
 
     methods: {
       handleInputChange(value) {
-        if (this.matchType === 'url' && value) {
-          const list = value.split('/');
-          const val = this.formatValue(list);
+        if (
+          this.$attrs.binds?.valueType === 'url' &&
+          value &&
+          _.endsWith(value, '/')
+        ) {
+          const val = value.replace(/\/+$/, '');
           this.$emit('update:modelValue', _.trim(val));
         }
       },
