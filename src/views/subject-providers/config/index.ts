@@ -57,6 +57,37 @@ const specConfig_1 = [
     default: ''
   }
 ];
+
+const AdvancedOptions = [
+  {
+    key: 'claimMapping.nameKey',
+    label: 'Name',
+    required: false,
+    type: FieldType.string,
+    default: 'Name'
+  },
+  {
+    key: 'claimMapping.displayNameKey',
+    label: 'Nickname',
+    required: false,
+    type: FieldType.string,
+    default: ''
+  },
+  {
+    key: 'claimMapping.emailKey',
+    label: 'Email',
+    required: false,
+    type: FieldType.string,
+    default: ''
+  },
+  {
+    key: 'claimMapping.groupsKey',
+    label: 'Groups',
+    required: false,
+    type: FieldType.string,
+    default: ''
+  }
+];
 const specConfig_2 = [
   {
     key: 'issuer',
@@ -85,6 +116,11 @@ const specConfig_2 = [
     required: true,
     type: FieldType.password,
     default: ''
+  },
+  {
+    key: 'AdvancedOptions',
+    label: 'Claim Mapping',
+    options: AdvancedOptions
   }
 ];
 export const ProviderSpecConfig = {

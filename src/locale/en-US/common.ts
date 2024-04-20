@@ -172,5 +172,6 @@ export default {
   'common.code.hide.tips': '... Hide {rows} lines, click to expand ...',
   'common.nodata.created': 'No {type} has been created yet',
   'common.nodata.added': 'No {type} has been added yet',
-  'common.status.edited': 'Edited'
+  'common.status.edited': 'Edited',
+  'common.table.user': '用户'
 };

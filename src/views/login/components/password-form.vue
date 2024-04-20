@@ -77,7 +77,7 @@
       <!-- modify password box -->
       <modifyPassword
         v-show="showModify"
-        :old-password="userInfo.password || tempPassword"
+        :original-password="userInfo.password || tempPassword"
         :user-name="userInfo.username"
         :settings-info="settingsInfo"
         @updatePassword="handleModifyDefaultPassword"

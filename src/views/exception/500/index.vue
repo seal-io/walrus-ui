@@ -5,7 +5,7 @@
       <a-result
         class="result"
         status="500"
-        :subtitle="$t('exception.result.500.description')"
+        :subtitle="route.err || $t('exception.result.500.description')"
       />
       <a-button key="back" type="primary" @click="handleBack">
         {{ $t('exception.result.500.back') }}
@@ -18,7 +18,7 @@
   import useCallCommon from '@/hooks/use-call-common';
 
   const { router, route } = useCallCommon();
-
+  console.log('router-------', route.query);
   const handleBack = () => {
     if (route.query.back) {
       router.replace({ name: route.query.back as string });

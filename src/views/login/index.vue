@@ -120,6 +120,7 @@
 
       // small window: fullscreen=no,scrollbars=yes,left=300,top=0,toolbar=no,height=800, width=700
       window.open(ssoLogin(params), '_self');
+      loading.value = true;
     } catch (error) {
       // ignore
     }
