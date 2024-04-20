@@ -10,6 +10,7 @@ declare module 'vue' {
     ABreadcrumb: typeof import('@arco-design/web-vue')['Breadcrumb'];
     ABreadcrumbItem: typeof import('@arco-design/web-vue')['BreadcrumbItem'];
     AButton: typeof import('@arco-design/web-vue')['Button'];
+    AButtton: typeof import('@arco-design/web-vue')['Buttton'];
     ACard: typeof import('@arco-design/web-vue')['Card'];
     ACascader: typeof import('@arco-design/web-vue')['Cascader'];
     ACheckbox: typeof import('@arco-design/web-vue')['Checkbox'];

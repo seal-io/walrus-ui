@@ -29,6 +29,7 @@ export default {
     '10 gradient colors generated according to the theme color',
   'settings.user.nickName': 'Nickname',
   'settings.user.email': 'Email',
+  'settings.user.group': 'Group',
   'settings.user.avatar': 'Avatar',
   'settings.user.setting': 'User Settings'
 };

@@ -21,7 +21,7 @@ export interface LoginData {
 }
 
 interface SetPassword {
-  oldPassword: string;
+  originalPassword: string;
   password: string;
   name?: string;
 }

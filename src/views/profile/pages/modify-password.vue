@@ -50,14 +50,14 @@
       <a-form-item
         hide-asterisk
         hide-label
-        field="oldPassword"
+        field="originalPassword"
         :trigger="['change', 'blur']"
         :rules="[
           { required: true, message: $t('user.password.rules.oldpassword') }
         ]"
       >
         <seal-input-password
-          v-model="formData.oldPassword"
+          v-model="formData.originalPassword"
           :style="{ width: `${InputWidth.LARGE}px` }"
           :required="true"
           allow-clear
@@ -147,7 +147,7 @@
     displayName: '',
     email: '',
     password: '',
-    oldPassword: '',
+    originalPassword: '',
     confirmPassword: ''
   });
   const handleCancel = () => {

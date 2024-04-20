@@ -132,7 +132,7 @@
   const userStore = useUserStore();
   const emits = defineEmits(['updatePassword']);
   const props = defineProps({
-    oldPassword: {
+    originalPassword: {
       type: String,
       default() {
         return '';
@@ -152,7 +152,7 @@
     }
   });
   const formData = reactive({
-    'oldPassword': props.oldPassword,
+    'originalPassword': props.originalPassword,
     'newPassword': '',
     'confirmPassword': '',
     'serve-url': window.location.origin,
@@ -193,7 +193,7 @@
   const handleSubmit = async ({ errors }) => {
     if (!errors) {
       const data = {
-        oldPassword: props.oldPassword,
+        originalPassword: props.originalPassword,
         password: formData.newPassword,
         name: props.userName
       };

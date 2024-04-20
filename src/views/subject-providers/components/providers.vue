@@ -51,7 +51,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="metadata.name"
-          :title="$t('profile.account.type.user')"
+          :title="$t('common.table.user')"
         >
         </a-table-column>
         <a-table-column
@@ -78,6 +78,7 @@
           :title="$t('settings.user.nickName')"
         >
         </a-table-column>
+
         <a-table-column
           ellipsis
           tooltip

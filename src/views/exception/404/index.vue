@@ -5,7 +5,7 @@
       <a-result
         class="result"
         status="404"
-        :subtitle="$t('exception.result.404.description')"
+        :subtitle="route.err || $t('exception.result.404.description')"
       >
       </a-result>
       <div class="operation-row">

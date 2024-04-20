@@ -7,7 +7,7 @@
         <a-result
           class="result"
           status="403"
-          :subtitle="$t('exception.result.403.description')"
+          :subtitle="route.err || $t('exception.result.403.description')"
         />
         <div class="operation-row">
           <a-button key="back" type="primary" @click="handleBack">

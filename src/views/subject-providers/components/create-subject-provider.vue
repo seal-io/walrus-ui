@@ -15,6 +15,7 @@
   import SealInputPassword from '@/components/seal-form/components/seal-input-password.vue';
   import SealInput from '@/components/seal-form/components/seal-input.vue';
   import SealSwitch from '@/components/seal-form/components/seal-switch.vue';
+  import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import {
     GlobalNamespace,
     createSubjectProvider,
@@ -55,6 +56,8 @@
       const { t } = i18n.global;
       const submitLoading = ref(false);
       const formref = ref();
+      const showAdavanced = ref(false);
+      const configOptions = ref([]);
       const formData = ref<FormData>({
         apiVersion,
         kind: ResourceKinds.SubjectProvider,
@@ -202,10 +205,11 @@
         );
       };
 
-      const renderProviderConfig = () => {
-        const configList =
-          ProviderSpecConfig[formData.value.spec.type || 'GitHub'];
-        return _.map(configList, (item, index) => {
+      const renderOptions = (options) => {
+        if (!options || options.length === 0) {
+          return null;
+        }
+        return _.map(options, (item, index) => {
           let Component: any = null;
           if (item.type === FieldType.boolean) {
             Component = SealSwitch;
@@ -265,6 +269,49 @@
             </a-form-item>
           );
         });
+      };
+      const renderAdvancedOptions = () => {
+        const advancedOptions = _.filter(configOptions.value, (item) => {
+          return item.key === 'AdvancedOptions';
+        });
+        return (
+          <>
+            {advancedOptions.length > 0 && (
+              <div title="Advanced Options">
+                <a-button
+                  class="size-14"
+                  type="text"
+                  style={{
+                    padding: '0 2px',
+                    marginBottom: '12px',
+                    fontSize: 'var(--font-size-large)'
+                  }}
+                  onClick={() => {
+                    showAdavanced.value = !showAdavanced.value;
+                  }}
+                  v-slots={{
+                    icon: () => {
+                      return <icon-settings />;
+                    }
+                  }}
+                >
+                  Advanced Options
+                </a-button>
+                {showAdavanced.value &&
+                  renderOptions(advancedOptions?.[0]?.options)}
+              </div>
+            )}
+          </>
+        );
+      };
+      const renderProviderConfig = () => {
+        configOptions.value =
+          ProviderSpecConfig[formData.value.spec.type || 'GitHub'];
+        const basicOptions = _.filter(configOptions.value, (item) => {
+          return item.key !== 'AdvancedOptions';
+        });
+
+        return <>{renderOptions(basicOptions)}</>;
       };
       return () => (
         <a-modal
@@ -389,6 +436,7 @@
               </seal-select>
             </a-form-item>
             {renderProviderConfig()}
+            {renderAdvancedOptions()}
             <a-form-item label={t('common.table.description')} hide-label>
               <seal-textarea
                 v-model={formData.value.spec.description}

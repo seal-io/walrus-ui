@@ -66,6 +66,22 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          data-index="spec.email"
+          :title="$t('settings.user.email')"
+        >
+        </a-table-column>
+        <!-- <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="spec.role"
+          :title="$t('settings.user.group')"
+        >
+        </a-table-column> -->
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
           data-index="spec.description"
           :title="$t('common.table.description')"
         >
