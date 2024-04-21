@@ -28,6 +28,7 @@
     ProviderSpecConfig,
     FieldType
   } from '../config';
+  import stepsMap from '../config/instructions';
   import { FormData } from '../config/interface';
 
   export default defineComponent({
@@ -53,6 +54,7 @@
       }
     },
     setup(props, { emit }) {
+      const siteOrigin = window.location.origin;
       const { t } = i18n.global;
       const submitLoading = ref(false);
       const formref = ref();
@@ -79,6 +81,13 @@
         status: {
           loginWithPassword: false
         }
+      });
+
+      const operationSteps = computed(() => {
+        const steps = stepsMap[formData.value.spec.type];
+        return steps?.({
+          origin: siteOrigin
+        });
       });
 
       const providerList = computed(() => {
@@ -278,25 +287,33 @@
           <>
             {advancedOptions.length > 0 && (
               <div title="Advanced Options">
-                <a-button
-                  class="size-14"
-                  type="text"
+                <div
+                  class="flex"
                   style={{
-                    padding: '0 2px',
-                    marginBottom: '12px',
-                    fontSize: 'var(--font-size-large)'
-                  }}
-                  onClick={() => {
-                    showAdavanced.value = !showAdavanced.value;
-                  }}
-                  v-slots={{
-                    icon: () => {
-                      return <icon-settings />;
-                    }
+                    borderBottom: '1px solid var(--color-border-2)',
+                    marginBottom: '12px'
                   }}
                 >
-                  Advanced Options
-                </a-button>
+                  <a-link
+                    class="size-14"
+                    type="text"
+                    style={{
+                      padding: '4px 2px',
+
+                      fontSize: 'var(--font-size-large)'
+                    }}
+                    onClick={() => {
+                      showAdavanced.value = !showAdavanced.value;
+                    }}
+                    v-slots={{
+                      icon: () => {
+                        return <icon-settings />;
+                      }
+                    }}
+                  >
+                    Advanced Options
+                  </a-link>
+                </div>
                 {showAdavanced.value &&
                   renderOptions(advancedOptions?.[0]?.options)}
               </div>
@@ -313,12 +330,36 @@
 
         return <>{renderOptions(basicOptions)}</>;
       };
+
+      const renderSteps = () => {
+        return (
+          <>
+            {_.map(operationSteps.value, (item, index) => {
+              return (
+                <div
+                  class="step-item"
+                  style={{
+                    padding: '4px 0',
+                    lineHeight: '22px',
+                    wordBreak: 'break-all',
+                    fontSize: 'var(--font-size-small)',
+                    color: 'var(--color-text-3)'
+                  }}
+                  key={index}
+                >
+                  {index + 1}. <span v-html={item}></span>
+                </div>
+              );
+            })}
+          </>
+        );
+      };
       return () => (
         <a-modal
           top="5%"
           closable={false}
           align-center={false}
-          width={600}
+          width={900}
           ok-text={t('common.button.save')}
           visible={props.show}
           mask-closable={false}
@@ -352,102 +393,123 @@
             }
           }}
         >
-          <a-form
-            ref={(el) => {
-              formref.value = el;
-            }}
-            model={formData.value}
-            auto-label-width
-          >
-            <a-form-item
-              hide-label
-              field="metadata.name"
-              validate-trigger={['change', 'input']}
-              rules={[
-                {
-                  required: true,
-                  match: validateUserNameRegx,
-                  message: t('account.create.rules.username')
-                }
-              ]}
+          <div class="flex">
+            <a-form
+              ref={(el) => {
+                formref.value = el;
+              }}
+              model={formData.value}
+              auto-label-width
+              style={{ flex: 1 }}
             >
-              <seal-input
-                v-model={[formData.value.metadata.name, 'modelValue', ['trim']]}
-                label={t('profile.account.name')}
-                required={true}
-                max-length={validateInputLength.NAME}
-                show-word-limit
-                style={{ width: '100%' }}
-                disabled={props.action === 'edit'}
-              ></seal-input>
-            </a-form-item>
-            <a-form-item
-              hide-label
-              field="spec.displayName"
-              validate-trigger={['change', 'input']}
-            >
-              <seal-input
-                v-model={[
-                  formData.value.spec.displayName,
-                  'modelValue',
-                  ['trim']
-                ]}
-                label={t('settings.user.nickName')}
-                max-length={validateInputLength.NAME}
-                show-word-limit
-                style={{ width: '100%' }}
-              ></seal-input>
-            </a-form-item>
-            <a-form-item
-              hide-label
-              validate-trigger={['change', 'input']}
-              rules={[
-                {
-                  required: false,
-                  message: t('propfile.account.settings.rules.role')
-                }
-              ]}
-            >
-              <seal-select
-                v-model={formData.value.spec.type}
-                label={t('common.table.type')}
-                onChange={(val) => handleTypeChange(val)}
-                style={{ width: '100%' }}
-                v-slots={{
-                  prefix: () => {
-                    return (
-                      <ProviderIcon
-                        provider={_.toLower(formData.value.spec?.type || '')}
-                      ></ProviderIcon>
-                    );
+              <a-form-item
+                hide-label
+                field="metadata.name"
+                validate-trigger={['change', 'input']}
+                rules={[
+                  {
+                    required: true,
+                    match: validateUserNameRegx,
+                    message: t('account.create.rules.username')
                   }
-                }}
+                ]}
               >
-                {_.map(providerList.value, (item, index) => {
-                  return (
-                    <a-option key={index} value={item.value}>
-                      <ProviderIcon
-                        provider={_.toLower(item.value)}
-                      ></ProviderIcon>
-                      <span class="m-l-10">{t(item.label)}</span>
-                    </a-option>
-                  );
-                })}
-              </seal-select>
-            </a-form-item>
-            {renderProviderConfig()}
-            {renderAdvancedOptions()}
-            <a-form-item label={t('common.table.description')} hide-label>
-              <seal-textarea
-                v-model={formData.value.spec.description}
-                label={t('common.table.description')}
-                max-length={validateInputLength.DESC}
-                show-word-limit
-                style={{ width: '100%' }}
-                auto-size={{ minRows: 4, maxRows: 6 }}
-              ></seal-textarea>
-            </a-form-item>
-          </a-form>
+                <seal-input
+                  v-model={[
+                    formData.value.metadata.name,
+                    'modelValue',
+                    ['trim']
+                  ]}
+                  label={t('profile.account.name')}
+                  required={true}
+                  popupInfo={`名称须与回调地址${siteOrigin}/identify/callback/{provider}中的provider一致`}
+                  max-length={validateInputLength.NAME}
+                  show-word-limit
+                  style={{ width: '100%' }}
+                  disabled={props.action === 'edit'}
+                ></seal-input>
+              </a-form-item>
+              <a-form-item
+                hide-label
+                field="spec.displayName"
+                validate-trigger={['change', 'input']}
+              >
+                <seal-input
+                  v-model={[
+                    formData.value.spec.displayName,
+                    'modelValue',
+                    ['trim']
+                  ]}
+                  label={t('settings.user.nickName')}
+                  max-length={validateInputLength.NAME}
+                  show-word-limit
+                  style={{ width: '100%' }}
+                ></seal-input>
+              </a-form-item>
+              <a-form-item
+                hide-label
+                validate-trigger={['change', 'input']}
+                rules={[
+                  {
+                    required: false,
+                    message: t('propfile.account.settings.rules.role')
+                  }
+                ]}
+              >
+                <seal-select
+                  v-model={formData.value.spec.type}
+                  label={t('common.table.type')}
+                  onChange={(val) => handleTypeChange(val)}
+                  style={{ width: '100%' }}
+                  v-slots={{
+                    prefix: () => {
+                      return (
+                        <ProviderIcon
+                          provider={_.toLower(formData.value.spec?.type || '')}
+                        ></ProviderIcon>
+                      );
+                    }
+                  }}
+                >
+                  {_.map(providerList.value, (item, index) => {
+                    return (
+                      <a-option key={index} value={item.value}>
+                        <ProviderIcon
+                          provider={_.toLower(item.value)}
+                        ></ProviderIcon>
+                        <span class="m-l-10">{t(item.label)}</span>
+                      </a-option>
+                    );
+                  })}
+                </seal-select>
+              </a-form-item>
+              {renderProviderConfig()}
+              <a-form-item label={t('common.table.description')} hide-label>
+                <seal-textarea
+                  v-model={formData.value.spec.description}
+                  label={t('common.table.description')}
+                  max-length={validateInputLength.DESC}
+                  show-word-limit
+                  style={{ width: '100%' }}
+                  auto-size={{ minRows: 4, maxRows: 6 }}
+                ></seal-textarea>
+              </a-form-item>
+              {renderAdvancedOptions()}
+            </a-form>
+            <div
+              class="steps"
+              style={{
+                width: '360px',
+                padding: '0 20px'
+              }}
+            >
+              <div class="m-b-20">
+                {formData.value.spec.type}
+                <span class="m-l-5">{t('common.settings.instructions')}</span>
+              </div>
+              {renderSteps()}
+            </div>
+          </div>
         </a-modal>
       );
     }
