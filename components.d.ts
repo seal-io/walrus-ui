@@ -10,7 +10,6 @@ declare module 'vue' {
     ABreadcrumb: typeof import('@arco-design/web-vue')['Breadcrumb'];
     ABreadcrumbItem: typeof import('@arco-design/web-vue')['BreadcrumbItem'];
     AButton: typeof import('@arco-design/web-vue')['Button'];
-    AButtton: typeof import('@arco-design/web-vue')['Buttton'];
     ACard: typeof import('@arco-design/web-vue')['Card'];
     ACascader: typeof import('@arco-design/web-vue')['Cascader'];
     ACheckbox: typeof import('@arco-design/web-vue')['Checkbox'];
@@ -35,20 +34,16 @@ declare module 'vue' {
     ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter'];
     ALayoutSider: typeof import('@arco-design/web-vue')['LayoutSider'];
     ALink: typeof import('@arco-design/web-vue')['Link'];
-    AList: typeof import('@arco-design/web-vue')['List'];
-    AListItemMeta: typeof import('@arco-design/web-vue')['ListItemMeta'];
     AMenu: typeof import('@arco-design/web-vue')['Menu'];
     AMenuItem: typeof import('@arco-design/web-vue')['MenuItem'];
     AModal: typeof import('@arco-design/web-vue')['Modal'];
     AOption: typeof import('@arco-design/web-vue')['Option'];
     APagination: typeof import('@arco-design/web-vue')['Pagination'];
     AProgress: typeof import('@arco-design/web-vue')['Progress'];
-    ARangePicker: typeof import('@arco-design/web-vue')['RangePicker'];
     AResult: typeof import('@arco-design/web-vue')['Result'];
     ASelect: typeof import('@arco-design/web-vue')['Select'];
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];
-    AStatistic: typeof import('@arco-design/web-vue')['Statistic'];
     ASubMenu: typeof import('@arco-design/web-vue')['SubMenu'];
     ASwitch: typeof import('@arco-design/web-vue')['Switch'];
     ATable: typeof import('@arco-design/web-vue')['Table'];

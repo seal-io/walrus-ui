@@ -169,5 +169,6 @@ export default {
   'common.nodata.created': '尚未创建{type}',
   'common.nodata.added': '尚未添加{type}',
   'common.status.edited': '已编辑',
-  'common.table.user': '用户'
+  'common.table.user': '用户',
+  'common.settings.instructions': '操作指引'
 };

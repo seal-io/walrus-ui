@@ -173,5 +173,6 @@ export default {
   'common.nodata.created': 'No {type} has been created yet',
   'common.nodata.added': 'No {type} has been added yet',
   'common.status.edited': 'Edited',
-  'common.table.user': '用户'
+  'common.table.user': '用户',
+  'common.settings.instructions': 'Instructions'
 };
