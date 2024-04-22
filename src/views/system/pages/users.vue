@@ -51,7 +51,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="metadata.name"
-          :title="$t('profile.account.type.user')"
+          :title="$t('common.table.name')"
         >
         </a-table-column>
         <a-table-column

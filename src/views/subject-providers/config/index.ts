@@ -61,28 +61,28 @@ const specConfig_1 = [
 const AdvancedOptions = [
   {
     key: 'claimMapping.nameKey',
-    label: 'Name',
+    label: 'NameKey',
     required: false,
     type: FieldType.string,
     default: 'Name'
   },
   {
     key: 'claimMapping.displayNameKey',
-    label: 'Nickname',
+    label: 'displayNameKey',
     required: false,
     type: FieldType.string,
     default: ''
   },
   {
     key: 'claimMapping.emailKey',
-    label: 'Email',
+    label: 'EmailKey',
     required: false,
     type: FieldType.string,
     default: ''
   },
   {
     key: 'claimMapping.groupsKey',
-    label: 'Groups',
+    label: 'GroupsKey',
     required: false,
     type: FieldType.string,
     default: ''
@@ -118,7 +118,7 @@ const specConfig_2 = [
     default: ''
   },
   {
-    key: 'AdvancedOptions',
+    key: '_AdvancedOptions_',
     label: 'Claim Mapping',
     options: AdvancedOptions
   }

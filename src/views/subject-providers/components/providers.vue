@@ -33,7 +33,7 @@
           "
           type="primary"
           @click="handleCreate"
-          >{{ $t('propfile.provider.user.source') }}</a-button
+          >{{ $t('propfile.provider.user.create') }}</a-button
         >
       </template>
     </FilterBox>
@@ -51,7 +51,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="metadata.name"
-          :title="$t('common.table.user')"
+          :title="$t('common.table.name')"
         >
         </a-table-column>
         <a-table-column
