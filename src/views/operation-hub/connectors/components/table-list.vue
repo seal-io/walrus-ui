@@ -263,17 +263,14 @@
         </result-view>
       </template>
     </a-table>
-    <!-- <a-pagination
-      size="small"
-      :total="total"
-      :page-size="queryParams.perPage"
-      :current="queryParams.page"
-      show-total
-      show-page-size
-      :hide-on-single-page="total <= 10"
-      @change="handlePageChange"
+    <LoadMore
+      v-if="dataList.length > 0"
+      v-model:page-size="queryParams.limit"
+      class="m-t-20"
+      :continue="!!queryParams.continue"
+      @loadMore="handleFilter"
       @page-size-change="handlePageSizeChange"
-    /> -->
+    ></LoadMore>
   </div>
 </template>
 
@@ -298,6 +295,7 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
+  import LoadMore from '@/components/pagination/load-more.vue';
   import { ConnectorRowData, ConnectorTypeData } from '../config/interface';
   import {
     ConnectorCategory,
@@ -368,6 +366,8 @@
   const queryParams = reactive({
     fieldSelector: '',
     category: '',
+    continue: '',
+    limit: appStore.perPage || 20,
     namespace: projectName || GlobalNamespace
   });
   const dataList = ref<ConnectorRowData[]>([]);
@@ -498,7 +498,7 @@
               : false
         };
       });
-      total.value = data?.pagination?.total || 0;
+      queryParams.continue = '';
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -512,13 +512,8 @@
     fetchData();
   };
 
-  const handlePageChange = (page: number) => {
-    // queryParams.page = page;
-    handleFilter();
-  };
   const handlePageSizeChange = (pageSize: number) => {
-    // queryParams.page = 1;
-    // queryParams.perPage = pageSize;
+    queryParams.continue = '';
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
@@ -594,7 +589,7 @@
       await handleBatchRequest(nameList, deleteConnector);
       loading.value = false;
       execSucceed();
-      // queryParams.page = 1;
+      queryParams.continue = '';
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
       handleFilter();
@@ -698,9 +693,9 @@
   };
 
   const handleSearch = () => {
+    queryParams.continue = '';
     clearTimeout(timer);
     timer = setTimeout(() => {
-      // queryParams.page = 1;
       handleFilter();
     }, 100);
     nextTick(() => {
@@ -710,8 +705,7 @@
   const handleReset = () => {
     queryParams.category = '';
     queryParams.fieldSelector = '';
-    // queryParams.query = '';
-    // queryParams.page = 1;
+    queryParams.continue = '';
     handleFilter();
     nextTick(() => {
       createConnectChunkRequest();

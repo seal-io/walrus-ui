@@ -200,17 +200,14 @@
           </result-view>
         </template>
       </a-table>
-      <!-- <a-pagination
-        size="small"
-        :total="total"
-        :page-size="queryParams.perPage"
-        :current="queryParams.page"
-        show-total
-        show-page-size
-        :hide-on-single-page="total <= 10"
-        @change="handlePageChange"
+      <LoadMore
+        v-if="dataList.length > 0"
+        v-model:page-size="queryParams.limit"
+        class="m-t-20"
+        :continue="!!queryParams.continue"
+        @loadMore="handleFilter"
         @page-size-change="handlePageSizeChange"
-      /> -->
+      ></LoadMore>
     </div>
     <createVariable
       v-model:show="showModal"
@@ -239,6 +236,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
+  import LoadMore from '@/components/pagination/load-more.vue';
   import { UseSortDirection } from '@/utils/common';
   import { VariableRow, VariableScopeType } from '../config/interface';
   import { queryVariables, deleteVariable, GlobalNamespace } from '../api';
@@ -287,6 +285,8 @@
   });
   const queryParams = reactive({
     fieldSelector: '',
+    limit: 20,
+    continue: '',
     namespace: environmentName || projectName || GlobalNamespace
   });
   const dataList = ref<VariableRow[]>([]);
@@ -389,6 +389,7 @@
             : getScope(item) !== props.scope
         };
       });
+      queryParams.continue = data?.metadata?.continue || '';
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -404,23 +405,19 @@
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      // queryParams.page = 1;
+      queryParams.continue = '';
       handleFilter();
     }, 100);
   };
 
   const handleReset = () => {
-    // queryParams.query = '';
-    // queryParams.page = 1;
+    queryParams.continue = '';
+    queryParams.fieldSelector = '';
     handleFilter();
   };
-  const handlePageChange = (page: number) => {
-    // queryParams.page = page;
-    handleFilter();
-  };
+
   const handlePageSizeChange = (pageSize: number) => {
-    // queryParams.page = 1;
-    // queryParams.perPage = pageSize;
+    queryParams.continue = '';
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
@@ -443,7 +440,7 @@
       await handleBatchRequest(nameList, deleteVariable);
       loading.value = false;
       execSucceed();
-      // queryParams.page = 1;
+      queryParams.continue = '';
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
       handleFilter();
@@ -477,7 +474,7 @@
     }
   };
   const handleSaveItem = () => {
-    // queryParams.page = 1;
+    queryParams.continue = '';
     handleFilter();
   };
   onMounted(async () => {

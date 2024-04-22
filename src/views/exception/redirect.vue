@@ -8,7 +8,7 @@
 
   const { router } = useCallCommon();
   const redirectPage = () => {
-    const query = router.currentRoute.value;
+    const { query } = router.currentRoute.value;
     const { code, ...othersQuery } = query;
     const toPage = code ? `Page${code}` : 'Page500';
     console.log('query========', query, othersQuery, code);

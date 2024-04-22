@@ -113,18 +113,14 @@
           </a-tab-pane>
         </a-tabs>
       </a-spin>
-      <!-- <a-pagination
-        style="margin-top: 20px"
-        size="small"
-        :total="total"
-        :page-size="queryParams.perPage"
-        :current="queryParams.page"
-        show-total
-        show-page-size
-        :hide-on-single-page="total <= 10"
-        @change="handlePageChange"
+      <LoadMore
+        v-if="dataList.length > 0"
+        v-model:page-size="queryParams.limit"
+        class="m-t-20"
+        :continue="!!queryParams.continue"
+        @loadMore="handleFilter"
         @page-size-change="handlePageSizeChange"
-      /> -->
+      ></LoadMore>
     </div>
     <CatalogModal
       v-model:show="showModal"
@@ -149,17 +145,15 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { PageAction, ModalAction } from '@/views/config';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
+  import LoadMore from '@/components/pagination/load-more.vue';
   import ListView from './list-view.vue';
   import { CatalogRowData } from '../config/interface';
   import {
     queryCatalogs,
     deleteCatalogs,
-    CatalogAPI,
-    PROJECT_API_PREFIX,
     GlobalNamespace,
     generateListAPI
   } from '../api';
-  import addCatalog from './add-catalog.vue';
   import CatalogModal from './catalog-modal.vue';
 
   const props = defineProps({
@@ -192,8 +186,8 @@
   const projectID = route.params.projectId as string;
   const projectName = route.params.projectName as string;
   const queryParams = reactive({
-    labelSelector: '',
     fieldSelector: '',
+    continue: '',
     limit: 20
   });
   const { updateChunkedList } = useUpdateChunkedList(dataList, {
@@ -240,7 +234,6 @@
         namespace: projectName || GlobalNamespace
       };
       const { data } = await queryCatalogs(params);
-      console.log('data+++++++++++++++++++', data);
 
       dataList.value = _.map(data?.items || [], (sItem) => {
         sItem.metadataName = sItem.metadata.name;
@@ -249,7 +242,7 @@
           sItem.spec.builtin;
         return sItem;
       });
-      total.value = data?.pagination?.total || 0;
+      queryParams.continue = data?.metadata?.continue || '';
     } catch (error) {
       loading.value = false;
     } finally {
@@ -263,24 +256,16 @@
     fetchData();
   };
   const handleSave = () => {};
-  const handleCheckChange = (checked, id) => {
-    if (checked) {
-      selectedKeys.value.push(id);
-    } else {
-      remove(selectedKeys.value, (val) => val === id);
-    }
-  };
 
   const handleReset = () => {
+    queryParams.fieldSelector = '';
+    queryParams.continue = '';
     handleFilter();
   };
-  const handlePageChange = (page: number) => {
-    handleFilter();
-  };
+
   const handlePageSizeChange = (pageSize: number) => {
-    // queryParams.page = 1;
-    // queryParams.perPage = pageSize;
-    // appStore.updateSettings({ perPage: pageSize });
+    queryParams.continue = '';
+    appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const handleDeleteConfirm = async () => {
@@ -292,8 +277,8 @@
           (sItem) => sItem.metadataName === val
         );
         return {
-          name: item?.metadata.name,
-          namespace: item?.metadata.namespace
+          name: item?.metadata.name as string,
+          namespace: item?.metadata.namespace as string
         };
       });
       for (let i = 0; i < ids.length; i += 1) {
@@ -301,7 +286,7 @@
       }
       loading.value = false;
       execSucceed();
-      queryParams.page = 1;
+      queryParams.continue = '';
       selectedKeys.value = [];
       handleFilter();
       listViewRef.value.clearSelection?.();
@@ -336,12 +321,7 @@
       // ignore
     }
   };
-  const handleQueryChange = () => {
-    handleSearch();
-    nextTick(() => {
-      createCatalogChunkRequest();
-    });
-  };
+
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {

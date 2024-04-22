@@ -1,6 +1,11 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { Pagination, ListQuery } from '@/types/global';
+import {
+  Pagination,
+  ListQuery,
+  ListResult,
+  DataListItem
+} from '@/types/global';
 import _ from 'lodash';
 import router from '@/router';
 import { CatalogRowData, CatalogFormData } from '../config/interface';
@@ -23,18 +28,6 @@ export const isProjectContext = () => {
   return !!router.currentRoute.value.params.projectId;
 };
 
-export interface QueryType extends ListQuery {
-  extract?: string[];
-  sort?: string[];
-  _group?: string[];
-}
-
-export interface ResultType {
-  filters: unknown;
-  items: CatalogRowData[];
-  pagination: Pagination;
-}
-
 export interface FormDataPR {
   connectorID: string;
   repository: string;
@@ -43,9 +36,9 @@ export interface FormDataPR {
   content: string;
 }
 
-export function queryCatalogs(params: QueryType) {
+export function queryCatalogs(params: ListQuery) {
   const url = `/${NAMESPACES}/${params.namespace}/${CatalogAPI}`;
-  return axios.get<ResultType>(url, {
+  return axios.get<ListResult<CatalogRowData>>(url, {
     params: _.omit(params, ['namespace']),
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -66,9 +59,9 @@ export function createCatalog(data: CatalogFormData) {
   return axios.post(url, data);
 }
 
-export function deleteCatalogs(data: ListQuery) {
+export function deleteCatalogs(data: { name: string; namespace: string }) {
   const url = `/${NAMESPACES}/${data.namespace}/${CatalogAPI}/${data.name}`;
-  return axios.delete(url, { data });
+  return axios.delete(url);
 }
 export function updateCatalog(data: CatalogFormData) {
   const url = `/${NAMESPACES}/${data.metadata.namespace}/${CatalogAPI}/${data.metadata.name}`;

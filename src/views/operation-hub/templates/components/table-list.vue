@@ -16,7 +16,7 @@
           >
           </a-select>
           <a-input
-            v-model.trim="queryParams.labelSelector"
+            v-model.trim="queryParams.fieldSelector"
             allow-clear
             style="width: 240px"
             :placeholder="$t('common.search.name.placeholder')"
@@ -86,17 +86,13 @@
             <i class="iconfont icon-Field-time size-16"></i>
           </a-button>
         </a-space>
-        <!-- <a-pagination
-          size="small"
-          :total="total"
-          :page-size="queryParams.perPage"
-          :current="queryParams.page"
-          show-total
-          show-page-size
-          :hide-on-single-page="total <= 10"
-          @change="handlePageChange"
+        <LoadMore
+          v-if="dataList.length > 0"
+          v-model:page-size="queryParams.limit"
+          :continue="!!queryParams.continue"
+          @loadMore="handleFilter"
           @page-size-change="handlePageSizeChange"
-        /> -->
+        ></LoadMore>
       </div>
       <a-spin :loading="loading" class="fill-width">
         <a-tabs
@@ -119,7 +115,7 @@
                 <result-view
                   :loading="loading"
                   :title="
-                    queryParams.query
+                    queryParams.fieldSelector
                       ? $t('common.result.nodata.title', {
                           type: $t('operation.templates.table.name')
                         })
@@ -128,11 +124,13 @@
                         })
                   "
                   :subtitle="
-                    queryParams.query ? $t('common.result.nodata.subtitle') : ''
+                    queryParams.fieldSelector
+                      ? $t('common.result.nodata.subtitle')
+                      : ''
                   "
                 >
                   <template #icon>
-                    <icon-find-replace v-if="queryParams.query" />
+                    <icon-find-replace v-if="queryParams.fieldSelector" />
                     <i
                       v-else
                       class="iconfont icon-layers-2"
@@ -141,7 +139,7 @@
                   </template>
                   <template #extra>
                     <a-button
-                      v-if="hasPutPermission && !queryParams.query"
+                      v-if="hasPutPermission && !queryParams.fieldSelector"
                       type="outline"
                       @click="handleCreate"
                       ><icon-plus class="m-r-4" />{{
@@ -187,6 +185,7 @@
   import { deleteModal, execSucceed, batchDelete } from '@/utils/monitor';
   import { PageAction, ModalAction } from '@/views/config';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
+  import LoadMore from '@/components/pagination/load-more.vue';
   import { queryCatalogs, CatalogAPI } from '../../catalogs/api';
   import ThumbView from './thumb-view.vue';
   import TemplateModal from './template-modal.vue';
@@ -196,8 +195,7 @@
     deleteTemplates,
     TEMPLATE_API,
     PROJECT_API_PREFIX,
-    GlobalNamespace,
-    NAMESPACES
+    GlobalNamespace
   } from '../api';
   import {
     listenFilterTemplateAction,
@@ -238,20 +236,23 @@
   // const sort = ref<string[]>(['-createTime']);
   const dataList = ref<TemplateRowData[]>([]);
   const catalogs = ref<
-    { label: string; value: string; id: string; name: string }[]
+    {
+      label: string;
+      value: string;
+      metadata: { name: string; namespace: string };
+    }[]
   >([]);
   const listViewRef = ref();
   const total = ref(0);
   const projectID = route.params.projectId as string;
   const queryParams = reactive({
+    namespace: projectName || GlobalNamespace,
+    continue: '',
     labelSelector: '',
     fieldSelector: '',
     limit: 20,
-    query: '',
     catalogID: '',
-    nonCatalog: false,
-    page: '',
-    perPage: ''
+    nonCatalog: false
   });
 
   const hasPutPermission = computed(() => {
@@ -284,9 +285,7 @@
       ...catalogs.value,
       {
         label: t('operation.templates.table.noncatalog'),
-        value: 'nonCatalog',
-        id: 'nonCatalog',
-        name: t('operation.templates.table.noncatalog')
+        value: 'nonCatalog'
       }
     ];
   });
@@ -306,10 +305,9 @@
         catalogs.value = _.map(list, (o) => {
           const item = _.cloneDeep(o);
           return {
-            label: item.name,
-            value: item.id,
-            id: item.id,
-            name: item.name
+            label: item.metadata.name,
+            value: item.metadata.name,
+            metadata: item.metadata
           };
         });
       }
@@ -345,9 +343,7 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(query.value, (val) => !!val),
-        sort: [sort.value],
-        namespace: props.scope === 'project' ? projectName : GlobalNamespace
+        ...pickBy(query.value, (val) => !!val)
       };
       const { data } = await queryTemplates(params);
       dataList.value = _.map(data?.items || [], (item) => {
@@ -355,7 +351,7 @@
           ...item
         };
       });
-      total.value = data?.pagination?.total || 0;
+      queryParams.continue = data?.metadata?.continue || '';
     } catch (error) {
       loading.value = false;
     } finally {
@@ -370,7 +366,10 @@
   };
   const handleSelectAll = (checked) => {
     const list = _.map(dataList.value, (item) => {
-      return item.metadata.name;
+      return {
+        name: item.metadata.name,
+        namespace: item.metadata.namespace
+      };
     });
     if (checked) {
       selectedKeys.value = list;
@@ -408,13 +407,8 @@
     }
   };
 
-  const handlePageChange = (page: number) => {
-    queryParams.page = page;
-    handleFilter();
-  };
   const handlePageSizeChange = (pageSize: number) => {
-    queryParams.page = 1;
-    queryParams.perPage = pageSize;
+    queryParams.continue = '';
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
@@ -428,7 +422,6 @@
       await batchDelete(nsList, deleteTemplates);
       loading.value = false;
       execSucceed();
-      queryParams.page = 1;
       selectedKeys.value = [];
       handleFilter();
       listViewRef.value.clearSelection?.();
@@ -453,7 +446,7 @@
       updateChunkedList(data);
     });
     if (!dataList.value.length) {
-      queryParams.page = 1;
+      queryParams.continue = '';
       handleFilter();
     }
   };
@@ -484,7 +477,7 @@
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      queryParams.page = 1;
+      queryParams.continue = '';
       handleFilter();
     }, 100);
     nextTick(() => {
@@ -523,9 +516,11 @@
     }
   };
   const handleReset = () => {
-    queryParams.query = '';
+    queryParams.labelSelector = '';
+    queryParams.fieldSelector = '';
     queryParams.catalogID = '';
-    queryParams.page = 1;
+    queryParams.limit = 20;
+    queryParams.continue = '';
     handleFilter();
     nextTick(() => {
       createTemplateChunkRequest();
@@ -535,16 +530,14 @@
   const getCatalogList = async () => {
     try {
       const params = {
-        page: -1,
-        extract: ['-status', '-sync']
+        namespace: projectName || GlobalNamespace
       };
       const { data } = await queryCatalogs(params);
       catalogs.value = _.map(data?.items || [], (item) => {
         return {
-          label: item.name,
-          value: item.id,
-          id: item.id,
-          name: item.name
+          label: item.metadata.name,
+          value: item.metadata.name,
+          metadata: item.metadata
         };
       });
     } catch (error) {

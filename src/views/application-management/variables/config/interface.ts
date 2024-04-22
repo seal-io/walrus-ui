@@ -1,7 +1,6 @@
 import { DataListItem, AxiosRequestPayload } from '@/types/global';
 
 export type VariableRow = DataListItem;
-
 export interface VariableFormData extends AxiosRequestPayload {
   spec: {
     value: string;

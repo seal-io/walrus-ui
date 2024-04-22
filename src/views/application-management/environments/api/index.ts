@@ -1,6 +1,6 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { Pagination, ListQuery } from '@/types/global';
+import { ListQuery, ListResult } from '@/types/global';
 import router from '@/router';
 import _ from 'lodash';
 import ResourceKinds, {
@@ -41,14 +41,10 @@ export interface QueryType extends ListQuery {
   sort?: string[];
 }
 
-export interface ResultType {
-  items: EnvironmentRow[];
-  pagination: Pagination;
-}
-export function queryEnvironmentsList(params: QueryType, token?) {
+export function queryEnvironmentsList(params: ListQuery, token?) {
   const url = generateEnvironmentAPI({ namespace: params.namespace as string });
 
-  return axios.get<ResultType>(url, {
+  return axios.get<ListResult<EnvironmentRow>>(url, {
     params: _.omit(params, ['namespace']),
     cancelToken: token,
     paramsSerializer: (obj) => {
@@ -57,10 +53,10 @@ export function queryEnvironmentsList(params: QueryType, token?) {
   });
 }
 
-export function queryEnvironments(params: QueryType, token?) {
+export function queryEnvironments(params: ListQuery, token?) {
   const url = generateEnvironmentAPI({ namespace: params.namespace as string });
 
-  return axios.get<ResultType>(url, {
+  return axios.get<ListResult<EnvironmentRow>>(url, {
     params: _.omit(params, ['namespace']),
     cancelToken: token,
     paramsSerializer: (obj) => {
@@ -68,10 +64,10 @@ export function queryEnvironments(params: QueryType, token?) {
     }
   });
 }
-export function queryEnvironmentList(params: QueryType, token?) {
+export function queryEnvironmentList(params: ListQuery, token?) {
   const url = generateEnvironmentAPI({ namespace: params.namespace as string });
 
-  return axios.get<ResultType>(url, {
+  return axios.get<ListResult<EnvironmentRow>>(url, {
     params: {
       ..._.omit(params, ['namespace'])
     },

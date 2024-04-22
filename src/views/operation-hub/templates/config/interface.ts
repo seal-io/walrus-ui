@@ -55,22 +55,6 @@ export interface TemplateVersion {
   url: string;
   version: string;
 }
-export interface TemplateRowData extends TemplateFormData {
-  status: {
-    conditions: object[];
-    phase: string;
-    icon: string;
-    url: string;
-    lastSyncTime: string;
-    versions: TemplateVersion[];
-  };
-}
+export type TemplateRowData = TemplateFormData;
 
-export interface TemplateVersionData extends TemplateRowData {
-  template: {
-    id: string;
-    name: string;
-    version: string;
-    template: { id: string }; // template not template version
-  };
-}
+export type TemplateVersionData = TemplateRowData;
