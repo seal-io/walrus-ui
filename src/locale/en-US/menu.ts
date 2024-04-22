@@ -26,5 +26,7 @@ export default {
   'menu.systemsettings.user': 'Users',
   'menu.systemsettings.permissions': 'User Permissions',
   'menu.systemsettings.config': 'Configuration Management',
-  'mneu.user.account': 'Account'
+  'mneu.user.account': 'Account',
+  'menu.user.provider': 'Authentication Providers',
+  'menu.user.list': 'User List'
 };

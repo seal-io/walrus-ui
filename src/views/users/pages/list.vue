@@ -23,10 +23,13 @@
           class="page-line-tabs"
           @change="setPageTabActive"
         >
-          <a-tab-pane :key="SubjectTabs.USERS" title="Users">
+          <a-tab-pane :key="SubjectTabs.USERS" :title="$t('menu.user.list')">
             <Users></Users>
           </a-tab-pane>
-          <a-tab-pane :key="SubjectTabs.PROVIDERS" title="User Providers">
+          <a-tab-pane
+            :key="SubjectTabs.PROVIDERS"
+            :title="$t('menu.user.provider')"
+          >
             <ProviderUsers></ProviderUsers>
           </a-tab-pane>
         </a-tabs>

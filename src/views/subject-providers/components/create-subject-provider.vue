@@ -325,7 +325,7 @@
         configOptions.value =
           ProviderSpecConfig[formData.value.spec.type || 'GitHub'];
         const basicOptions = _.filter(configOptions.value, (item) => {
-          return item.key !== 'AdvancedOptions';
+          return item.key !== '_AdvancedOptions_';
         });
 
         return <>{renderOptions(basicOptions)}</>;
@@ -372,8 +372,8 @@
           unmount-on-close
           title={
             props.action === 'edit'
-              ? t('profile.account.edit')
-              : t('profile.account.create')
+              ? t('propfile.provider.user.edit')
+              : t('propfile.provider.user.create')
           }
           onCancel={() => {
             handleCancel();
@@ -427,23 +427,6 @@
                   show-word-limit
                   style={{ width: '100%' }}
                   disabled={props.action === 'edit'}
-                ></seal-input>
-              </a-form-item>
-              <a-form-item
-                hide-label
-                field="spec.displayName"
-                validate-trigger={['change', 'input']}
-              >
-                <seal-input
-                  v-model={[
-                    formData.value.spec.displayName,
-                    'modelValue',
-                    ['trim']
-                  ]}
-                  label={t('settings.user.nickName')}
-                  max-length={validateInputLength.NAME}
-                  show-word-limit
-                  style={{ width: '100%' }}
                 ></seal-input>
               </a-form-item>
               <a-form-item

@@ -26,5 +26,7 @@ export default {
   'menu.systemsettings.user': '用户管理',
   'menu.systemsettings.permissions': '用户权限',
   'menu.systemsettings.config': '配置管理',
-  'mneu.user.account': '账号'
+  'mneu.user.account': '账号',
+  'menu.user.provider': '认证提供商',
+  'menu.user.list': '用户列表'
 };
