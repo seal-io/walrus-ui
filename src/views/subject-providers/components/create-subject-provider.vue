@@ -281,7 +281,7 @@
       };
       const renderAdvancedOptions = () => {
         const advancedOptions = _.filter(configOptions.value, (item) => {
-          return item.key === 'AdvancedOptions';
+          return item.key === '_AdvancedOptions_';
         });
         return (
           <>

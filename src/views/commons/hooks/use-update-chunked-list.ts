@@ -50,7 +50,7 @@ export function useUpdateChunkedList(
     // DELETE
     if (data?.type === websocketEventType.DELETE) {
       dataList.value = _.filter(dataList.value, (item) => {
-        return !_.find(ids, (id) => id === item.id);
+        return !_.find(ids, (id) => id === item.metadata.name);
       });
     }
     // UPDATE
@@ -58,7 +58,7 @@ export function useUpdateChunkedList(
       _.each(collections, (item) => {
         const updateIndex = _.findIndex(
           dataList.value,
-          (sItem) => sItem.id === item.id
+          (sItem) => sItem.metadata.name === item.metadata.name
         );
         if (updateIndex > -1) {
           const updateItem = _.cloneDeep(item);

@@ -1,6 +1,11 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { ListQuery, DataListItem, RequestCallbackArgs } from '@/types/global';
+import {
+  ListQuery,
+  DataListItem,
+  RequestCallbackArgs,
+  ListResult
+} from '@/types/global';
 import router from '@/router';
 import _ from 'lodash';
 import ResouceKinds, {
@@ -60,11 +65,11 @@ export const queryProjectVairables = (params: QueryType) => {
     }
   });
 };
-export const queryVariables = (params: QueryType) => {
+export const queryVariables = (params: ListQuery) => {
   const url = generateVariableAPI({
     namespace: params.namespace
   });
-  return axios.get<ResultType>(url, {
+  return axios.get<ListResult<DataListItem>>(url, {
     params: _.omit(params, ['namespace']),
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

@@ -218,17 +218,14 @@
           </result-view>
         </template>
       </a-table>
-      <!-- <a-pagination
-        size="small"
-        :total="total"
-        :page-size="queryParams.perPage"
-        :current="queryParams.page"
-        show-total
-        show-page-size
-        :hide-on-single-page="total <= 10"
-        @change="handlePageChange"
+      <LoadMore
+        v-if="dataList.length > 0"
+        v-model:page-size="queryParams.limit"
+        class="m-t-20"
+        :continue="!!queryParams.continue"
+        @loadMore="handleFilter"
         @page-size-change="handlePageSizeChange"
-      /> -->
+      ></LoadMore>
     </div>
     <CreateEnvironment
       v-model:show="showModal"
@@ -255,6 +252,7 @@
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
+  import LoadMore from '@/components/pagination/load-more.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
@@ -306,7 +304,9 @@
   const projectName = route.params.projectName as string;
   const queryParams = reactive({
     projectName,
-    fieldSelector: ''
+    fieldSelector: '',
+    limit: appStore.perPage || 20,
+    continue: ''
   });
 
   const { updateChunkedList } = useUpdateChunkedList(dataList);
@@ -377,7 +377,7 @@
           })
         };
       });
-      total.value = data?.pagination?.total || 0;
+      queryParams.continue = data?.metadata?.continue || '';
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -388,24 +388,20 @@
   };
 
   const handleSearch = () => {
+    queryParams.continue = '';
     clearTimeout(timer);
     timer = setTimeout(() => {
-      // queryParams.page = 1;
       handleFilter();
     }, 100);
   };
   const handleReset = () => {
     queryParams.fieldSelector = '';
-    // queryParams.page = 1;
+    queryParams.continue = '';
     handleFilter();
   };
-  const handlePageChange = (page: number) => {
-    // queryParams.page = page;
-    handleFilter();
-  };
+
   const handlePageSizeChange = (pageSize: number) => {
-    // queryParams.page = 1;
-    // queryParams.perPage = pageSize;
+    queryParams.continue = '';
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
@@ -509,7 +505,7 @@
       loading.value = false;
       execSucceed();
       removeDefaultActiveEnvironment(nameList);
-      // queryParams.page = 1;
+      queryParams.continue = '';
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
       handleFilter();

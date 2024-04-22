@@ -217,17 +217,14 @@
             </result-view>
           </template>
         </a-table>
-        <!-- <a-pagination
-          size="small"
-          :total="total"
-          :page-size="queryParams.perPage"
-          :current="queryParams.page"
-          show-total
-          show-page-size
-          :hide-on-single-page="total <= 10"
-          @change="handlePageChange"
+        <LoadMore
+          v-if="dataList.length > 0"
+          v-model:page-size="queryParams.limit"
+          class="m-t-20"
+          :continue="!!queryParams.continue"
+          @loadMore="handleFilter"
           @page-size-change="handlePageSizeChange"
-        /> -->
+        ></LoadMore>
       </div>
       <CreateProjectModal
         v-model:show="showProjectModal"
@@ -248,6 +245,7 @@
   import dayjs from 'dayjs';
   import { useUserStore, useProjectStore, useAppStore } from '@/store';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
+  import LoadMore from '@/components/pagination/load-more.vue';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -282,7 +280,9 @@
   const projectInfo = ref<any>({});
   const action = ref<'create' | 'edit'>('create');
   const queryParams = reactive({
-    fieldSelector: ''
+    fieldSelector: '',
+    limit: appStore.perPage || 20,
+    continue: ''
   });
 
   const setActionList = (row) => {
@@ -354,7 +354,7 @@
           })
         };
       });
-      total.value = data?.pagination?.total || 0;
+      queryParams.continue = data?.metadata?.continue || '';
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -364,8 +364,7 @@
     fetchData();
   };
   const handleSaveProject = () => {
-    queryParams.fieldSelector = '';
-    // queryParams.page = 1;
+    queryParams.continue = '';
     handleFilter();
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
@@ -374,24 +373,20 @@
     fetchData();
   };
   const handleSearch = () => {
+    queryParams.continue = '';
     clearTimeout(timer);
     timer = setTimeout(() => {
-      // queryParams.page = 1;
       handleFilter();
     }, 100);
   };
   const handleReset = () => {
     queryParams.fieldSelector = '';
-    // queryParams.page = 1;
+    queryParams.continue = '';
     handleFilter();
   };
-  const handlePageChange = (page: number) => {
-    // queryParams.page = page;
-    handleFilter();
-  };
+
   const handlePageSizeChange = (pageSize: number) => {
-    // queryParams.page = 1;
-    // queryParams.perPage = pageSize;
+    queryParams.continue = '';
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
@@ -425,7 +420,7 @@
       await handleBatchRequest(nameList, deleteProjects);
       loading.value = false;
       execSucceed();
-      // queryParams.page = 1;
+      queryParams.continue = '';
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
       handleFilter();

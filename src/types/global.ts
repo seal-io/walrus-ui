@@ -35,7 +35,7 @@ export interface ListResult<T> {
   items: T[];
   apiVersion: string;
   kind: string;
-  metadata: object;
+  metadata: Record<string, any>;
   pagination: Pagination;
 }
 
@@ -48,6 +48,7 @@ export interface GeneralChart {
 }
 
 export interface ListQuery {
+  continue?: string;
   name?: string;
   namespace: string;
   fieldSelector?: string;

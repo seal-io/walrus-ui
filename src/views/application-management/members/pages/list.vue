@@ -49,7 +49,7 @@
       style="margin-bottom: 20px"
       :loading="loading"
       :bordered="false"
-      :data="projectVisitors"
+      :data="dataList"
       :pagination="false"
       row-key="name"
       :row-selection="
@@ -112,17 +112,14 @@
         </a-table-column>
       </template>
     </a-table>
-    <!-- <a-pagination
-      size="small"
-      :total="total"
-      :page-size="queryParams.perPage"
-      :current="queryParams.page"
-      show-total
-      show-page-size
-      :hide-on-single-page="total <= 10"
-      @change="handlePageChange"
+    <LoadMore
+      v-if="dataList.length > 0"
+      v-model:page-size="queryParams.limit"
+      class="m-t-20"
+      :continue="!!queryParams.continue"
+      @loadMore="handleFilter"
       @page-size-change="handlePageSizeChange"
-    /> -->
+    ></LoadMore>
     <AssignRoles
       v-model:show="showModal"
       :project-name="projectName"
@@ -134,6 +131,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { handleBatchRequest } from '@/views/config/utils';
+  import LoadMore from '@/components/pagination/load-more.vue';
   import { CommonButtonValue } from '@/views/config';
   import { Resources, Actions } from '@/permissions/config';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
@@ -166,10 +164,12 @@
   const total = ref(0);
   let timer: any = null;
   const projectName = route.params.projectName as string;
-  const projectVisitors = ref<ProjectRolesRowData[]>([]);
+  const dataList = ref<ProjectRolesRowData[]>([]);
 
   const queryParams = reactive({
     fieldSelector: '',
+    continue: '',
+    limit: appStore.perPage || 20,
     namespace: GlobalNamespace,
     projectName
   });
@@ -209,12 +209,12 @@
         ..._.pickBy(queryParams, (val) => !!val)
       };
       const { data } = await queryProjectSubjects(params);
-      projectVisitors.value = _.map(data.items || [], (item) => {
+      dataList.value = _.map(data.items || [], (item) => {
         return {
           ...item
         };
       });
-      total.value = data?.pagination?.total || 0;
+      queryParams.continue = data.metadata?.continue || '';
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -225,24 +225,20 @@
   };
 
   const handleSearch = () => {
+    queryParams.continue = '';
     clearTimeout(timer);
     timer = setTimeout(() => {
-      // queryParams.page = 1;
       handleFilter();
     }, 100);
   };
   const handleReset = () => {
-    // queryParams.query = '';
-    // queryParams.page = 1;
+    queryParams.fieldSelector = '';
+    queryParams.continue = '';
     handleFilter();
   };
-  const handlePageChange = (page: number) => {
-    // queryParams.page = page;
-    handleFilter();
-  };
+
   const handlePageSizeChange = (pageSize: number) => {
-    // queryParams.page = 1;
-    // queryParams.perPage = pageSize;
+    queryParams.continue = '';
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
@@ -253,7 +249,7 @@
   const handleDeleteConfirm = async (names?: string[]) => {
     try {
       const list = names || selectedKeys.value;
-      const updateList = _.filter(projectVisitors.value, (item) => {
+      const updateList = _.filter(dataList.value, (item) => {
         return !_.includes(list, item.name);
       });
       await addProjectSubjects({
@@ -270,6 +266,7 @@
         }
       });
       execSucceed();
+      queryParams.continue = '';
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
       fetchData();

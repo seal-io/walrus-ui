@@ -1,7 +1,12 @@
 import axios from 'axios';
 import _, { pick } from 'lodash';
 import qs from 'query-string';
-import { Pagination, ListQuery } from '@/types/global';
+import {
+  Pagination,
+  ListQuery,
+  ListResult,
+  DataListItem
+} from '@/types/global';
 import router from '@/router';
 import { GlobalNamespace, NAMESPACES } from '@/views/config/resource-kinds';
 import { TemplateRowData, TemplateFormData } from '../config/interface';
@@ -42,12 +47,6 @@ export interface QueryType extends ListQuery {
   _group?: string[];
 }
 
-export interface ResultType {
-  filters: unknown;
-  items: TemplateRowData[];
-  pagination: Pagination;
-}
-
 export interface FormDataPR {
   connectorID: string;
   repository: string;
@@ -59,7 +58,7 @@ export interface FormDataPR {
 export function queryTemplates(params: ListQuery, token?: any) {
   const url = `/${NAMESPACES}/${params.namespace}/${TEMPLATE_API}`;
 
-  return axios.get<ResultType>(url, {
+  return axios.get<ListResult<TemplateRowData>>(url, {
     params: _.omit(params, ['namespace']),
     cancelToken: token,
     paramsSerializer: (obj) => {

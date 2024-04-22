@@ -3,7 +3,7 @@
     <FilterBox style="margin-bottom: var(--filter-box-margin)">
       <template #params>
         <a-input
-          v-model.trim="queryParams.query"
+          v-model.trim="queryParams.fieldSelector"
           allow-clear
           style="width: 220px"
           :placeholder="$t('common.search.name.placeholder')"
@@ -70,14 +70,14 @@
             ></ProviderIcon>
           </template>
         </a-table-column>
-        <a-table-column
+        <!-- <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="spec.displayName"
           :title="$t('settings.user.nickName')"
         >
-        </a-table-column>
+        </a-table-column> -->
 
         <a-table-column
           ellipsis
@@ -112,6 +112,13 @@
         </a-table-column>
       </template>
     </a-table>
+    <LoadMore
+      v-if="dataList.length > 0"
+      v-model:page-size="queryParams.limit"
+      :continue="!!queryParams.continue"
+      @loadMore="handleFilter"
+      @page-size-change="handlePageSizeChange"
+    ></LoadMore>
     <CreateSubjectProvider
       v-model:show="showModal"
       v-model:action="action"
@@ -130,6 +137,7 @@
   import { ref, reactive, onMounted } from 'vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
+  import LoadMore from '@/components/pagination/load-more.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import { DataListItem } from '../config/interface';
@@ -146,9 +154,9 @@
   const showModal = ref(false);
   const action = ref('create');
   const queryParams = reactive({
-    page: '',
-    perPage: '',
-    query: ''
+    limit: 20,
+    fieldSelector: '',
+    continue: ''
   });
 
   const fetchData = async () => {
@@ -159,7 +167,7 @@
       };
       const { data } = await querySubjectProviders(params);
       dataList.value = data?.items || [];
-      total.value = data?.pagination?.total || 0;
+      queryParams.continue = data?.metadata?.continue || '';
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -169,25 +177,21 @@
   const handleFilter = () => {
     fetchData();
   };
-  const handlePageChange = (page: number) => {
-    queryParams.page = page;
-    handleFilter();
-  };
+
   const handlePageSizeChange = (pageSize: number) => {
-    queryParams.page = 1;
-    queryParams.perPage = pageSize;
+    queryParams.continue = '';
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const debounceFunc = _.debounce(() => {
-    queryParams.page = 1;
     handleFilter();
   }, 100);
   const handleSearch = () => {
     debounceFunc();
   };
   const handleReset = () => {
-    queryParams.query = '';
+    queryParams.fieldSelector = '';
+    queryParams.continue = '';
     handleSearch();
   };
   const handleCreate = () => {
@@ -210,14 +214,14 @@
       });
       loading.value = false;
       execSucceed();
-      queryParams.page = 1;
+      queryParams.continue = '';
       handleFilter();
     } catch (error) {
       loading.value = false;
     }
   };
   const handleSave = () => {
-    queryParams.page = 1;
+    queryParams.continue = '';
     fetchData();
   };
   const handleDelete = async (row) => {
