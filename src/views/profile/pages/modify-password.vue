@@ -71,7 +71,7 @@
         :trigger="['change', 'blur']"
         :rules="[
           { required: true, message: $t('user.password.rules.newpassword') },
-          { minLength: 6, message: $t('propfile.password.leastlength') }
+          { minLength: 10, message: $t('propfile.password.leastlength') }
         ]"
       >
         <seal-input-password
@@ -92,7 +92,7 @@
             required: true,
             validator: validateConfirmPassword
           },
-          { minLength: 6, message: $t('propfile.password.leastlength') }
+          { minLength: 10, message: $t('propfile.password.leastlength') }
         ]"
       >
         <seal-input-password
