@@ -25,7 +25,7 @@ export default {
   'propfile.permission.table.group': '分组',
   'propfile.permission.type.project': '项目权限',
   'propfile.permission.type.system': '系统权限',
-  'propfile.password.leastlength': '密码长度不能小于6位',
+  'propfile.password.leastlength': '密码长度不能小于10位',
   'propfile.provider.user.create': '新建认证提供商',
   'propfile.provider.user.edit': '编辑认证提供商',
   'propfile.provider.source': '来源'
