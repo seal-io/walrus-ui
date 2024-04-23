@@ -49,13 +49,13 @@ export interface ResultType {
   items: ConnectorRowData[];
 }
 
-export function queryConnectors(params: QueryType, cancelToken?) {
+export function queryConnectors(params: ListQuery, cancelToken?) {
   const url = generateConnectorAPI({
     name: params.name,
     namespace: params.namespace
   });
 
-  return axios.get<ListResult<DataListItem>>(url, {
+  return axios.get<ListResult<ConnectorRowData>>(url, {
     params: _.omit(params, ['name', 'namespace']),
     cancelToken,
     paramsSerializer: (obj) => {

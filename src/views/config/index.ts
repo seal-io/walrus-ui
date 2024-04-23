@@ -260,30 +260,35 @@ export const QAlinkMap = {
 };
 export const USER_DEFAULT_PROJECT = 'USER_DEFAULT_PROJECT';
 
+const EnvironmentMaps = {
+  Development: 'Development',
+  Production: 'Production',
+  Staging: 'Staging'
+};
 export const EnvironmentTypeMap = {
-  development: 'common.environment.development',
-  production: 'common.environment.production',
-  staging: 'common.environment.staging'
+  [EnvironmentMaps.Development]: 'common.environment.development',
+  [EnvironmentMaps.Production]: 'common.environment.production',
+  [EnvironmentMaps.Staging]: 'common.environment.staging'
 };
 
 export const EnvironmentTypeList = [
   {
     label: 'common.environment.development',
-    value: 'development'
+    value: EnvironmentMaps.Development
   },
   {
     label: 'common.environment.staging',
-    value: 'staging'
+    value: EnvironmentMaps.Staging
   },
   {
     label: 'common.environment.production',
-    value: 'production'
+    value: EnvironmentMaps.Production
   }
 ];
 export const EnvironmentTypeOrder = {
-  development: 1,
-  production: 3,
-  staging: 2
+  [EnvironmentMaps.Development]: 1,
+  [EnvironmentMaps.Production]: 3,
+  [EnvironmentMaps.Staging]: 2
 };
 
 export const CommonButtonValue = {

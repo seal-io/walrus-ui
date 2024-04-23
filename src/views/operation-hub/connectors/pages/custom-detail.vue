@@ -2,9 +2,9 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :menu="route.params.projectId ? { icon: 'icon-apps' } : null"
+        :menu="route.params.projectName ? { icon: 'icon-apps' } : null"
         :items="
-          route.params.projectId
+          route.params.projectName
             ? [
                 ...breadCrumbList,
                 {
@@ -29,11 +29,11 @@
         flex-start
         :show-edit="
           pageAction === PageAction.VIEW &&
-          (route.params.projectId
+          (route.params.projectName
             ? userStore.hasProjectResourceActions({
                 resource: Resources.Connectors,
-                connectorID: id,
-                projectID: route.params.projectId,
+                connectorID: connectorName,
+                projectID: route.params.projectName,
                 actions: [Actions.PUT]
               })
             : userStore.hasRolesActionsPermission({
@@ -54,8 +54,8 @@
             :label="$t('operation.connectors.form.name')"
             hide-asterisk
             hide-label
-            field="name"
-            :disabled="!!id"
+            field="metadata.name"
+            :disabled="!!connectorName"
             :validate-trigger="['change', 'input']"
             :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
@@ -71,7 +71,7 @@
             ]"
           >
             <seal-input
-              v-model.trim="formData.name"
+              v-model.trim="formData.metadata.name"
               :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.form.name')"
               :required="true"
@@ -84,8 +84,8 @@
             :label="$t('operation.connectors.table.environmentType')"
             hide-label
             hide-asterisk
-            field="applicableEnvironmentType"
-            :disabled="!!id"
+            field="spec.applicableEnvironmentType"
+            :disabled="!!connectorName"
             :rules="[
               {
                 required: true,
@@ -94,7 +94,7 @@
             ]"
           >
             <seal-select
-              v-model="formData.applicableEnvironmentType"
+              v-model="formData.spec.applicableEnvironmentType"
               :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.table.environmentType')"
               :required="true"
@@ -106,7 +106,7 @@
             :label="$t('operation.connectors.form.type')"
             hide-asterisk
             hide-label
-            field="type"
+            field="spec.type"
             :rules="[
               {
                 required: true,
@@ -115,52 +115,20 @@
             ]"
           >
             <seal-input
-              v-model="formData.type"
+              v-model="formData.spec.type"
               :view-status="pageAction === PageAction.VIEW"
-              :disabled="formData.id"
+              :disabled="!!connectorName"
               :label="$t('operation.connectors.form.type')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
             ></seal-input>
           </a-form-item>
-          <!-- <a-form-item
-            :label="$t('operation.connectors.detail.inputformat')"
-            hide-label
-            hide-asterisk
-            :disabled="!!id"
-          >
-            <seal-select
-              v-model="formData.configDataFormat"
-              :view-status="pageAction === PageAction.VIEW"
-              :label="$t('operation.connectors.detail.inputformat')"
-              :options="CustomInputFormats"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-            ></seal-select>
-          </a-form-item> -->
-          <!-- <a-form-item
-            v-if="formData.configDataFormat === inputFormatMap.advanced"
-            :style="{ width: `${InputWidth.LARGE}px` }"
-            hide-label
-            hide-asterisk
-          >
-            <AceEditor
-              v-model="formData.customConfig"
-              :label="$t('operation.connectors.table.customconfig')"
-              :editor-default-value="formData.customConfig"
-              lang="json"
-              :read-only="pageAction === PageAction.VIEW"
-              style="width: 100%"
-              :height="300"
-              :show-gutter="false"
-            ></AceEditor>
-          </a-form-item> -->
-
           <a-form-item
             :label="$t('operation.connectors.form.attribute')"
             hide-asterisk
             hide-label
             no-style
-            field="configData"
+            field="spec.config.data"
             :rules="[
               {
                 required: false,
@@ -337,7 +305,14 @@
     CustomInputFormats,
     inputFormatMap
   } from '../config';
-  import { createConnector, updateConnector, queryItemConnector } from '../api';
+  import {
+    createConnector,
+    updateConnector,
+    queryItemConnector,
+    ResourKinds,
+    apiVersion,
+    GlobalNamespace
+  } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
 
   const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
@@ -360,23 +335,33 @@
   };
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
-  const id = route.query.id as string;
+  const connectorName = route.query.name as string;
+  const projectName = route.params.projectName as string;
   const formref = ref();
   const submitLoading = ref(false);
   const triggerValidate = ref(false);
   let copyFormData: any = {};
   const inputFormat = ref(inputFormatMap.basic); // basic or advanced
-  const formData: ConnectorFormData = reactive({
-    name: '',
+  const formData = ref<ConnectorFormData>({
+    apiVersion,
+    kind: ResourKinds.Connector,
+    metadata: {
+      name: '',
+      namespace: projectName || GlobalNamespace
+    },
+    spec: {
+      category: ConnectorCategory.Custom,
+      enableFinOps: false,
+      applicableEnvironmentType: '',
+      type: '',
+      description: '',
+      config: {
+        version: 'v1',
+        data: {}
+      }
+    },
     configDataFormat: inputFormatMap.basic,
-    customConfig: '',
-    configData: {},
-    description: '',
-    configVersion: 'v1',
-    applicableEnvironmentType: '',
-    type: '',
-    category: ConnectorCategory.Custom,
-    enableFinOps: false
+    customConfig: ''
   });
 
   const attributeList = ref<CustomAttrbute[]>([
@@ -390,7 +375,8 @@
   ]);
 
   const EnvironmentTypeList = computed(() => {
-    return _.map(userStore.applicableEnvironmentTypes, (item) => {
+    // userStore.applicableEnvironmentTypes
+    return _.map(_.keys(EnvironmentTypeMap), (item) => {
       return {
         label: t(EnvironmentTypeMap[item] || ''),
         value: item,
@@ -413,7 +399,7 @@
   });
 
   const title = computed(() => {
-    if (id) {
+    if (connectorName) {
       return t('operation.connectors.title.edit', {
         type: t('operation.connectors.reinstall.custom')
       });
@@ -438,7 +424,7 @@
   };
 
   const checkAttributeValid = () => {
-    if (formData.configDataFormat === inputFormatMap.advanced) {
+    if (formData.value.configDataFormat === inputFormatMap.advanced) {
       return;
     }
     triggerValidate.value = some(
@@ -447,15 +433,20 @@
     );
   };
   const setAttributeList = () => {
-    formData.configDataFormat = _.keys(formData.configData).length
+    formData.value.configDataFormat = _.keys(formData.value.spec.config.data)
+      .length
       ? inputFormatMap.basic
       : inputFormatMap.advanced;
 
-    if (formData.configDataFormat === inputFormatMap.advanced) {
-      formData.customConfig = JSON.stringify(formData.configData, null, 2);
+    if (formData.value.configDataFormat === inputFormatMap.advanced) {
+      formData.value.customConfig = JSON.stringify(
+        formData.value.spec.config.data || {},
+        null,
+        2
+      );
       return;
     }
-    const configData = formData.configData || {};
+    const configData = formData.value.spec.config.data || {};
     attributeList.value = map(keys(configData), (key) => {
       return {
         key,
@@ -481,7 +472,7 @@
   };
 
   const setConfigData = () => {
-    if (formData.configDataFormat === inputFormatMap.advanced) {
+    if (formData.value.configDataFormat === inputFormatMap.advanced) {
       return;
     }
     const list = _.filter(
@@ -501,7 +492,7 @@
       },
       {}
     );
-    formData.configData = data;
+    formData.value.spec.config.data = data;
   };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
@@ -510,15 +501,22 @@
       try {
         submitLoading.value = true;
         setConfigData();
-        const data = cloneDeep(formData);
+        const data = cloneDeep(formData.value);
         if (data.configDataFormat === inputFormatMap.advanced) {
-          data.customConfig = JSON.parse(data.customConfig);
+          data.customConfig = JSON.parse(data.customConfig || '{}');
         }
-        copyFormData = cloneDeep(formData);
-        if (id) {
-          await updateConnector(data);
+        copyFormData = cloneDeep(formData.value);
+        if (connectorName) {
+          await updateConnector({
+            name: connectorName,
+            namespace: formData.value.metadata.namespace,
+            data
+          });
         } else {
-          await createConnector(data);
+          await createConnector({
+            namespace: formData.value.metadata.namespace,
+            data
+          });
         }
         router.back();
         submitLoading.value = false;
@@ -532,21 +530,24 @@
     return false;
   };
   const initConfigDataValue = () => {
-    const configData = formData.configData || {};
+    const configData = formData.value.spec.config.data || {};
     each(keys(configData) || [], (key) => {
       configData[key].value = configData[key].value || '';
     });
   };
   const getConnectorInfo = async () => {
     copyFormData = cloneDeep(formData);
-    if (!id) return;
+    if (!connectorName) return;
     try {
-      const { data } = await queryItemConnector({ id });
-      assignIn(formData, data);
+      const { data } = await queryItemConnector({
+        name: connectorName,
+        namespace: projectName || GlobalNamespace
+      });
+      formData.value = data;
       setAttributeList();
       initConfigDataValue();
-      copyFormData = cloneDeep(formData);
-      console.log('formData===', formData);
+      copyFormData = cloneDeep(formData.value);
+      console.log('formData===', formData.value);
     } catch (error) {
       // ignore
     }
@@ -565,11 +566,11 @@
   const handleCancel = () => {
     setConfigData();
 
-    if (!isEqual(copyFormData, formData)) {
+    if (!isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
         isCancel: true,
         onOk: () => {
-          copyFormData = cloneDeep(formData);
+          copyFormData = cloneDeep(formData.value);
           cancelCallback();
         }
       });
@@ -579,12 +580,12 @@
   };
   onBeforeRouteLeave(async (to, from) => {
     setConfigData();
-    if (!isEqual(copyFormData, formData)) {
+    if (!isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
         to,
         from,
         onOk: () => {
-          copyFormData = cloneDeep(formData);
+          copyFormData = cloneDeep(formData.value);
           router.push({
             path: to.path as string
           });
