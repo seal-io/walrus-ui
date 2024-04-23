@@ -1,6 +1,6 @@
 import { ServiceRowData } from '@/views/application-management/services/config/interface';
 import { ConnectorRowData } from '@/views/operation-hub/connectors/config/interface';
-import { DataListItem } from '@/types/global';
+import { DataListItem, AxiosRequestPayload } from '@/types/global';
 
 export interface EnvironmentRow extends DataListItem {
   id: string;
@@ -19,18 +19,22 @@ export interface EnvironmentRow extends DataListItem {
   connectorIDs: string[];
 }
 
-export interface EnvironFormData {
-  draft?: boolean;
-  preview?: boolean;
-  projectID?: string;
-  id?: string;
-  name: string;
-  type: string;
-  description: string;
-  connectorIDs: string[];
-  connectors: any[];
-  edges?: any[];
-  labels?: Record<string, any>;
-  resources?: any[];
-  variables?: any[];
+export interface EnvironFormData extends AxiosRequestPayload {
+  metadata: {
+    name: string;
+    namespace: string;
+    labels: object;
+  };
+  spec: {
+    type: string;
+    description: string;
+    draft?: boolean;
+    preview?: boolean;
+    connectorIDs: string[];
+    connectors: any[];
+    edges?: any[];
+    labels?: Record<string, any>;
+    resources?: any[];
+    variables?: any[];
+  };
 }

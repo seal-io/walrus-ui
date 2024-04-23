@@ -338,14 +338,7 @@
           ..._.omit(row, ['disabled']),
           status: {
             ...row.status,
-            lastSyncTime: new Date().toISOString(),
-            conditions: [
-              ...row.status?.conditions,
-              {
-                type: 'Refresh',
-                status: 'Unknown'
-              }
-            ]
+            conditions: []
           }
         }
       });

@@ -152,14 +152,7 @@
           ...props.dataInfo,
           status: {
             ...props.dataInfo.status,
-            lastSyncTime: new Date().toISOString(),
-            conditions: [
-              ...props.dataInfo.status?.conditions,
-              {
-                type: 'Refresh',
-                status: 'Unknown'
-              }
-            ]
+            conditions: []
           }
         }
       });

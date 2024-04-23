@@ -176,7 +176,7 @@
               >
                 <template #value>
                   <seal-input
-                    v-if="!sItem.visible"
+                    v-if="sItem.sensitive"
                     v-model="sItem.value"
                     :show-required-mark="false"
                     style="width: 100%"
@@ -193,7 +193,7 @@
                   ></seal-input-password>
                 </template>
                 <template #description>
-                  <a-checkbox v-model="sItem.visible">{{
+                  <a-checkbox v-model="sItem.sensitive">{{
                     $t('operation.connectors.attribute.sensitive')
                   }}</a-checkbox>
                   <a-tooltip
@@ -369,7 +369,7 @@
       key: '',
       value: '',
       type: 'string',
-      visible: true,
+      sensitive: false,
       ...labelOption
     }
   ]);
@@ -413,7 +413,7 @@
       key: '',
       value: '',
       type: 'string',
-      visible: true,
+      sensitive: false,
       ...labelOption
     });
   };
@@ -453,8 +453,7 @@
         value: get(configData, `${key}.value`) || '',
         default: get(configData, `${key}.value`) || '', // default value
         type: get(configData, `${key}.type`) || 'string',
-        visible: !get(configData, `${key}.visible`),
-        sensitive: !get(configData, `${key}.visible`),
+        sensitive: get(configData, `${key}.sensitive`),
         ...labelOption
       };
     }) as never[];
@@ -464,7 +463,7 @@
           key: '',
           value: '',
           type: 'string',
-          visible: true,
+          sensitive: false,
           ...labelOption
         }
       ];
@@ -485,7 +484,7 @@
         if (item.key) {
           obj[item.key] = {
             ...pick(item, ['value']),
-            visible: !item.visible
+            sensitive: item.sensitive
           };
         }
         return obj;

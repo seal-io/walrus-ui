@@ -40,7 +40,7 @@
       >
         <a-form-item
           :label="$t('operation.environments.table.name')"
-          field="name"
+          field="metadata.name"
           :validate-trigger="['change', 'input']"
           :hide-label="true"
           :rules="[
@@ -56,7 +56,7 @@
           ]"
         >
           <seal-input
-            v-model.trim="formData.name"
+            v-model.trim="formData.metadata.name"
             :view-status="pageAction === PageAction.VIEW"
             :disabled="!!name && !isCloneAction"
             :label="$t('operation.environments.table.name')"
@@ -70,7 +70,7 @@
           :label="$t('applications.environment.type')"
           :hide-label="true"
           hide-asterisk
-          field="type"
+          field="spec.type"
           :rules="[
             {
               required: true,
@@ -79,7 +79,7 @@
           ]"
         >
           <seal-select
-            v-model="formData.type"
+            v-model="formData.spec.type"
             :view-status="pageAction === PageAction.VIEW"
             :label="$t('applications.environment.type')"
             :required="true"
@@ -92,12 +92,12 @@
         </a-form-item>
         <a-form-item
           :label="$t('operation.environments.table.description')"
-          field="description"
+          field="spec.description"
           :hide-label="true"
           validate-trigger="change"
         >
           <seal-textarea
-            v-model="formData.description"
+            v-model="formData.spec.description"
             :view-status="pageAction === PageAction.VIEW"
             :label="$t('operation.environments.table.description')"
             :style="{ width: `${InputWidth.LARGE}px` }"
@@ -110,7 +110,7 @@
         <a-form-item
           :label="$t(`applications.projects.form.label`)"
           :hide-label="true"
-          field="labels"
+          field="metadata.labels"
           validate-trigger="change"
           :rules="[
             {
@@ -138,7 +138,7 @@
             :style="{ width: `${InputWidth.LARGE}px` }"
           >
             <keyValueLabels
-              v-model:value="formData.labels"
+              v-model:value="formData.metadata.labels"
               v-model:labelList="labelsData.list"
               :validate-trigger="validateTrigger"
               :labels="labelsData.labels"
@@ -286,7 +286,6 @@
     validateInputLength,
     InputWidth,
     EnvironmentTypeMap,
-    EnvironmentTypeList,
     EnvironmentTypeOrder,
     SaveActions,
     HintKeyMaps
@@ -325,7 +324,10 @@
     createEnvironment,
     cloneEnvironment,
     updateEnvironment,
-    queryItemEnvironments
+    queryItemEnvironments,
+    apiVersion,
+    ResourceKinds,
+    GlobalNamespace
   } from '../api';
 
   const {
@@ -343,7 +345,7 @@
   const tabBarStore = useTabBarStore();
   const { router, route, t } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
-  const name = route.query.name as string;
+  const envName = route.query.name as string;
   const isCloneAction = route.params.clone as string; // only in clone
   const environmentName = route.params.environmentName as string;
   const projectName = route.params.projectName as string;
@@ -374,10 +376,23 @@
   const projectVariables = ref<any[]>([]);
 
   const formData = ref<EnvironFormData>({
-    projectID: route.params.projectId as string,
-    name: '',
-    type: '',
-    description: '',
+    apiVersion,
+    kind: ResourceKinds.Environment,
+    metadata: {
+      namespace: projectName,
+      name: '',
+      labels: {}
+    },
+    spec: {
+      type: '',
+      description: '',
+      connectorIDs: [],
+      connectors: [],
+      variables: [],
+      edges: [],
+      labels: {},
+      resources: []
+    },
     connectorIDs: [],
     connectors: [],
     variables: [],
@@ -401,15 +416,16 @@
       [HintKeyMaps.var]: [...projectVariables.value, ...variables]
     };
   });
-  // const EnvironmentTypeList = computed(() => {
-  //   return _.map(userStore.applicableEnvironmentTypes, (item) => {
-  //     return {
-  //       label: t(EnvironmentTypeMap[item] || ''),
-  //       value: item,
-  //       order: EnvironmentTypeOrder[item]
-  //     };
-  //   }).sort((a, b) => a.order - b.order);
-  // });
+  const EnvironmentTypeList = computed(() => {
+    // userStore.applicableEnvironmentTypes
+    return _.map(_.keys(EnvironmentTypeMap), (item) => {
+      return {
+        label: t(EnvironmentTypeMap[item] || ''),
+        value: item,
+        order: EnvironmentTypeOrder[item]
+      };
+    }).sort((a, b) => a.order - b.order);
+  });
   const selectableConnectors = computed(() => {
     return _.filter(connectorList.value, (item) => {
       return item.applicableEnvironmentType === formData.value.type;
@@ -420,10 +436,10 @@
     if (isCloneAction) {
       return t('applications.environment.clone');
     }
-    if (!name) {
+    if (!envName) {
       return t('operation.environments.create');
     }
-    if (name && pageAction.value === PageAction.EDIT) {
+    if (envName && pageAction.value === PageAction.EDIT) {
       return t('operation.environments.edit');
     }
     return t('operation.environments.view');
@@ -439,8 +455,8 @@
     if (route.name === PROJECT.EnvDetail) {
       pageAction.value = userStore.hasProjectResourceActions({
         resource: Resources.Environments,
-        environmentID: name,
-        projectID: route.params.projectId,
+        environmentID: envName,
+        projectID: route.params.projectName,
         actions: ['POST']
       })
         ? PageAction.EDIT
@@ -453,8 +469,8 @@
     }
     const hasPermission = userStore.hasProjectResourceActions({
       resource: Resources.Environments,
-      environmentID: name,
-      projectID: route.params.projectId,
+      environmentID: envName,
+      projectID: route.params.projectName,
       actions: ['POST']
     });
     return pageAction.value === PageAction.VIEW && hasPermission;
@@ -504,10 +520,10 @@
   };
   const getItemEnvironmentInfo = async () => {
     copyFormData = cloneDeep(formData.value);
-    if (!name) return;
+    if (!envName) return;
     try {
       const { data } = await queryItemEnvironments({
-        environmentName: name,
+        environmentName: envName,
         namespace: projectName
       });
       formData.value = data;
@@ -525,7 +541,7 @@
       copyFormData = cloneDeep(formData.value);
     } catch (error) {
       formData.value = {
-        projectID: route.params.projectId as string,
+        projectID: route.params.projectName as string,
         name: '',
         type: '',
         description: '',
@@ -596,11 +612,11 @@
         if (isCloneAction) {
           handleCloneEnvironment(data);
         }
-        if (name && !isCloneAction) {
+        if (envName && !isCloneAction) {
           await updateEnvironment(data);
         } else if (isCloneAction) {
           await cloneEnvironment(data, environmentName);
-        } else if (!name && !environmentName) {
+        } else if (!envName && !environmentName) {
           await createEnvironment({
             data,
             namespace: projectName
@@ -720,7 +736,7 @@
     }
   };
   const setLabels = () => {
-    labelsData.value.labels = _.cloneDeep(formData.value.labels);
+    labelsData.value.labels = _.cloneDeep(formData.value.metadata.labels);
   };
   const init = async () => {
     setBreadCrumbList();

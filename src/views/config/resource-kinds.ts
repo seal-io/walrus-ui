@@ -8,7 +8,8 @@ export default {
   Settings: 'Settings',
   Project: 'Project',
   Variable: 'Variable',
-  Connector: 'Connector'
+  Connector: 'Connector',
+  Environment: 'Environment'
 };
 
 export const apiVersion = 'walrus.seal.io/v1';

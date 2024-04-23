@@ -97,17 +97,17 @@
             data: {
               access_key: {
                 value: '',
-                visible: true,
+                sensitive: false,
                 type: 'string'
               },
               secret_key: {
                 value: '',
-                visible: false,
+                sensitive: true,
                 type: 'string'
               },
               region: {
                 value: '',
-                visible: true,
+                sensitive: false,
                 type: 'string'
               }
             }
@@ -203,7 +203,7 @@
           (obj, item) => {
             obj[item.key] = {
               value: '',
-              visible: item.visible,
+              sensitive: item.sensitive,
               type: item.type
             };
             return obj;
@@ -388,7 +388,7 @@
             ></seal-select>
           );
         }
-        if (item.visible) {
+        if (!item.sensitive) {
           return (
             <seal-input
               v-model={formData.value.spec.config.data[item.key].value}
@@ -699,7 +699,7 @@
                             }}
                           >
                             <span>
-                              {!row.visible
+                              {row.sensitive
                                 ? '******'
                                 : get(
                                     formData.value,

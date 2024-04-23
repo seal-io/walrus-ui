@@ -72,7 +72,7 @@ export function refreshCatalog(data: {
   name: string;
   item: object;
 }) {
-  const url = `/${NAMESPACES}/${data.namespace}/${CatalogAPI}/${data.name}`;
+  const url = `/${NAMESPACES}/${data.namespace}/${CatalogAPI}/${data.name}/status`;
   return axios.put(`${url}`, data.item);
 }
 
