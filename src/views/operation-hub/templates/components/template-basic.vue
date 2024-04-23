@@ -36,12 +36,12 @@
           value: 'Github'
         },
         {
-          label: 'OCI',
-          value: 'OCI'
+          label: 'GitLab',
+          value: 'Gitlab'
         },
         {
-          label: 'Download URL',
-          value: 'DownloadURL'
+          label: 'Gitee',
+          value: 'Gitee'
         }
       ];
 
@@ -62,30 +62,13 @@
           spec: {
             ...props.formData.spec,
             vcsRepository: {
-              ...props.formData.spec.vcsRepository,
-              token: ''
+              ...props.formData.spec.vcsRepository
             }
           }
         });
       };
 
       const renderProviderExtra = () => {
-        if (props.formData.spec.vcsRepository.platform === 'DownloadURL') {
-          return (
-            <div>
-              URL of helm chart tgz file,
-              e.g.:https://stefanprodan.github.io/podinfo/podinfo-6.6.0.tgz
-            </div>
-          );
-        }
-        if (props.formData.spec.vcsRepository.platform === 'OCI') {
-          return (
-            <div>
-              OCI image of helm chart, e.g.:oci://podinfo/podinfo?version=6.6.0
-            </div>
-          );
-        }
-
         return (
           <>
             <div
@@ -108,12 +91,6 @@
 
       return () => (
         <>
-          {/* <GroupTitle
-            style={{ marginBottom: 0 }}
-            title={t('common.title.basicInfo')}
-            bordered={false}
-            flexStart
-          ></GroupTitle> */}
           <a-form-item
             label={t('operation.connectors.table.name')}
             field="metadata.name"
@@ -199,14 +176,7 @@
               show-word-limit
             ></seal-textarea>
           </a-form-item>
-          <GroupTitle
-            style={{ marginBottom: 0 }}
-            title="Storage"
-            bordered={false}
-            flexStart
-          ></GroupTitle>
           <a-form-item
-            label={t('operation.templates.form.StorageType')}
             field="spec.vcsRepository.platform"
             hide-asterisk
             hide-label={true}
@@ -226,7 +196,7 @@
                   }
                 });
               }}
-              label={t('operation.templates.form.StorageType')}
+              label={t('common.table.type')}
               required={true}
               style={{ width: `${InputWidth.LARGE}px` }}
               v-slots={{
@@ -277,7 +247,7 @@
               style={{ width: `${InputWidth.LARGE}px` }}
             ></seal-input>
           </a-form-item>
-          <a-form-item
+          {/* <a-form-item
             label={t('operation.templates.form.authentication')}
             field="spec.vcsRepository.secretRef"
             hide-asterisk
@@ -294,8 +264,8 @@
               style={{ width: `${InputWidth.LARGE}px` }}
               options={AuthenticationOptions}
             ></seal-select>
-          </a-form-item>
-          {authentication.value === 'bearer' && (
+          </a-form-item> */}
+          {/* {authentication.value === 'bearer' && (
             <a-form-item
               label="Token"
               field="spec.vcsRepository.token"
@@ -323,7 +293,7 @@
                 style={{ width: `${InputWidth.LARGE}px` }}
               ></seal-input>
             </a-form-item>
-          )}
+          )} */}
         </>
       );
     }
