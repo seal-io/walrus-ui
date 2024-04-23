@@ -9,8 +9,8 @@ export interface ConnectorRowData extends DataListItem {
     config: {
       version: string;
       data: {
-        kubeconfig: {
-          visible: boolean;
+        [k: string]: {
+          sensitive: boolean;
           value: string;
           type: string;
         };
@@ -25,7 +25,7 @@ export interface CustomAttrbute {
   type: string;
   default?: any;
   extraCom?: string;
-  visible?: boolean;
+  sensitive?: boolean;
   extraProps?: any;
   error?: string;
   style?: object;
@@ -44,7 +44,7 @@ export interface ConnectorFormData extends AxiosRequestPayload {
       version: string;
       data: {
         [key: string]: {
-          visible: boolean;
+          sensitive: boolean;
           value: string;
           type: string;
         };
@@ -67,7 +67,7 @@ export interface ProviderKey {
   label: string;
   value: string;
   key: string;
-  visible: boolean;
+  sensitive: boolean;
   required: boolean;
   type: string;
 }

@@ -33,6 +33,13 @@ const generateTemplateAPI = (params: { namespace: string; name?: string }) => {
   return `/${NAMESPACES}/${namespace}/${TEMPLATE_API}`;
 };
 
+const generateTemplateStatusAPI = (params: {
+  namespace: string;
+  name: string;
+}) => {
+  return `/${NAMESPACES}/${params.namespace}/${TEMPLATE_API}/${params.name}/status`;
+};
+
 export const PROJECT_API_PREFIX = () => {
   return `/projects/${router.currentRoute.value.params.projectId}`;
 };
@@ -101,7 +108,7 @@ export function refreshTemplate(data: {
   namespace: string;
   item: object;
 }) {
-  const url = generateTemplateAPI(data);
+  const url = generateTemplateStatusAPI(data);
   return axios.put(`${url}`, data.item);
 }
 

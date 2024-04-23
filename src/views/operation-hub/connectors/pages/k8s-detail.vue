@@ -238,7 +238,7 @@
         version: 'v1',
         data: {
           kubeconfig: {
-            visible: false,
+            sensitive: true,
             value: '',
             type: 'string'
           }

@@ -255,7 +255,7 @@
         data: {
           token: {
             value: '',
-            visible: false,
+            sensitive: true,
             type: 'string'
           }
         }
