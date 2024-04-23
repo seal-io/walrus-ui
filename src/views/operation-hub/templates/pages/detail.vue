@@ -275,8 +275,7 @@
       description: '',
       vcsRepository: {
         platform: 'Github',
-        url: '',
-        token: ''
+        url: ''
       }
     }
   });
@@ -304,13 +303,13 @@
   });
 
   const getTemplateSchema = async (versionData) => {
-    if (!versionData) {
+    if (!versionData || !versionData.templateSchemaName) {
       templateSchema.value = {};
       return;
     }
     try {
       const { data } = await queryTemplateSchema({
-        name: versionData.schemaRef?.name,
+        name: versionData.templateSchemaName,
         namespace: templateNameSpace
       });
       templateSchema.value = data.status?.value;
@@ -321,13 +320,13 @@
   };
 
   const getTemplateUISchema = async (versionData) => {
-    if (!versionData) {
+    if (!versionData || !versionData.uiSchemaName) {
       templateUISchema.value = {};
       return;
     }
     try {
       const { data } = await queryTemplateSchema({
-        name: versionData.uiSchemaRef?.name,
+        name: versionData.uiSchemaName,
         namespace: templateNameSpace
       });
       templateUISchema.value = data.status?.value;

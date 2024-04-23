@@ -61,8 +61,7 @@
           spec: {
             ...props.formData.spec,
             vcsSource: {
-              ...props.formData.spec.vcsSource,
-              token: ''
+              ...props.formData.spec.vcsSource
             }
           }
         });
@@ -161,14 +160,8 @@
               show-word-limit
             ></seal-textarea>
           </a-form-item>
-          <GroupTitle
-            style={{ marginBottom: 0 }}
-            title="Storage"
-            bordered={false}
-            flexStart
-          ></GroupTitle>
+
           <a-form-item
-            label={t('operation.templates.form.StorageType')}
             field="spec.vcsSource.platform"
             hide-asterisk
             hide-label={true}
@@ -188,7 +181,7 @@
                   }
                 });
               }}
-              label={t('operation.templates.form.StorageType')}
+              label={t('common.table.type')}
               required={true}
               style={{ width: `${InputWidth.LARGE}px` }}
               v-slots={{
@@ -247,7 +240,7 @@
               style={{ width: `${InputWidth.LARGE}px` }}
             ></seal-input>
           </a-form-item>
-          <a-form-item
+          {/* <a-form-item
             label={t('operation.templates.form.authentication')}
             field="spec.vcsSource.secretRef"
             hide-asterisk
@@ -264,8 +257,8 @@
               style={{ width: `${InputWidth.LARGE}px` }}
               options={AuthenticationOptions}
             ></seal-select>
-          </a-form-item>
-          {authentication.value === 'bearer' && (
+          </a-form-item> */}
+          {/* {authentication.value === 'bearer' && (
             <a-form-item
               label="Token"
               field="spec.vcsSource.token"
@@ -293,7 +286,7 @@
                 style={{ width: `${InputWidth.LARGE}px` }}
               ></seal-input>
             </a-form-item>
-          )}
+          )} */}
         </>
       );
     }

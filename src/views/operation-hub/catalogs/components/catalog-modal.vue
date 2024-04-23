@@ -110,8 +110,7 @@
       description: '',
       vcsSource: {
         platform: 'Github',
-        url: '',
-        token: ''
+        url: ''
       },
       filtering: {
         excludeFilter: '',
@@ -157,8 +156,7 @@
         description: '',
         vcsSource: {
           platform: 'Github',
-          url: '',
-          token: ''
+          url: ''
         },
         filtering: {
           excludeFilter: '',
