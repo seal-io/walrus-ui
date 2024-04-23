@@ -303,7 +303,7 @@
   const action = ref(PageAction.EDIT);
   const projectName = route.params.projectName as string;
   const queryParams = reactive({
-    projectName,
+    namespace: projectName,
     fieldSelector: '',
     limit: appStore.perPage || 20,
     continue: ''
@@ -361,8 +361,7 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(queryParams, (val) => !!val),
-        sort: [sort.value]
+        ...pickBy(queryParams, (val) => !!val)
       };
       const { data } = await queryEnvironments(params);
       dataList.value = _.map(data.items || [], (item) => {

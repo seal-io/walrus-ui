@@ -107,7 +107,7 @@
         >
           <template #cell="{ record }">
             <a-link
-              v-if="isLocalConnectorType(record.category)"
+              v-if="isLocalConnectorType(record.spec.category)"
               type="text"
               size="small"
               :hoverable="false"
@@ -127,7 +127,9 @@
         >
           <template #cell="{ record }">
             <span
-              v-if="_.includes([ConnectorCategory.Custom], record.category)"
+              v-if="
+                _.includes([ConnectorCategory.Custom], record.spec.category)
+              "
               class="mright-5"
             >
               <i
@@ -136,9 +138,13 @@
               ></i>
             </span>
             <span v-else class="mright-5">
-              <ProviderIcon :provider="toLower(record.type)"></ProviderIcon>
+              <ProviderIcon
+                :provider="toLower(record.spec.type)"
+              ></ProviderIcon>
             </span>
-            <span>{{ get(gitType, record.type) || record.type }}</span>
+            <span>{{
+              get(gitType, record.spec.type) || record.spec.type
+            }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -151,7 +157,7 @@
         >
           <template #cell="{ record }">
             <StatusLabel
-              v-if="record.category !== ConnectorCategory.Custom"
+              v-if="record.spec.category !== ConnectorCategory.Custom"
               :status="get(record, 'status', {})"
             ></StatusLabel>
             <span v-else>-</span>
@@ -167,7 +173,9 @@
         >
           <template #cell="{ record }">
             <span>{{
-              $t(EnvironmentTypeMap[record.applicableEnvironmentType] || '')
+              $t(
+                EnvironmentTypeMap[record.spec.applicableEnvironmentType] || ''
+              )
             }}</span>
           </template>
         </a-table-column>
@@ -439,7 +447,7 @@
         ? item.disabled?.(row)
         : item.disabled;
       if (item.value === 'enableFinops') {
-        item.label = row.enableFinOps
+        item.label = row.spec.enableFinOps
           ? 'operation.connectors.table.disableFin'
           : 'operation.connectors.table.enableFin';
       }
@@ -479,8 +487,7 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(queryParams, (val) => !!val),
-        sort: [sort.value]
+        ...pickBy(queryParams, (val) => !!val)
       };
       const { data } = await queryConnectors(params, axiosToken?.token);
       dataList.value = _.map(data?.items || [], (item) => {
@@ -544,7 +551,7 @@
   const handleView = (row, action?) => {
     const data = _.find(
       props.connectorTypeList,
-      (item) => item.value === row.category
+      (item) => item.value === row.spec.category
     );
     if (props.scope === 'global') {
       router.push({
@@ -572,7 +579,7 @@
   const handleCellClick = (row, col) => {
     if (
       col.dataIndex === 'metadata.name' &&
-      isLocalConnectorType(row.category)
+      isLocalConnectorType(row.spec.category)
     ) {
       handleView(row);
     }
@@ -635,7 +642,7 @@
       loading.value = true;
       const row = cloneDeep(data);
       row.enableFinOps = enable;
-      row.configData = null;
+      row.spec.config.data = null;
       await updateConnector(row);
       loading.value = false;
       Message.success(t('common.message.success'));
@@ -657,7 +664,7 @@
         handleFetchCost(row);
         break;
       case 'enableFinops':
-        handleEnableFinOps(!row.enableFinOps, row);
+        handleEnableFinOps(!row.spec.enableFinOps, row);
         break;
       case 'reinstall':
         handleReinstall(row);

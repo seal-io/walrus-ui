@@ -1,6 +1,23 @@
 import { DataListItem, AxiosRequestPayload } from '@/types/global';
 
-export type ConnectorRowData = DataListItem;
+export interface ConnectorRowData extends DataListItem {
+  spec: {
+    enableFinOps?: boolean;
+    applicableEnvironmentType: string;
+    category: string;
+    type: string;
+    config: {
+      version: string;
+      data: {
+        kubeconfig: {
+          visible: boolean;
+          value: string;
+          type: string;
+        };
+      };
+    };
+  };
+}
 
 export interface CustomAttrbute {
   key: string;
@@ -14,7 +31,27 @@ export interface CustomAttrbute {
   style?: object;
 }
 
-export type ConnectorFormData = AxiosRequestPayload;
+export interface ConnectorFormData extends AxiosRequestPayload {
+  configDataFormat?: string;
+  customConfig?: string;
+  spec: {
+    enableFinOps?: boolean;
+    applicableEnvironmentType: string;
+    category: string;
+    type: string;
+    description?: string;
+    config: {
+      version: string;
+      data: {
+        [key: string]: {
+          visible: boolean;
+          value: string;
+          type: string;
+        };
+      };
+    };
+  };
+}
 
 export interface ConnectorTypeData {
   label: string;

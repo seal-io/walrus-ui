@@ -50,7 +50,14 @@
   } from '../config';
   import { googleCloudRegions } from '../config/gcp';
   import { awsRegions, alibabaCloudRegions } from '../config/region';
-  import { createConnector, updateConnector, queryItemConnector } from '../api';
+  import {
+    createConnector,
+    updateConnector,
+    queryItemConnector,
+    apiVersion,
+    ResourKinds,
+    GlobalNamespace
+  } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
 
   export default defineComponent({
@@ -62,7 +69,8 @@
       const userStore = useUserStore();
       const { t, locale, router, route } = useCallCommon();
       const { pageAction, handleEdit } = usePageAction();
-      const id = route.query.id as string;
+      const connectorName = route.query.name as string;
+      const projectName = route.params.projectName as string;
       const formref = ref();
       const submitLoading = ref(false);
       const allowCreate = ref(false);
@@ -71,35 +79,45 @@
       const credentialsRef = ref();
       let copyFormData: any = {};
 
-      const formData = ref<any>({
-        name: '',
-        configData: {
-          access_key: {
-            value: '',
-            visible: true,
-            type: 'string'
-          },
-          secret_key: {
-            value: '',
-            visible: false,
-            type: 'string'
-          },
-          region: {
-            value: '',
-            visible: true,
-            type: 'string'
-          }
+      const formData = ref<ConnectorFormData>({
+        apiVersion,
+        kind: ResourKinds.Connector,
+        metadata: {
+          name: '',
+          namespace: projectName || GlobalNamespace
         },
-        description: '',
-        configVersion: 'v1',
-        applicableEnvironmentType: '',
-        type: CloudProviderType.Alibaba,
-        category: ConnectorCategory.CloudProvider,
-        enableFinOps: false
+        spec: {
+          description: '',
+          applicableEnvironmentType: '',
+          type: CloudProviderType.Alibaba,
+          category: ConnectorCategory.CloudProvider,
+          enableFinOps: false,
+          config: {
+            version: 'v1',
+            data: {
+              access_key: {
+                value: '',
+                visible: true,
+                type: 'string'
+              },
+              secret_key: {
+                value: '',
+                visible: false,
+                type: 'string'
+              },
+              region: {
+                value: '',
+                visible: true,
+                type: 'string'
+              }
+            }
+          }
+        }
       });
 
       const EnvironmentTypeList = computed(() => {
-        return _.map(userStore.applicableEnvironmentTypes, (item) => {
+        // userStore.applicableEnvironmentTypes
+        return _.map(_.keys(EnvironmentTypeMap), (item) => {
           return {
             label: t(EnvironmentTypeMap[item] || ''),
             value: item,
@@ -110,13 +128,13 @@
 
       const regionOptions = computed(() => {
         let list: any = [];
-        if (formData.value.type === CloudProviderType.Google) {
+        if (formData.value.spec.type === CloudProviderType.Google) {
           list = googleCloudRegions;
-        } else if (formData.value.type === CloudProviderType.Azure) {
+        } else if (formData.value.spec.type === CloudProviderType.Azure) {
           list = [];
-        } else if (formData.value.type === CloudProviderType.Alibaba) {
+        } else if (formData.value.spec.type === CloudProviderType.Alibaba) {
           list = alibabaCloudRegions;
-        } else if (formData.value.type === CloudProviderType.AWS) {
+        } else if (formData.value.spec.type === CloudProviderType.AWS) {
           list = awsRegions;
         }
         return list.map((item) => {
@@ -135,23 +153,23 @@
 
       const zoneOptions = computed(() => {
         const selectedRegion = _.find(regionOptions.value, (item) => {
-          return item.value === formData.value.configData?.region?.value;
+          return item.value === formData.value.spec.config.data.region?.value;
         });
         return selectedRegion?.zones || [];
       });
 
       const title = computed(() => {
-        if (!id) {
+        if (!connectorName) {
           return t('operation.connectors.title.new', {
             type: t('operation.connectors.reinstall.cloudProvider')
           });
         }
-        if (id && pageAction.value === PageAction.EDIT) {
+        if (connectorName && pageAction.value === PageAction.EDIT) {
           return t('operation.connectors.title.edit', {
             type: t('operation.connectors.reinstall.cloudProvider')
           });
         }
-        if (id && pageAction.value === PageAction.VIEW) {
+        if (connectorName && pageAction.value === PageAction.VIEW) {
           return t('operation.connectors.title.view', {
             type: t('operation.connectors.reinstall.cloudProvider')
           });
@@ -162,9 +180,9 @@
       });
 
       const setProviderKeys = () => {
-        if (formData.value.type === CloudProviderType.Azure) {
+        if (formData.value.spec.type === CloudProviderType.Azure) {
           providerKeys.value = _.cloneDeep(AzureRMCloudProviderKeys);
-        } else if (formData.value.type === CloudProviderType.Google) {
+        } else if (formData.value.spec.type === CloudProviderType.Google) {
           providerKeys.value = _.cloneDeep(GoogleCloudProviderKeys);
         } else {
           providerKeys.value = _.cloneDeep(CommonCloudProviderKeys);
@@ -192,7 +210,7 @@
           },
           {}
         );
-        formData.value.configData = configData;
+        formData.value.spec.config.data = _.cloneDeep(configData);
       };
       const formatRegionLabel = ({ value }) => {
         const item = regionOptions.value.find((item) => item.value === value);
@@ -204,10 +222,17 @@
           try {
             submitLoading.value = true;
             copyFormData = cloneDeep(formData.value);
-            if (id) {
-              await updateConnector(formData.value);
+            if (connectorName) {
+              await updateConnector({
+                name: connectorName,
+                namespace: formData.value.metadata.namespace,
+                data: formData.value
+              });
             } else {
-              await createConnector(formData.value);
+              await createConnector({
+                namespace: formData.value.metadata.namespace,
+                data: formData.value
+              });
             }
             router.back();
             submitLoading.value = false;
@@ -223,9 +248,12 @@
       const getConnectorInfo = async () => {
         handleTypeChange();
         copyFormData = cloneDeep(formData.value);
-        if (!id) return;
+        if (!connectorName) return;
         try {
-          const { data } = await queryItemConnector({ id });
+          const { data } = await queryItemConnector({
+            name: connectorName,
+            namespace: projectName
+          });
           formData.value = data;
           setProviderKeys();
           copyFormData = cloneDeep(formData.value);
@@ -267,27 +295,27 @@
         }
       };
       const handleRegionChange = (val, item) => {
-        formData.value.configData[item.key].value = val;
-        if (_.hasIn(formData.value.configData, 'zone')) {
+        formData.value.spec.config.data[item.key].value = val;
+        if (_.hasIn(formData.value.spec.config.data, 'zone')) {
           setTimeout(() => {
-            formData.value.configData.zone.value = _.get(
+            formData.value.spec.config.data.zone.value = _.get(
               zoneOptions.value[0],
               'value'
             );
-            formref.value?.validateField('configData.zone.value');
+            formref.value?.validateField('spec.config.data.zone.value');
           }, 100);
         }
       };
 
       const renderProviderConfig = (item) => {
-        if (!formData.value.configData[item.key]) {
+        if (!formData.value.spec?.config?.data[item.key]) {
           return null;
         }
         if (item.key === 'region') {
           return (
             <seal-select
               ref={regionSelect.value}
-              v-model={formData.value.configData[item.key].value}
+              v-model={formData.value.spec.config.data[item.key].value}
               allow-create
               allow-search
               label={t('operation.connectors.table.region')}
@@ -312,7 +340,7 @@
         if (item.key === 'zone') {
           return (
             <seal-select
-              v-model={formData.value.configData[item.key].value}
+              v-model={formData.value.spec.config.data[item.key].value}
               allow-create
               allow-search
               label={t('operation.connectors.table.zones')}
@@ -329,7 +357,7 @@
               ref={(el) => {
                 credentialsRef.value = el;
               }}
-              v-model={formData.value.configData[item.key].value}
+              v-model={formData.value.spec.config.data[item.key].value}
               label={t(item.label)}
               placeholder={t(item.label)}
               popup-info={item.description ? t(item.description) : ''}
@@ -341,12 +369,15 @@
           );
         }
         if (item.options) {
-          if (!formData.value.configData[item.key].value && !id) {
-            formData.value.configData[item.key].value = item.default;
+          if (
+            !formData.value.spec.config.data[item.key].value &&
+            !connectorName
+          ) {
+            formData.value.spec.config.data[item.key].value = item.default;
           }
           return (
             <seal-select
-              v-model={formData.value.configData[item.key].value}
+              v-model={formData.value.spec.config.data[item.key].value}
               allow-create
               allow-search
               allow-clear={!item.required}
@@ -360,7 +391,7 @@
         if (item.visible) {
           return (
             <seal-input
-              v-model={formData.value.configData[item.key].value}
+              v-model={formData.value.spec.config.data[item.key].value}
               label={t(item.label)}
               required={item.required}
               style={{ width: `${InputWidth.LARGE}px` }}
@@ -369,7 +400,7 @@
         }
         return (
           <seal-input-password
-            v-model={formData.value.configData[item.key].value}
+            v-model={formData.value.spec.config.data[item.key].value}
             label={t(item.label)}
             popup-info={item.description ? t(item.description) : ''}
             required={item.required}
@@ -443,12 +474,12 @@
           <BreadWrapper>
             <Breadcrumb
               menu={
-                route.params.projectId
+                route.params.projectName
                   ? ({ icon: 'icon-apps' } as BreadcrumbOptions)
                   : undefined
               }
               items={
-                route.params.projectId
+                route.params.projectName
                   ? ([
                       ...breadCrumbList.value,
                       {
@@ -476,11 +507,11 @@
               flex-start
               show-edit={
                 pageAction.value === PageAction.VIEW &&
-                (route.params.projectId
+                (route.params.projectName
                   ? userStore.hasProjectResourceActions({
                       resource: Resources.Connectors,
-                      connectorID: id,
-                      projectID: route.params.projectId,
+                      connectorID: connectorName,
+                      projectID: route.params.projectName,
                       actions: [Actions.PUT]
                     })
                   : userStore.hasRolesActionsPermission({
@@ -503,8 +534,8 @@
                   label={t('operation.connectors.form.name')}
                   hide-asterisk
                   hide-label={true}
-                  field="name"
-                  disabled={!!id}
+                  field="metadata.name"
+                  disabled={!!connectorName}
                   validate-trigger={['change', 'input']}
                   style={{ maxWidth: `${InputWidth.LARGE}px` }}
                   rules={[
@@ -520,7 +551,7 @@
                   ]}
                 >
                   <seal-input
-                    modelValue={formData.value.name}
+                    modelValue={formData.value.metadata.name}
                     view-status={pageAction.value === PageAction.VIEW}
                     label={t('operation.connectors.form.name')}
                     required={true}
@@ -528,7 +559,7 @@
                     max-length={validateInputLength.NAME}
                     show-word-limit
                     onUpdate:modelValue={(val) => {
-                      formData.value.name = _.trim(val);
+                      formData.value.metadata.name = _.trim(val);
                     }}
                   ></seal-input>
                 </a-form-item>
@@ -536,8 +567,8 @@
                   label={t('operation.connectors.table.environmentType')}
                   hide-label={true}
                   hide-asterisk
-                  field="applicableEnvironmentType"
-                  disabled={!!id}
+                  field="spec.applicableEnvironmentType"
+                  disabled={!!connectorName}
                   rules={[
                     {
                       required: true,
@@ -546,7 +577,7 @@
                   ]}
                 >
                   <seal-select
-                    v-model={formData.value.applicableEnvironmentType}
+                    v-model={formData.value.spec.applicableEnvironmentType}
                     view-status={pageAction.value === PageAction.VIEW}
                     label={t('operation.connectors.table.environmentType')}
                     required={true}
@@ -558,7 +589,7 @@
                   label={t('operation.connectors.form.type')}
                   hide-asterisk
                   hide-label={true}
-                  field="type"
+                  field="spec.type"
                   rules={[
                     {
                       required: true,
@@ -567,7 +598,7 @@
                   ]}
                 >
                   <seal-select
-                    v-model={formData.value.type}
+                    v-model={formData.value.spec.type}
                     view-status={pageAction.value === PageAction.VIEW}
                     label={t('operation.connectors.form.type')}
                     required={true}
@@ -576,7 +607,7 @@
                     v-slots={{
                       prefix: () => (
                         <ProviderIcon
-                          provider={toLower(formData.value.type)}
+                          provider={toLower(formData.value.spec.type)}
                         ></ProviderIcon>
                       )
                     }}
@@ -618,7 +649,7 @@
                         >
                           <a-form-item
                             label={item.label}
-                            field={`configData.${item.key}.value`}
+                            field={`spec.config.data.${item.key}.value`}
                             hide-label={pageAction.value === PageAction.EDIT}
                             hide-asterisk
                             validate-trigger={['change']}
@@ -663,7 +694,7 @@
                             tooltip-props={{
                               content: get(
                                 formData.value,
-                                `configData.${row.key}.value`
+                                `spec.config.data.${row.key}.value`
                               )
                             }}
                           >
@@ -672,7 +703,7 @@
                                 ? '******'
                                 : get(
                                     formData.value,
-                                    `configData.${row.key}.value`
+                                    `spec.config.data.${row.key}.value`
                                   )}
                             </span>
                           </Autotip>

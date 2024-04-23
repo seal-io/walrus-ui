@@ -2,9 +2,9 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :menu="route.params.projectId ? { icon: 'icon-apps' } : null"
+        :menu="route.params.projectName ? { icon: 'icon-apps' } : null"
         :items="
-          route.params.projectId
+          route.params.projectName
             ? [
                 ...breadCrumbList,
                 {
@@ -32,11 +32,11 @@
         flex-start
         :show-edit="
           pageAction === PageAction.VIEW &&
-          (route.params.projectId
+          (route.params.projectName
             ? userStore.hasProjectResourceActions({
                 resource: Resources.Connectors,
-                connectorID: id,
-                projectID: route.params.projectId,
+                connectorID: connectorName,
+                projectID: route.params.projectName,
                 actions: [Actions.PUT]
               })
             : userStore.hasRolesActionsPermission({
@@ -57,8 +57,8 @@
             :label="$t('operation.connectors.detail.clusterName')"
             :hide-label="true"
             hide-asterisk
-            field="name"
-            :disabled="!!id"
+            field="metadata.name"
+            :disabled="!!connectorName"
             :validate-trigger="['change', 'input']"
             :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
@@ -74,7 +74,7 @@
             ]"
           >
             <seal-input
-              v-model.trim="formData.name"
+              v-model.trim="formData.metadata.name"
               :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.detail.clusterName')"
               :required="true"
@@ -87,8 +87,8 @@
             :label="$t('operation.connectors.table.environmentType')"
             :hide-label="true"
             hide-asterisk
-            field="applicableEnvironmentType"
-            :disabled="!!id"
+            field="spec.applicableEnvironmentType"
+            :disabled="!!connectorName"
             :rules="[
               {
                 required: true,
@@ -97,7 +97,7 @@
             ]"
           >
             <seal-select
-              v-model="formData.applicableEnvironmentType"
+              v-model="formData.spec.applicableEnvironmentType"
               :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.table.environmentType')"
               :required="true"
@@ -107,7 +107,7 @@
           </a-form-item>
           <a-form-item
             v-if="pageAction === PageAction.EDIT"
-            field="configData.kubeconfig.value"
+            field="spec.config.data.kubeconfig.value"
             hide-label
             label="KubeConfig"
             class="kube"
@@ -124,7 +124,7 @@
           >
             <AutoReadfile
               ref="credentialsRef"
-              v-model="formData.configData.kubeconfig.value"
+              v-model="formData.spec.config.data.kubeconfig.value"
               lang="yaml"
               label="KubeConfig"
               placeholder="KubeConfig"
@@ -198,7 +198,14 @@
   import { ConnectorFormData } from '../config/interface';
   import { operationRootBread, ConnectorCategory } from '../config';
   import StatusLabel from '../components/status-label.vue';
-  import { createConnector, updateConnector, queryItemConnector } from '../api';
+  import {
+    createConnector,
+    updateConnector,
+    queryItemConnector,
+    ResourKinds,
+    apiVersion,
+    GlobalNamespace
+  } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
 
   const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
@@ -207,31 +214,42 @@
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
-  const id = route.query.id as string;
+  const connectorName = route.query.name as string;
+  const projectName = route.params.projectName as string;
   const formref = ref();
   const submitLoading = ref(false);
   const textareaWidth = ref(InputWidth.LARGE);
   const textareaHeight = ref(180);
   const credentialsRef = ref();
   let copyFormData: any = {};
-  const formData: ConnectorFormData = reactive({
-    name: '',
-    configData: {
-      kubeconfig: {
-        visible: false,
-        value: '',
-        type: 'string'
-      }
+  const formData = ref<ConnectorFormData>({
+    apiVersion,
+    kind: ResourKinds.Connector,
+    metadata: {
+      name: '',
+      namespace: projectName || GlobalNamespace
     },
-    configVersion: 'v1',
-    type: 'Kubernetes',
-    applicableEnvironmentType: '',
-    category: ConnectorCategory.Kubernetes,
-    enableFinOps: false
+    spec: {
+      enableFinOps: false,
+      applicableEnvironmentType: '',
+      category: ConnectorCategory.Kubernetes,
+      type: 'Kubernetes',
+      config: {
+        version: 'v1',
+        data: {
+          kubeconfig: {
+            visible: false,
+            value: '',
+            type: 'string'
+          }
+        }
+      }
+    }
   });
 
   const EnvironmentTypeList = computed(() => {
-    return _.map(userStore.applicableEnvironmentTypes, (item) => {
+    // userStore.applicableEnvironmentTypes
+    return _.map(_.keys(EnvironmentTypeMap), (item) => {
       return {
         label: t(EnvironmentTypeMap[item] || ''),
         value: item,
@@ -241,13 +259,13 @@
   });
 
   const title = computed(() => {
-    if (!id) {
+    if (!connectorName) {
       return t('operation.connectors.title.new', { type: 'Kubernetes' });
     }
-    if (id && pageAction.value === PageAction.EDIT) {
+    if (connectorName && pageAction.value === PageAction.EDIT) {
       return t('operation.connectors.title.edit', { type: 'Kubernetes' });
     }
-    if (id && pageAction.value === PageAction.VIEW) {
+    if (connectorName && pageAction.value === PageAction.VIEW) {
       return t('operation.connectors.title.view', { type: 'Kubernetes' });
     }
     return t('operation.connectors.title.edit', { type: 'Kubernetes' });
@@ -280,12 +298,12 @@
   };
   const handleUploadSuccess = async (list, fileItem) => {
     const res = await readBlob(fileItem.file);
-    const kubeValue = formData.configData.kubeconfig;
-    formData.configData.kubeconfig = {
+    const kubeValue = formData.value.spec.config.data.kubeconfig;
+    formData.value.spec.config.data.kubeconfig = {
       ...kubeValue,
       value: res as string
     };
-    formref.value.validateField('configData.kubeconfig.value');
+    formref.value.validateField('spec.config.data.kubeconfig.value');
   };
   const handleBeforeUpload = async (file) => {
     return true;
@@ -295,11 +313,19 @@
     if (!res) {
       try {
         submitLoading.value = true;
-        copyFormData = cloneDeep(formData);
-        if (id) {
-          await updateConnector(formData);
+        copyFormData = cloneDeep(formData.value);
+        if (connectorName) {
+          await updateConnector({
+            name: connectorName,
+            namespace: formData.value.metadata.namespace,
+            data: formData.value
+          });
         } else {
-          await createConnector(formData);
+          await createConnector({
+            name: connectorName,
+            namespace: formData.value.metadata.namespace,
+            data: formData.value
+          });
         }
         router.back();
         submitLoading.value = false;
@@ -313,13 +339,15 @@
     return false;
   };
   const getConnectorInfo = async () => {
-    copyFormData = cloneDeep(formData);
-    if (!id) return;
+    copyFormData = cloneDeep(formData.value);
+    if (!connectorName) return;
     try {
-      const { data } = await queryItemConnector({ id });
-      assignIn(formData, data);
-      formData.enableFinOps = data.enableFinOps || false;
-      copyFormData = cloneDeep(formData);
+      const { data } = await queryItemConnector({
+        name: connectorName,
+        namespace: projectName || GlobalNamespace
+      });
+      formData.value = data;
+      copyFormData = cloneDeep(formData.value);
     } catch (error) {
       // ignore
     }
@@ -336,11 +364,11 @@
     router.back();
   };
   const handleCancel = () => {
-    if (!isEqual(copyFormData, formData)) {
+    if (!isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
         isCancel: true,
         onOk: () => {
-          copyFormData = cloneDeep(formData);
+          copyFormData = cloneDeep(formData.value);
           cancelCallback();
         }
       });
@@ -349,12 +377,12 @@
     }
   };
   onBeforeRouteLeave(async (to, from) => {
-    if (!isEqual(copyFormData, formData)) {
+    if (!isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
         to,
         from,
         onOk: () => {
-          copyFormData = cloneDeep(formData);
+          copyFormData = cloneDeep(formData.value);
           router.push({
             path: to.path as string
           });

@@ -2,9 +2,9 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :menu="route.params.projectId ? { icon: 'icon-apps' } : null"
+        :menu="route.params.projectName ? { icon: 'icon-apps' } : null"
         :items="
-          route.params.projectId
+          route.params.projectName
             ? [
                 ...breadCrumbList,
                 {
@@ -29,11 +29,11 @@
         flex-start
         :show-edit="
           pageAction === PageAction.VIEW &&
-          (route.params.projectId
+          (route.params.projectName
             ? userStore.hasProjectResourceActions({
                 resource: Resources.Connectors,
-                connectorID: id,
-                projectID: route.params.projectId,
+                connectorID: connectorName,
+                projectID: route.params.projectName,
                 actions: [Actions.PUT]
               })
             : userStore.hasRolesActionsPermission({
@@ -54,8 +54,8 @@
             :label="$t('operation.connectors.form.name')"
             hide-asterisk
             :hide-label="true"
-            field="name"
-            :disabled="!!id"
+            field="metadata.name"
+            :disabled="!!connectorName"
             :validate-trigger="['change', 'input']"
             :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
@@ -67,7 +67,7 @@
             ]"
           >
             <seal-input
-              v-model.trim="formData.name"
+              v-model.trim="formData.metadata.name"
               :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.form.name')"
               :required="true"
@@ -75,18 +75,13 @@
               :max-length="validateInputLength.NAME"
               show-word-limit
             ></seal-input>
-            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
-                $t('common.validate.labelName')
-              }}</div>
-            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.table.environmentType')"
             :hide-label="true"
             hide-asterisk
-            field="applicableEnvironmentType"
-            :disabled="!!id"
+            field="spec.applicableEnvironmentType"
+            :disabled="!!connectorName"
             :rules="[
               {
                 required: true,
@@ -95,7 +90,7 @@
             ]"
           >
             <seal-select
-              v-model="formData.applicableEnvironmentType"
+              v-model="formData.spec.applicableEnvironmentType"
               :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.table.environmentType')"
               :required="true"
@@ -107,7 +102,7 @@
             :label="$t('operation.connectors.form.type')"
             hide-asterisk
             :hide-label="true"
-            field="type"
+            field="spec.type"
             :rules="[
               {
                 required: true,
@@ -116,7 +111,7 @@
             ]"
           >
             <seal-select
-              v-model="formData.type"
+              v-model="formData.spec.type"
               :view-status="pageAction === PageAction.VIEW"
               :required="true"
               :label="$t('operation.connectors.form.type')"
@@ -131,7 +126,9 @@
                 <span style="margin-left: 5px">{{ item.label }}</span>
               </a-option>
               <template #prefix>
-                <ProviderIcon :provider="toLower(formData.type)"></ProviderIcon>
+                <ProviderIcon
+                  :provider="toLower(formData.spec.type)"
+                ></ProviderIcon>
               </template>
             </seal-select>
           </a-form-item>
@@ -140,7 +137,7 @@
             hide-asterisk
             hide-label
             label="Access Token"
-            field="configData.token.value"
+            field="spec.config.data.token.value"
             :rules="[
               {
                 required: true,
@@ -149,7 +146,7 @@
             ]"
           >
             <seal-input-password
-              v-model="formData.configData.token.value"
+              v-model="formData.spec.config.data.token.value"
               label="Access Token"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
@@ -218,7 +215,14 @@
   import StatusLabel from '../components/status-label.vue';
   import { ConnectorFormData } from '../config/interface';
   import { operationRootBread, ConnectorCategory } from '../config';
-  import { createConnector, updateConnector, queryItemConnector } from '../api';
+  import {
+    createConnector,
+    updateConnector,
+    queryItemConnector,
+    apiVersion,
+    ResourKinds,
+    GlobalNamespace
+  } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
 
   const { scrollToView } = useScrollToView();
@@ -228,25 +232,35 @@
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
-  const id = route.query.id as string;
+  const connectorName = route.query.name as string;
+  const projectName = route.params.projectName as string;
   const formref = ref();
   const submitLoading = ref(false);
   let copyFormData: any = {};
-  const formData: ConnectorFormData = reactive({
-    name: '',
-    configData: {
-      token: {
-        value: '',
-        visiable: false,
-        type: 'string'
-      }
+  const formData = ref<ConnectorFormData>({
+    apiVersion,
+    kind: ResourKinds.Connector,
+    metadata: {
+      name: '',
+      namespace: projectName || GlobalNamespace
     },
-    description: '',
-    configVersion: 'v1',
-    applicableEnvironmentType: '',
-    type: 'Github',
-    category: ConnectorCategory.VersionControl,
-    enableFinOps: false
+    spec: {
+      type: 'Github',
+      description: '',
+      applicableEnvironmentType: '',
+      category: ConnectorCategory.VersionControl,
+      enableFinOps: false,
+      config: {
+        version: 'v1',
+        data: {
+          token: {
+            value: '',
+            visible: false,
+            type: 'string'
+          }
+        }
+      }
+    }
   });
 
   const typeOptions = [
@@ -255,7 +269,8 @@
   ];
 
   const EnvironmentTypeList = computed(() => {
-    return _.map(userStore.applicableEnvironmentTypes, (item) => {
+    // userStore.applicableEnvironmentTypes
+    return _.map(_.keys(EnvironmentTypeMap), (item) => {
       return {
         label: t(EnvironmentTypeMap[item] || ''),
         value: item,
@@ -265,17 +280,17 @@
   });
 
   const title = computed(() => {
-    if (!id) {
+    if (!connectorName) {
       return t('operation.connectors.title.new', {
         type: t('operation.connectors.table.versioncontrol')
       });
     }
-    if (id && pageAction.value === PageAction.EDIT) {
+    if (connectorName && pageAction.value === PageAction.EDIT) {
       return t('operation.connectors.title.edit', {
         type: t('operation.connectors.table.versioncontrol')
       });
     }
-    if (id && pageAction.value === PageAction.EDIT) {
+    if (connectorName && pageAction.value === PageAction.EDIT) {
       return t('operation.connectors.title.view', {
         type: t('operation.connectors.table.versioncontrol')
       });
@@ -293,10 +308,18 @@
       try {
         submitLoading.value = true;
         copyFormData = cloneDeep(formData);
-        if (id) {
-          await updateConnector(formData);
+        if (connectorName) {
+          await updateConnector({
+            name: connectorName,
+            data: formData.value,
+            namespace: formData.value.metadata.namespace
+          });
         } else {
-          await createConnector(formData);
+          await createConnector({
+            data: formData.value,
+            name: formData.value.metadata.name,
+            namespace: formData.value.metadata.namespace
+          });
         }
         router.back();
         submitLoading.value = false;
@@ -310,12 +333,15 @@
     return false;
   };
   const getConnectorInfo = async () => {
-    copyFormData = cloneDeep(formData);
-    if (!id) return;
+    copyFormData = cloneDeep(formData.value);
+    if (!connectorName) return;
     try {
-      const { data } = await queryItemConnector({ id });
-      assignIn(formData, data);
-      copyFormData = cloneDeep(formData);
+      const { data } = await queryItemConnector({
+        name: connectorName,
+        namespace: projectName || GlobalNamespace
+      });
+      formData.value = data;
+      copyFormData = cloneDeep(formData.value);
     } catch (error) {
       // ignore
     }
@@ -332,11 +358,11 @@
     router.back();
   };
   const handleCancel = () => {
-    if (!isEqual(copyFormData, formData)) {
+    if (!isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
         isCancel: true,
         onOk: () => {
-          copyFormData = cloneDeep(formData);
+          copyFormData = cloneDeep(formData.value);
           cancelCallback();
         }
       });
@@ -345,12 +371,12 @@
     }
   };
   onBeforeRouteLeave(async (to, from) => {
-    if (!isEqual(copyFormData, formData)) {
+    if (!isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
         to,
         from,
         onOk: () => {
-          copyFormData = cloneDeep(formData);
+          copyFormData = cloneDeep(formData.value);
           router.push({
             path: to.path as string
           });

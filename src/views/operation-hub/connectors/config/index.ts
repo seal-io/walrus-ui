@@ -59,7 +59,8 @@ export const ConnectorCategory = {
   VersionControl: 'VersionControl',
   Custom: 'Custom',
   CloudProvider: 'CloudProvider',
-  Kubernetes: 'Kubernetes'
+  Kubernetes: 'Kubernetes',
+  Docker: 'Docker'
 };
 
 export const ConnectorType = {
@@ -216,7 +217,7 @@ export const actionList: MoreAction[] = [
     icon: 'icon-edit',
     status: 'normal',
     filterFun({ itemInfo, projectID }) {
-      if (!ConnectorCategory[itemInfo.category]) {
+      if (!ConnectorCategory[itemInfo.spec.category]) {
         return false;
       }
       return projectID
