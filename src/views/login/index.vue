@@ -41,27 +41,17 @@
     <div class="main">
       <div class="content">
         <a-spin :loading="loading" fill>
-          <a-button
-            v-if="loginType !== LoginTypeMap.External && providerList.length"
-            class="back"
-            @click="handleClickBack"
-            ><icon-arrow-left
-          /></a-button>
           <div class="content-title">
             <span v-if="!isModifyPassword">{{ $t('login.form.title') }}</span>
             <span v-else>{{ $t('login.form.login.update') }}</span>
           </div>
 
+          <PasswordLogin @modifyPassword="handleModifyPassword"></PasswordLogin>
           <SSOProvider
-            v-if="loginType === LoginTypeMap.External"
             :providers="providerList"
             :loaded="loaded"
             @select="handleLoginTypeChange"
           ></SSOProvider>
-          <PasswordLogin
-            v-else
-            @modifyPassword="handleModifyPassword"
-          ></PasswordLogin>
         </a-spin>
       </div>
     </div>
@@ -101,7 +91,7 @@
   });
 
   const toggleTheme = useToggle(isDark);
-  const loginType = ref(LoginTypeMap.External);
+  const loginType = ref(LoginTypeMap.Internal);
   const providerList = ref<ProviderItem[]>([]);
   const isModifyPassword = ref(false);
   const loaded = ref(false);

@@ -30,11 +30,20 @@ export interface EnvironFormData extends AxiosRequestPayload {
     description: string;
     draft?: boolean;
     preview?: boolean;
-    connectorIDs: string[];
-    connectors: any[];
-    edges?: any[];
-    labels?: Record<string, any>;
-    resources?: any[];
-    variables?: any[];
+  };
+}
+
+export interface ConnectorBindsFormData extends AxiosRequestPayload {
+  metadata: {
+    name: string;
+    namespace: string;
+  };
+  spec: {
+    connector: {
+      name: string;
+      namespace: string;
+      category?: string;
+      type?: string;
+    };
   };
 }

@@ -32,8 +32,11 @@
         :validate-trigger="['change', 'input']"
         :rules="[
           {
-            required: true,
-            match: validateUserNameRegx,
+            required: formData.spec.provider === 'default',
+            match:
+              formData.spec.provider === 'default'
+                ? validateUserNameRegx
+                : /^.+/,
             message: $t('account.create.rules.username')
           }
         ]"
@@ -41,7 +44,7 @@
         <seal-input
           v-model.trim="formData.metadata.name"
           :label="$t('profile.account.name')"
-          :required="true"
+          :required="formData.spec.provider === 'default'"
           :max-length="30"
           show-word-limit
           style="width: 100%"

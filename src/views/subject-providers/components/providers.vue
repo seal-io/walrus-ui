@@ -62,12 +62,15 @@
           :title="$t('propfile.provider.source')"
         >
           <template #cell="{ record }">
-            <ProviderIcon
-              :size="18"
-              :provider="
-                record.spec.type === 'Internal' ? 'walrus' : record.spec.type
-              "
-            ></ProviderIcon>
+            <span class="flex flex-align-center">
+              <ProviderIcon
+                :size="18"
+                :provider="
+                  record.spec.type === 'Internal' ? 'walrus' : record.spec.type
+                "
+              ></ProviderIcon>
+              <span class="m-l-10">{{ record.spec.type }}</span>
+            </span>
           </template>
         </a-table-column>
         <!-- <a-table-column

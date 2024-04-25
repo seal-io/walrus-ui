@@ -30,7 +30,9 @@
         }
         return (
           <>
-            <SealDivivder margin={10}>Others</SealDivivder>
+            <SealDivivder style={{ marginTop: '20px', marginBottom: '12px' }}>
+              Others
+            </SealDivivder>
             <div class="others">
               {list.map((provider: any, index) => (
                 <a-button
@@ -50,8 +52,8 @@
           </>
         );
       };
-      return () => (
-        <div class="wrapper">
+      const renderBox = () => {
+        return (
           <div class="box">
             {_.slice(props.providers, 0, 2).map((provider: any, index) => (
               <a-button
@@ -88,18 +90,16 @@
               </a-button>
             )}
           </div>
-          {renderOtherProviders(_.slice(props.providers, 2))}
-        </div>
+        );
+      };
+      return () => (
+        <div class="wrapper">{renderOtherProviders(props.providers)}</div>
       );
     }
   });
 </script>
 
 <style lang="less" scoped>
-  .wrapper {
-    padding: 0 20px;
-  }
-
   .password {
     padding: 0 30px;
     font-weight: var(--font-weight-bold);

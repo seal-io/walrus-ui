@@ -47,13 +47,16 @@
           hide-label
           validate-trigger="change"
           :rules="[
-            { required: true, message: $t('applications.secret.rules.value') }
+            {
+              required: formData.status?.value !== '(sensitive)',
+              message: $t('applications.secret.rules.value')
+            }
           ]"
         >
           <seal-textarea
             v-model="formData.spec.value"
             :label="$t('applications.applications.secret.value')"
-            :required="true"
+            :required="formData.status?.value !== '(sensitive)'"
             style="width: 100%"
             :auto-size="{ minRows: 4, maxRows: 4 }"
           ></seal-textarea>
@@ -210,6 +213,9 @@
             namespace: formData.value.metadata.namespace
           });
         } else {
+          if (formData.value.spec.sensitive && !formData.value.spec.value) {
+            formData.value = _.omit(formData.value, 'spec.value');
+          }
           await updateVariable({
             data: formData.value,
             name: formData.value.metadata.name,
@@ -240,13 +246,16 @@
           sensitive: false,
           value: '',
           description: ''
+        },
+        status: {
+          scope: props.scope
         }
       };
     } else {
       formData.value = props.info;
       formData.value.spec.value = props.info.spec.sensitive
         ? ''
-        : props.info.status?.value;
+        : props.info.status?.value || '';
     }
   };
   const handleBeforeClose = () => {

@@ -12,7 +12,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="name"
+          data-index="metadata.name"
           :title="$t('operation.connectors.table.name')"
         >
         </a-table-column>
@@ -21,7 +21,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="left"
-          data-index="type"
+          data-index="spec.type"
           :title="$t('operation.connectors.table.type')"
         >
         </a-table-column>
@@ -34,16 +34,12 @@
           :title="$t('operation.connectors.table.status')"
         >
           <template #cell="{ record }">
-            <span v-if="record.category === ConnectorCategory.Custom">-</span>
+            <span v-if="record.spec.category === ConnectorCategory.Custom"
+              >-</span
+            >
             <StatusLabel
               v-else
-              :status-detail="{
-                status: get(record, 'status.summaryStatus'),
-                text: get(record, 'status.summaryStatus'),
-                message: get(record, 'status.summaryStatusMessage'),
-                transitioning: get(record, 'status.transitioning'),
-                error: get(record, 'status.error')
-              }"
+              :status="get(record, 'status', {})"
             ></StatusLabel>
           </template>
         </a-table-column>

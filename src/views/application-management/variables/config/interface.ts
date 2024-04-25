@@ -7,6 +7,10 @@ export interface VariableFormData extends AxiosRequestPayload {
     sensitive: boolean;
     description: string;
   };
+  status: {
+    scope: string;
+    value?: string;
+  };
 }
 
 export type VariableScopeType =

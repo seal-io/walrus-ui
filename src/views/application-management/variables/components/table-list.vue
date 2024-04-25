@@ -361,9 +361,7 @@
   const getScope = (row) => {
     return row.status?.scope;
   };
-  const handleToggleVal = (row) => {
-    row.visible = !row.visible;
-  };
+
   const fetchData = async () => {
     try {
       loading.value = true;
@@ -376,7 +374,6 @@
       dataList.value = _.map(data?.items || [], (item) => {
         return {
           ...item,
-          visible: false,
           metadataName: item.metadata?.name,
           disabled: [VariableScope.ENVIRONMENT, VariableScope.SERVICE]
             ? getScope(item) !== props.scope ||

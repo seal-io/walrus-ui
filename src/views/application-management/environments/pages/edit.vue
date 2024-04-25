@@ -58,13 +58,14 @@
           <seal-input
             v-model.trim="formData.metadata.name"
             :view-status="pageAction === PageAction.VIEW"
-            :disabled="!!name && !isCloneAction"
+            :disabled="!!envName && !isCloneAction"
             :label="$t('operation.environments.table.name')"
             :required="true"
             :style="{ width: `${InputWidth.LARGE}px` }"
             :max-length="validateInputLength.NAME"
             show-word-limit
-          ></seal-input>
+          >
+          </seal-input>
         </a-form-item>
         <a-form-item
           :label="$t('applications.environment.type')"
@@ -84,7 +85,7 @@
             :label="$t('applications.environment.type')"
             :required="true"
             :is-locale="true"
-            :disabled="!!name && !isCloneAction"
+            :disabled="!!envName && !isCloneAction"
             :options="EnvironmentTypeList"
             :style="{ width: `${InputWidth.LARGE}px` }"
             @change="handleEnvironmentTypeChange"
@@ -176,7 +177,7 @@
               <a-button
                 v-if="pageAction === PageAction.EDIT"
                 type="primary"
-                :disabled="!formData.type"
+                :disabled="!formData.spec.type"
                 style="margin-right: 8px"
                 @click.stop="handleAddConnector"
               >
@@ -188,9 +189,9 @@
               <ConnectorSelector
                 v-if="showModal"
                 v-model:show="showModal"
-                v-model:connectorIDs="formData.connectorIDs"
+                v-model:connectorIDs="selectedList"
                 :selected="selectedList"
-                :list="selectableConnectors"
+                :list="selectConnectorOptions"
                 :placeholder="$t('operation.environments.detail.holder')"
                 @confirm="handleConnectorChange"
               ></ConnectorSelector>
@@ -201,19 +202,19 @@
                 'min-width': '400px'
               }"
               :action="pageAction"
-              :list="formData?.edges || []"
+              :list="selectedConnectorList"
               @delete="handleDeleteConnector"
             ></connectorsTable>
           </div>
         </a-form-item>
-        <GroupTitle
+        <!-- <GroupTitle
           v-if="isCloneAction"
           class="m-t-20"
           :bordered="false"
           :title="$t('menu.operatorHub.variables')"
           flex-start
-        ></GroupTitle>
-        <a-form-item
+        ></GroupTitle> -->
+        <!-- <a-form-item
           v-if="isCloneAction"
           :hide-label="pageAction === PageAction.EDIT"
           :label="$t('menu.operatorHub.variables')"
@@ -223,8 +224,8 @@
             v-model:selected-list="formData.variables"
             :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
           ></VariablesSelector>
-        </a-form-item>
-        <a-form-item
+        </a-form-item> -->
+        <!-- <a-form-item
           v-if="isCloneAction"
           no-style
           :hide-label="pageAction === PageAction.EDIT"
@@ -241,7 +242,7 @@
               :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
             ></CloneService>
           </div>
-        </a-form-item>
+        </a-form-item> -->
       </a-form>
       <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
@@ -277,6 +278,7 @@
 
 <script lang="ts" setup>
   import i18n from '@/locale';
+  import { handleBatchRequest } from '@/views/config/utils';
   import { PROJECT } from '@/router/config';
   import { Resources } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
@@ -316,7 +318,7 @@
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { queryProjectVairables } from '@/views/application-management/variables/api';
   import CloneService from '../components/clone-service.vue';
-  import { EnvironFormData } from '../config/interface';
+  import { EnvironFormData, ConnectorBindsFormData } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
   import ConnectorSelector from '../components/connector-selector.vue';
   import VariablesSelector from '../components/variables-selector.vue';
@@ -325,6 +327,8 @@
     cloneEnvironment,
     updateEnvironment,
     queryItemEnvironments,
+    queryEnvironmentConnectorBinds,
+    addEnvironmentConnectorBinds,
     apiVersion,
     ResourceKinds,
     GlobalNamespace
@@ -385,20 +389,29 @@
     },
     spec: {
       type: '',
-      description: '',
-      connectorIDs: [],
-      connectors: [],
-      variables: [],
-      edges: [],
-      labels: {},
-      resources: []
+      description: ''
+    }
+  });
+
+  const connectorBindsFormData = ref<ConnectorBindsFormData>({
+    apiVersion,
+    kind: ResourceKinds.ConnectorBinding,
+    metadata: {
+      namespace: formData.value.metadata.name,
+      name: ''
     },
-    connectorIDs: [],
-    connectors: [],
-    variables: [],
-    edges: [],
-    labels: {},
-    resources: []
+    spec: {
+      connector: {
+        name: '',
+        namespace: ''
+      }
+    }
+  });
+
+  const selectedConnectorList = computed(() => {
+    return _.map(selectedList.value, (item) => {
+      return connectorList.value.find((o) => o.value === item);
+    });
   });
 
   const cloneCompleteData = computed(() => {
@@ -426,9 +439,9 @@
       };
     }).sort((a, b) => a.order - b.order);
   });
-  const selectableConnectors = computed(() => {
+  const selectConnectorOptions = computed(() => {
     return _.filter(connectorList.value, (item) => {
-      return item.applicableEnvironmentType === formData.value.type;
+      return item.applicableEnvironmentType === formData.value.spec.type;
     });
   });
   const title = computed(() => {
@@ -492,32 +505,6 @@
     ];
   };
 
-  const setFormDataConnectors = (connectors) => {
-    formData.value.edges = [];
-    each(connectorList.value, (item) => {
-      if (includes(connectors, item.value)) {
-        formData.value?.edges?.push(item);
-      }
-    });
-    formData.value.connectors = map(formData.value.connectorIDs, (val) => {
-      const connector = connectorList.value.find((item) => {
-        return item.value === val;
-      });
-      if (connector && connector.project) {
-        return {
-          connector: {
-            id: val,
-            project: connector.project
-          }
-        };
-      }
-      return {
-        connector: {
-          id: val
-        }
-      };
-    });
-  };
   const getItemEnvironmentInfo = async () => {
     copyFormData = cloneDeep(formData.value);
     if (!envName) return;
@@ -527,49 +514,57 @@
         namespace: projectName
       });
       formData.value = data;
-      formData.value.edges = [];
-      formData.value.connectorIDs = map(get(data, 'connectors') || [], (s) => {
-        return s?.connector?.id;
-      });
-      formData.value.description = get(data, 'description') || '';
       // only in clone
-      formData.value.name = isCloneAction
-        ? `${formData.value.name}-clone`
-        : formData.value.name;
-      selectedList.value = [...formData.value.connectorIDs];
-      setFormDataConnectors(formData.value.connectorIDs);
+      formData.value.metadata.name = isCloneAction
+        ? `${formData.value.metadata.name}-clone`
+        : formData.value.metadata.name;
       copyFormData = cloneDeep(formData.value);
     } catch (error) {
       formData.value = {
-        projectID: route.params.projectName as string,
-        name: '',
-        type: '',
-        description: '',
-        connectorIDs: [],
-        connectors: [],
-        edges: []
+        apiVersion,
+        kind: ResourceKinds.Environment,
+        metadata: {
+          namespace: projectName,
+          name: '',
+          labels: {}
+        },
+        spec: {
+          type: '',
+          description: ''
+        }
       };
     }
   };
 
-  const getConnectors = async () => {
+  const getConnectors = async (namespace) => {
+    if (!namespace || !formData.value.spec.type) return [];
     try {
       const params = {
-        page: -1,
-        applicableEnvironmentType: formData.value.type,
+        namespace,
+        applicableEnvironmentType: formData.value.spec.type,
         withGlobal: true
       };
       const { data } = await queryConnectors(params);
       const list = data?.items || [];
-      connectorList.value = map(list, (item: any) => {
-        item.value = item.id;
-        item.label = item.name;
-        item.tips = !item.project ? 'applications.variable.scope.global' : '';
-        return item;
-      }) as Array<{ label: string; value: string }>;
+      return map(list, (item: any) => {
+        return {
+          ...item,
+          value: item.metadata.name,
+          label: item.metadata.name,
+          applicableEnvironmentType: item.spec.applicableEnvironmentType,
+          tips: !item.status.project ? 'applications.variable.scope.global' : ''
+        };
+      });
     } catch (error) {
-      connectorList.value = [];
+      return [];
     }
+  };
+  const getConnectorsList = async () => {
+    const res = await Promise.all([
+      getConnectors(GlobalNamespace),
+      getConnectors(projectName)
+    ]);
+    connectorList.value = [...res[0], ...res[1]];
   };
   const handleAddConnector = () => {
     showModal.value = true;
@@ -577,22 +572,14 @@
 
   const handleEnvironmentTypeChange = () => {
     selectedList.value = [];
-    formData.value.connectorIDs = [];
-    formData.value.connectors = [];
-    formData.value.edges = [];
-    getConnectors();
+    getConnectorsList();
   };
-  const handleConnectorChange = (values) => {
-    formData.value.connectorIDs = [...values];
-    setFormDataConnectors(formData.value.connectorIDs);
-    formref.value.validateField('connectorIDs');
-  };
-  const handleDeleteConnector = (record, index) => {
-    formData.value.edges?.splice(index, 1);
-    remove(formData.value.connectorIDs, (val) => record.id === val);
-    remove(formData.value.connectors, (o) => o.connector.id === record.id);
-    remove(selectedList.value, (id) => record.id === id);
-    formref.value.validateField('connectorIDs');
+  const handleConnectorChange = (values) => {};
+
+  const handleDeleteConnector = (conName) => {
+    remove(selectedList.value, (item) => {
+      return item === conName.value;
+    });
   };
   const handleCloneEnvironment = (data) => {
     const resources = resourceRef.value.getSelectServiceData();
@@ -600,6 +587,33 @@
     return data;
   };
 
+  const updateConnectorBinds = async () => {
+    try {
+      const paramsList = _.map(selectedList.value, (item) => {
+        const connectorData = _.find(connectorList.value, { value: item });
+        return {
+          namespace: envName,
+          data: {
+            apiVersion,
+            kind: ResourceKinds.ConnectorBinding,
+            metadata: {
+              namespace: formData.value.metadata.name,
+              name: item
+            },
+            spec: {
+              connector: {
+                name: item,
+                namespace: connectorData?.metadata.namespace
+              }
+            }
+          }
+        };
+      });
+      await handleBatchRequest(paramsList, addEnvironmentConnectorBinds);
+    } catch (error) {
+      // ingore
+    }
+  };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
     validateTrigger.value = true;
@@ -608,19 +622,24 @@
       try {
         submitLoading.value = true;
 
-        const data = _.omit(formData.value, ['edges']);
         if (isCloneAction) {
-          handleCloneEnvironment(data);
+          handleCloneEnvironment(formData.value);
         }
         if (envName && !isCloneAction) {
-          await updateEnvironment(data);
-        } else if (isCloneAction) {
-          await cloneEnvironment(data, environmentName);
-        } else if (!envName && !environmentName) {
-          await createEnvironment({
-            data,
+          await updateEnvironment({
+            data: formData.value,
+            name: envName,
             namespace: projectName
           });
+          await updateConnectorBinds();
+        } else if (isCloneAction) {
+          await cloneEnvironment(formData.value, environmentName);
+        } else if (!envName && !environmentName) {
+          await createEnvironment({
+            data: formData.value,
+            namespace: projectName
+          });
+          await updateConnectorBinds();
         }
         copyFormData = cloneDeep(formData.value);
         tabBarStore.deleteTag(0, {
@@ -649,10 +668,10 @@
     _.omit(formData.value, ['preview', 'draft']);
 
     if (value === 'preview') {
-      formData.value.preview = true;
+      formData.value.spec.preview = true;
     }
     if (value === 'draft') {
-      formData.value.draft = true;
+      formData.value.spec.draft = true;
     }
     handleSubmit();
   };
@@ -664,15 +683,28 @@
       const { data } = await queryProjectVairables(params);
       projectVariables.value = _.map(data?.items || [], (item) => {
         return {
-          label: item.name,
-          value: item.name,
-          tips: item.value,
+          label: item.metadata.name,
+          value: item.metadata.name,
+          tips: item.status.value,
           showTips: false,
-          sensitive: item.sensitive
+          sensitive: item.spec.sensitive
         };
       });
     } catch (error) {
       projectVariables.value = [];
+    }
+  };
+
+  const getEnvironmentConnectorBinds = async () => {
+    try {
+      const { data } = await queryEnvironmentConnectorBinds({
+        namespace: envName
+      });
+      selectedList.value = _.map(data?.items || [], (item) => {
+        return item.metadata.name;
+      });
+    } catch (error) {
+      selectedList.value = [];
     }
   };
   const cancelCallback = () => {
@@ -740,8 +772,11 @@
   };
   const init = async () => {
     setBreadCrumbList();
-    await getConnectors();
-    await getItemEnvironmentInfo();
+    await getConnectorsList();
+    await Promise.all([
+      getItemEnvironmentInfo(),
+      getEnvironmentConnectorBinds()
+    ]);
 
     // only in clone: default select all variables
     variablesRef.value?.selectAllVars();

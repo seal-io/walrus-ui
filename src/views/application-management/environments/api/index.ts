@@ -1,6 +1,6 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { ListQuery, ListResult } from '@/types/global';
+import { ListQuery, ListResult, RequestCallbackArgs } from '@/types/global';
 import router from '@/router';
 import _ from 'lodash';
 import ResourceKinds, {
@@ -14,6 +14,8 @@ export const ENVIRONMENT_API = 'environments';
 
 export const PROJECT_API = '/projects';
 
+export const CONNECTOR_BINDS_API = 'connectorbindings';
+
 export { GlobalNamespace, NAMESPACES, ResourceKinds, apiVersion };
 
 const generateEnvironmentAPI = (params: {
@@ -25,6 +27,32 @@ const generateEnvironmentAPI = (params: {
     return `${NAMESPACES}/${namespace}/${ENVIRONMENT_API}/${name}`;
   }
   return `${NAMESPACES}/${namespace}/${ENVIRONMENT_API}`;
+};
+
+const generateConnectorBindsAPI = (params: {
+  namespace: string;
+  name?: string;
+}) => {
+  const { name, namespace } = params;
+  if (name) {
+    return `${NAMESPACES}/${namespace}/${CONNECTOR_BINDS_API}/${name}`;
+  }
+  return `${NAMESPACES}/${namespace}/${CONNECTOR_BINDS_API}`;
+};
+
+export const queryEnvironmentConnectorBinds = (params: {
+  namespace: string;
+}) => {
+  const url = generateConnectorBindsAPI(params);
+  return axios.get(url);
+};
+
+export const addEnvironmentConnectorBinds = (params: {
+  namespace: string;
+  data: any;
+}) => {
+  const url = generateConnectorBindsAPI(params);
+  return axios.post(url, params.data);
 };
 
 export const PROJECT_API_PREFIX = () => {
@@ -90,10 +118,7 @@ export function queryItemEnvironments(params: {
   return axios.get(url);
 }
 
-export function createEnvironment(params: {
-  data: EnvironFormData;
-  namespace: string;
-}) {
+export function createEnvironment(params: RequestCallbackArgs) {
   const url = generateEnvironmentAPI({ namespace: params.namespace });
 
   return axios.post(url, params.data);
@@ -110,11 +135,13 @@ export function deleteEnvironment(data: { items: Record<string, any>[] }) {
   return axios.delete(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}`, { data });
 }
 
-export function updateEnvironment(data: EnvironFormData) {
-  return axios.put(
-    `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${data.id}`,
-    data
-  );
+export function updateEnvironment(params: RequestCallbackArgs) {
+  const url = generateEnvironmentAPI({
+    namespace: params.namespace,
+    name: params.name
+  });
+
+  return axios.put(url, params.data);
 }
 
 export function stopEnvironment(data: { id: string }) {
