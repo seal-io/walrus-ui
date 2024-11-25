@@ -118,7 +118,7 @@
     "mockjs": "^1.1.0",
     "prettier": "^2.2.1",
     "rollup-plugin-visualizer": "^5.6.0",
-    "sharp": "^0.32.4",
+    "sharp": "^0.32.6",
     "stylelint": "^13.8.0",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-rational-order": "^0.1.2",
